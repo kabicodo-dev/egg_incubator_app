@@ -3,7 +3,7 @@ name: Deploy Flutter Web to GitHub Pages
 on:
   push:
     branches:
-      - kath-branch1
+      - development
   workflow_dispatch:
 
 permissions:
@@ -22,11 +22,24 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.47.3'
+          flutter-version: '3.47.2'
           channel: 'stable'
 
       - name: Enable Flutter web
         run: flutter config --enable-web
+
+      - name: Create environment file
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          printf 'SUPABASE_URL=%s\nSUPABASE_ANON_KEY=%s\n' "$SUPABASE_URL" "$SUPABASE_ANON_KEY" > .env
+
+      - name: Validate environment file
+        run: |
+          test -s .env
+          grep -q '^SUPABASE_URL=' .env
+          grep -q '^SUPABASE_ANON_KEY=' .env
 
       - name: Get dependencies
         run: flutter pub get

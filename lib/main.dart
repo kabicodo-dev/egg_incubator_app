@@ -72,6 +72,7 @@ class SpeciesData {
   final String emoji;
   final int incubationDays;
   final String temperature;
+  final int targetHumidity;
   final String description;
 
   const SpeciesData({
@@ -80,6 +81,7 @@ class SpeciesData {
     required this.emoji,
     required this.incubationDays,
     required this.temperature,
+    required this.targetHumidity,
     required this.description,
   });
 
@@ -106,6 +108,7 @@ class SpeciesData {
       emoji: emojiMap[type] ?? '\uD83E\uDD5A',
       incubationDays: preset['incubation_days'] as int? ?? 21,
       temperature: tempStr,
+      targetHumidity: (preset['target_humidity'] as num?)?.round() ?? 55,
       description: descMap[type] ?? 'Incubate eggs carefully.',
     );
   }
@@ -117,6 +120,7 @@ const List<SpeciesData> defaultSpeciesList = [
     emoji: '\uD83D\uDC14',
     incubationDays: 21,
     temperature: '37.5\u00B0C',
+    targetHumidity: 55,
     description:
         'Chicken eggs typically require 21 days of incubation. Maintain a steady temperature of 37.5\u00B0C and humidity around 50\u201355%. Turn the eggs regularly for best results.',
   ),
@@ -125,6 +129,7 @@ const List<SpeciesData> defaultSpeciesList = [
     emoji: '\uD83D\uDC26',
     incubationDays: 28,
     temperature: '37.5\u00B0C',
+    targetHumidity: 65,
     description:
         'Duck eggs need about 28 days to hatch. Keep the temperature at 37.5\u00B0C with higher humidity (60\u201365%) compared to chicken eggs. Increase humidity in the last 3 days.',
   ),
@@ -133,6 +138,7 @@ const List<SpeciesData> defaultSpeciesList = [
     emoji: '\uD83E\uDD5A',
     incubationDays: 17,
     temperature: '37.5\u00B0C',
+    targetHumidity: 58,
     description:
         'Quail eggs hatch in about 17\u201318 days. Maintain 37.5\u00B0C with 55\u201360% humidity. Quail eggs are small and require careful handling during incubation.',
   ),
@@ -426,11 +432,29 @@ class _OnboardingSlide {
 class MainNavigation extends StatefulWidget {
   const MainNavigation({super.key});
 
+  /// Switches the shell to its [index] section (0 Home, 1 Species,
+  /// 2 History) and pops every route pushed on top of it. This lets a section
+  /// that was opened as a route - History from the overview cards, Species
+  /// from the "Top Species" card - hand navigation back to the shell, so the
+  /// bottom bar of such a screen can jump straight to another section
+  /// (issue #14).
+  static void openTab(BuildContext context, int index) {
+    final shell = _MainNavigationState._shell;
+    if (shell == null || !shell.mounted) return;
+    final shellRoute = ModalRoute.of(shell.context);
+    if (shellRoute == null) return;
+    shell._selectTab(index);
+    Navigator.popUntil(context, (route) => route == shellRoute);
+  }
+
   @override
   State<MainNavigation> createState() => _MainNavigationState();
 }
 
 class _MainNavigationState extends State<MainNavigation> {
+  /// The shell that is currently on screen, so pushed routes can reach it.
+  static _MainNavigationState? _shell;
+
   int _currentIndex = 0;
 
   final List<Widget> _screens = const [
@@ -440,39 +464,91 @@ class _MainNavigationState extends State<MainNavigation> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    _shell = this;
+  }
+
+  @override
+  void dispose() {
+    if (identical(_shell, this)) _shell = null;
+    super.dispose();
+  }
+
+  /// Shows the [index] section (0 Home, 1 Species, 2 History).
+  void _selectTab(int index) {
+    if (_currentIndex == index) return;
+    setState(() {
+      _currentIndex = index;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _screens[_currentIndex],
-      bottomNavigationBar: NavigationBar(
+      body: _TabShell(child: _screens[_currentIndex]),
+      bottomNavigationBar: _MainBottomBar(
         selectedIndex: _currentIndex,
-        onDestinationSelected: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        backgroundColor: Colors.white,
-        indicatorColor: const Color(0xFFE8752A).withValues(alpha: 0.15),
-        labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.home_outlined),
-            selectedIcon: Icon(Icons.home, color: Color(0xFFE8752A)),
-            label: 'Home',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.egg_outlined),
-            selectedIcon: Icon(Icons.egg, color: Color(0xFFE8752A)),
-            label: 'Species',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.history_outlined),
-            selectedIcon: Icon(Icons.history, color: Color(0xFFE8752A)),
-            label: 'History',
-          ),
-        ],
+        onSelected: _selectTab,
       ),
     );
   }
+}
+
+/// The SmartHatch bottom navigation bar. The shell provides it for its tabs;
+/// History and Species render the same bar when they are opened as routes so
+/// Home, Species and History stay one tap away there too (issue #14).
+class _MainBottomBar extends StatelessWidget {
+  const _MainBottomBar({required this.selectedIndex, required this.onSelected});
+
+  /// The currently shown section: 0 Home, 1 Species, 2 History.
+  final int selectedIndex;
+
+  final ValueChanged<int> onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    return NavigationBar(
+      selectedIndex: selectedIndex,
+      onDestinationSelected: onSelected,
+      backgroundColor: Colors.white,
+      indicatorColor: const Color(0xFFE8752A).withValues(alpha: 0.15),
+      labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+      destinations: const [
+        NavigationDestination(
+          icon: Icon(Icons.home_outlined),
+          selectedIcon: Icon(Icons.home, color: Color(0xFFE8752A)),
+          label: 'Home',
+        ),
+        NavigationDestination(
+          icon: Icon(Icons.egg_outlined),
+          selectedIcon: Icon(Icons.egg, color: Color(0xFFE8752A)),
+          label: 'Species',
+        ),
+        NavigationDestination(
+          icon: Icon(Icons.history_outlined),
+          selectedIcon: Icon(Icons.history, color: Color(0xFFE8752A)),
+          label: 'History',
+        ),
+      ],
+    );
+  }
+}
+
+/// Marks the bottom-navigation shell so the screens inside it can tell that
+/// they are a tab rather than a screen that was pushed onto the navigator.
+/// Tabs are switched with the bottom bar and must not offer a back arrow;
+/// the same screen opened from somewhere else must show one so the user can
+/// return to where they came from (issue #12).
+class _TabShell extends InheritedWidget {
+  const _TabShell({required super.child});
+
+  /// True when [context] belongs to a screen rendered inside the shell.
+  static bool isTab(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<_TabShell>() != null;
+
+  @override
+  bool updateShouldNotify(_TabShell oldWidget) => false;
 }
 
 // ══════════════════════════════════════════════
@@ -705,8 +781,21 @@ class _SpeciesScreenState extends State<SpeciesScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Egg Species'),
-        automaticallyImplyLeading: false,
+        // Same as the History tab: no arrow inside the bottom-navigation
+        // shell, one when the screen was pushed (e.g. "Top Species" card).
+        automaticallyImplyLeading: !_TabShell.isTab(context),
       ),
+      // Same as History: a pushed Species screen gets the bottom bar so the
+      // main sections remain reachable (issue #14).
+      bottomNavigationBar: _TabShell.isTab(context)
+          ? null
+          : _MainBottomBar(
+              selectedIndex: 1,
+              onSelected: (index) {
+                if (index == 1) return; // already showing Species
+                MainNavigation.openTab(context, index);
+              },
+            ),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -2299,8 +2388,24 @@ class _HistoryScreenState extends State<HistoryScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Incubation History'),
-        automaticallyImplyLeading: false,
+        // As a bottom-navigation tab this screen is switched with the bottom
+        // bar (nothing to pop); opened from somewhere else - the overview
+        // cards on Home or the "View History" button - it needs the arrow so
+        // the user can go back to where they came from (issue #12).
+        automaticallyImplyLeading: !_TabShell.isTab(context),
       ),
+      // Opened as a route the shell's bottom bar is not around, so render it
+      // here too: Home, Species and History stay one tap away (issue #14).
+      // As a tab the shell already provides it.
+      bottomNavigationBar: _TabShell.isTab(context)
+          ? null
+          : _MainBottomBar(
+              selectedIndex: 2,
+              onSelected: (index) {
+                if (index == 2) return; // already showing History
+                MainNavigation.openTab(context, index);
+              },
+            ),
       body: SafeArea(
         child: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -2438,18 +2543,177 @@ class _HistoryScreenState extends State<HistoryScreen> {
 // BATCH DETAILS SCREEN
 // ══════════════════════════════════════════════
 
-class BatchDetailsScreen extends StatelessWidget {
+class BatchDetailsScreen extends StatefulWidget {
   final BatchData batch;
   const BatchDetailsScreen({super.key, required this.batch});
 
   @override
+  State<BatchDetailsScreen> createState() => _BatchDetailsScreenState();
+}
+
+class _BatchDetailsScreenState extends State<BatchDetailsScreen> {
+  Map<String, dynamic>? _reading;
+  SpeciesData? _preset;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadLiveData();
+  }
+
+  /// Loads the latest sensor reading and the preset for this batch's species.
+  /// Every step degrades gracefully so the status cards always render.
+  Future<void> _loadLiveData() async {
+    Map<String, dynamic>? reading;
+    SpeciesData? preset;
+
+    try {
+      reading = await SupabaseService().getLatestReading();
+    } catch (_) {
+      reading = null;
+    }
+
+    try {
+      final presets = await SupabaseService().getPresets();
+      for (final p in presets) {
+        if (p['egg_type'] == widget.batch.species) {
+          preset = SpeciesData.fromPreset(p);
+          break;
+        }
+      }
+    } catch (_) {
+      preset = null;
+    }
+
+    if (mounted) {
+      setState(() {
+        _reading = reading;
+        _preset = preset;
+      });
+    }
+  }
+
+  SpeciesData get _species =>
+      _preset ??
+      defaultSpeciesList.firstWhere(
+        (s) => s.name == widget.batch.species,
+        orElse: () => defaultSpeciesList[0],
+      );
+
+  bool get _isCompleted => widget.batch.status.toLowerCase() == 'completed';
+
+  double? _liveValue(List<String> keys) {
+    final reading = _reading;
+    if (reading == null) return null;
+    for (final key in keys) {
+      final value = reading[key];
+      if (value is num) return value.toDouble();
+      if (value is String) {
+        final parsed = double.tryParse(value);
+        if (parsed != null) return parsed;
+      }
+    }
+    return null;
+  }
+
+  /// Target temperature for this species (preset when available).
+  double get _targetTemperature =>
+      double.tryParse(
+          _species.temperature.replaceAll(RegExp(r'[^0-9.]'), '')) ??
+      double.tryParse(
+          widget.batch.temperature.replaceAll(RegExp(r'[^0-9.]'), '')) ??
+      37.5;
+
+  /// Set point saved on the session itself.
+  double get _setTemperature =>
+      double.tryParse(
+          widget.batch.temperature.replaceAll(RegExp(r'[^0-9.]'), '')) ??
+      _targetTemperature;
+
+  double? get _liveTemperature => _liveValue(['temperature', 'temp']);
+
+  double? get _liveHumidity =>
+      _liveValue(['humidity', 'relative_humidity']);
+
+  double get _temperature => _liveTemperature ?? _setTemperature;
+
+  double get _humidity =>
+      _liveHumidity ?? _species.targetHumidity.toDouble();
+
+  int get _totalDays => _species.incubationDays;
+
+  int get _currentDay {
+    final total = _totalDays;
+    final start = DateTime.tryParse(widget.batch.startDate);
+    int day;
+    if (start == null) {
+      day = _isCompleted ? total : 0;
+    } else if (_isCompleted) {
+      final end = DateTime.tryParse(widget.batch.endDate);
+      day = end == null ? total : end.difference(start).inDays;
+    } else {
+      day = DateTime.now().difference(start).inDays;
+    }
+    if (day < 0) day = 0;
+    if (day > total) day = total;
+    return day;
+  }
+
+  double get _progress =>
+      _totalDays > 0 ? (_currentDay / _totalDays).clamp(0.0, 1.0) : 0.0;
+
+  @override
   Widget build(BuildContext context) {
+    final batch = widget.batch;
     final hatchRate =
         batch.eggsTotal > 0 ? batch.eggsHatched / batch.eggsTotal : 0.0;
-    final speciesData = defaultSpeciesList.firstWhere(
-      (s) => s.name == batch.species,
-      orElse: () => defaultSpeciesList[0],
-    );
+    final speciesData = _species;
+    final currentDay = _currentDay;
+    final totalDays = _totalDays;
+    final progress = _progress;
+    final temperature = _temperature;
+    final humidity = _humidity;
+    final targetTemperature = _targetTemperature;
+    final targetHumidity = speciesData.targetHumidity;
+    final liveTemperature = _liveTemperature;
+    final liveHumidity = _liveHumidity;
+    final hasLiveData = liveTemperature != null || liveHumidity != null;
+
+    final effectiveTemperature = liveTemperature ?? targetTemperature;
+    final effectiveHumidity = liveHumidity ?? targetHumidity.toDouble();
+    final withinRange =
+        (effectiveTemperature - targetTemperature).abs() <= 0.5 &&
+            (effectiveHumidity - targetHumidity).abs() <= 5.0;
+
+    final String statusText;
+    final String statusHint;
+    final Color statusColor;
+    final IconData statusIcon;
+    if (_isCompleted) {
+      statusText = 'Completed';
+      statusHint = 'Batch finished';
+      statusColor = const Color(0xFF4CAF50);
+      statusIcon = Icons.check_circle;
+    } else if (!hasLiveData) {
+      statusText = 'Standby';
+      statusHint = 'Waiting for sensor data';
+      statusColor = Colors.grey.shade500;
+      statusIcon = Icons.pause_circle_outline;
+    } else if (withinRange) {
+      statusText = 'Normal';
+      statusHint = 'Within target range';
+      statusColor = const Color(0xFF4CAF50);
+      statusIcon = Icons.check_circle;
+    } else {
+      statusText = 'Needs attention';
+      statusHint = 'Outside target range';
+      statusColor = const Color(0xFFF5A623);
+      statusIcon = Icons.warning_amber_rounded;
+    }
+
+    final temperatureHint = liveTemperature != null
+        ? 'Target ${targetTemperature.toStringAsFixed(1)}\u00B0C'
+        : 'Set point';
 
     return Scaffold(
       appBar: AppBar(title: Text(batch.batchNumber)),
@@ -2523,7 +2787,65 @@ class BatchDetailsScreen extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
+
+            // ── TEMPERATURE / HUMIDITY / PROGRESS / STATUS CARDS ──
+            const _SectionLabel(text: 'BATCH STATUS'),
+            const SizedBox(height: 10),
+            IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(
+                    child: _BatchStatCard(
+                      icon: Icons.thermostat,
+                      color: const Color(0xFFE8752A),
+                      label: 'Temperature',
+                      value: '${temperature.toStringAsFixed(1)}\u00B0C',
+                      subtitle: temperatureHint,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _BatchStatCard(
+                      icon: Icons.water_drop_outlined,
+                      color: const Color(0xFF2196F3),
+                      label: 'Humidity',
+                      value: '${humidity.round()}%',
+                      subtitle: 'Target $targetHumidity%',
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(
+                    child: _BatchStatCard(
+                      icon: Icons.timelapse_outlined,
+                      color: const Color(0xFF9C27B0),
+                      label: 'Incubation Progress',
+                      value: '${(progress * 100).round()}%',
+                      subtitle: 'Day $currentDay of $totalDays',
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _BatchStatCard(
+                      icon: statusIcon,
+                      color: statusColor,
+                      label: 'Incubator Status',
+                      value: statusText,
+                      subtitle: statusHint,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
             ClipRRect(
               borderRadius: BorderRadius.circular(6),
               child: LinearProgressIndicator(
@@ -2563,8 +2885,41 @@ class BatchDetailsScreen extends StatelessWidget {
 // PROFILE SCREEN
 // ══════════════════════════════════════════════
 
-class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
+class ProfileScreen extends StatefulWidget {
+  /// Optional service override, used by widget tests.
+  const ProfileScreen({super.key, this.service});
+
+  final SupabaseService? service;
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  static const String _fallbackName = 'SmartHatch User';
+
+  late final SupabaseService _service;
+  String _displayName = _fallbackName;
+
+  @override
+  void initState() {
+    super.initState();
+    _service = widget.service ?? SupabaseService();
+    _displayName = _service.getDisplayName() ?? _fallbackName;
+  }
+
+  Future<void> _openEditProfile() async {
+    final updated = await Navigator.push<String>(
+      context,
+      MaterialPageRoute<String>(
+        builder: (_) => EditProfileScreen(service: _service),
+      ),
+    );
+    if (!mounted) return;
+    setState(() {
+      _displayName = updated ?? _service.getDisplayName() ?? _fallbackName;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -2585,10 +2940,11 @@ class ProfileScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 12),
-              const Center(
+              Center(
                 child: Text(
-                  'SmartHatch User',
-                  style: TextStyle(
+                  _displayName,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                     color: Colors.black87,
@@ -2601,14 +2957,7 @@ class ProfileScreen extends StatelessWidget {
               _ProfileOption(
                 icon: Icons.edit_outlined,
                 title: 'Edit Profile',
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const EditProfileScreen(),
-                    ),
-                  );
-                },
+                onTap: _openEditProfile,
               ),
               _ProfileOption(
                 icon: Icons.person_outline,
@@ -2733,8 +3082,62 @@ class ProfileScreen extends StatelessWidget {
 // EDIT PROFILE SCREEN
 // ══════════════════════════════════════════════
 
-class EditProfileScreen extends StatelessWidget {
-  const EditProfileScreen({super.key});
+class EditProfileScreen extends StatefulWidget {
+  /// Optional service override, used by widget tests.
+  const EditProfileScreen({super.key, this.service});
+
+  final SupabaseService? service;
+
+  @override
+  State<EditProfileScreen> createState() => _EditProfileScreenState();
+}
+
+class _EditProfileScreenState extends State<EditProfileScreen> {
+  late final SupabaseService _service;
+  late final TextEditingController _nameController;
+  bool _saving = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _service = widget.service ?? SupabaseService();
+    _nameController = TextEditingController(
+      text: _service.getDisplayName() ?? '',
+    );
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _saveChanges() async {
+    final name = _nameController.text.trim();
+    if (name.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Display name cannot be empty.')),
+      );
+      return;
+    }
+
+    setState(() => _saving = true);
+    try {
+      final saved = await _service.updateDisplayName(name);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Profile updated!')),
+      );
+      Navigator.pop(context, saved);
+    } catch (error) {
+      if (!mounted) return;
+      // Surface the failure instead of pretending the profile was saved.
+      setState(() => _saving = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Could not save profile: $error')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -2769,10 +3172,13 @@ class EditProfileScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             TextField(
+              controller: _nameController,
+              maxLength: 40,
               decoration: InputDecoration(
                 labelText: 'Display Name',
                 hintText: 'SmartHatch User',
                 prefixIcon: const Icon(Icons.person_outlined),
+                counterText: '',
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -2785,24 +3191,30 @@ class EditProfileScreen extends StatelessWidget {
               width: double.infinity,
               height: 54,
               child: ElevatedButton(
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Profile updated!')),
-                  );
-                  Navigator.pop(context);
-                },
+                onPressed: _saving ? null : _saveChanges,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFFE8752A),
                   foregroundColor: Colors.white,
+                  disabledBackgroundColor: const Color(0xFFE8752A),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),
                   ),
                   elevation: 2,
                 ),
-                child: const Text(
-                  'Save Changes',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                ),
+                child: _saving
+                    ? const SizedBox(
+                        width: 22,
+                        height: 22,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2.4,
+                          color: Colors.white,
+                        ),
+                      )
+                    : const Text(
+                        'Save Changes',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w600),
+                      ),
               ),
             ),
           ],
@@ -4188,6 +4600,84 @@ class _InfoRow extends StatelessWidget {
               fontWeight: FontWeight.w600,
               color: Colors.black87,
             ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _BatchStatCard extends StatelessWidget {
+  final IconData icon;
+  final Color color;
+  final String label;
+  final String value;
+  final String subtitle;
+
+  const _BatchStatCard({
+    required this.icon,
+    required this.color,
+    required this.label,
+    required this.value,
+    required this.subtitle,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: Colors.grey.shade100),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 30,
+                height: 30,
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(icon, size: 17, color: color),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.grey.shade600,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            subtitle,
+            style: TextStyle(fontSize: 11.5, color: Colors.grey.shade500),
           ),
         ],
       ),
