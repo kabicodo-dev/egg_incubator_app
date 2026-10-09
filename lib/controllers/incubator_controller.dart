@@ -87,10 +87,21 @@ class IncubationProfile {
 /// This controller manages state, timer, stage calculation, relay evaluation,
 /// sensor readings, and alerts.
 class IncubatorController extends ChangeNotifier {
+  /// Incubation and candling constants
+  static const int defaultStartDay = 7; // Hatching starts after Day 7 candling (fertile eggs)
+  static const int candlingDays = 7;
+  static const int minEggCount = 6;
+  static const int maxEggCount = 12;
+
   // Current active incubation profile (defaults to Chicken)
   IncubationProfile profile;
 
-  // Incubation batch timer state
+  // Batch starting configuration
+  int startDay = defaultStartDay;
+  int eggCount = minEggCount; // Starts from 6-12 eggs (0 is strictly not allowed)
+  bool isFertileCandled = true; // Indicates eggs have passed Day 7 candling
+
+  // Incubation batch timer state (tracks elapsed time in the incubator)
   int elapsedSeconds = 0;
   DateTime? batchStartTime;
   Timer? _tickerTimer;
@@ -118,20 +129,71 @@ class IncubatorController extends ChangeNotifier {
   static const double brooderHumidityLow = 45.0;
   static const double brooderHumidityHigh = 60.0;
 
-  IncubatorController({this.profile = IncubationProfile.chicken}) {
-    startNewBatch();
+  IncubatorController({
+    this.profile = IncubationProfile.chicken,
+    int initialEggs = minEggCount,
+    int initialDay = defaultStartDay,
+  }) {
+    startNewBatch(profile, initialEggs, initialDay);
     _startTicker();
+  }
+
+  // ============================================================
+  // EGG COUNT & VALIDATION LOGIC
+  // ============================================================
+
+  /// Validates egg count according to SmartHatch specifications:
+  /// - The system shall NOT allow 0 eggs.
+  /// - Valid egg range is between 6 and 12 eggs.
+  static String? validateEggCount(int? count) {
+    if (count == null || count == 0) {
+      return 'Egg count cannot be 0. The system does not allow 0 eggs.';
+    }
+    if (count < minEggCount) {
+      return 'Minimum batch size is $minEggCount fertile eggs. Received: $count';
+    }
+    if (count > maxEggCount) {
+      return 'Maximum batch capacity is $maxEggCount fertile eggs. Received: $count';
+    }
+    return null;
+  }
+
+  /// Sets the number of fertile eggs in the incubator batch (strictly 6 to 12 eggs)
+  void setEggCount(int count) {
+    final validationError = validateEggCount(count);
+    if (validationError != null) {
+      throw ArgumentError(validationError);
+    }
+    eggCount = count;
+    notifyListeners();
   }
 
   // ============================================================
   // BATCH & TIMER LOGIC
   // ============================================================
 
-  /// Starts a new batch from Day 1 (equivalent to Arduino's NEW_BATCH / RESET)
-  void startNewBatch([IncubationProfile? newProfile]) {
+  /// Starts a new batch starting after Day 7 candling with fertile eggs (6 to 12 eggs).
+  /// Strictly prevents starting with 0 eggs.
+  void startNewBatch([
+    IncubationProfile? newProfile,
+    int? eggs,
+    int? initialDay,
+  ]) {
+    final targetEggs = eggs ?? eggCount;
+    final targetStartDay = initialDay ?? startDay;
+
+    // Strict validation: system shall not allow 0 eggs
+    final validationError = validateEggCount(targetEggs);
+    if (validationError != null) {
+      throw ArgumentError(validationError);
+    }
+
     if (newProfile != null) {
       profile = newProfile;
     }
+    eggCount = targetEggs;
+    startDay = targetStartDay;
+    isFertileCandled = true;
     elapsedSeconds = 0;
     batchStartTime = DateTime.now();
     lastEggTurnTime = DateTime.now();
@@ -148,16 +210,18 @@ class IncubatorController extends ChangeNotifier {
     _tickerTimer = Timer.periodic(const Duration(seconds: 1), (_) {
       if (batchStartTime != null) {
         final totalElapsed = DateTime.now().difference(batchStartTime!).inSeconds;
-        final maxSeconds = profile.hatchDay * 86400;
+        final totalRemainingDays = profile.hatchDay - startDay;
+        final maxSeconds = totalRemainingDays > 0 ? totalRemainingDays * 86400 : 0;
         elapsedSeconds = totalElapsed.clamp(0, maxSeconds);
         notifyListeners();
       }
     });
   }
 
-  /// Calculates current incubation day (1-indexed, e.g. Day 1, Day 2, up to hatchDay)
+  /// Calculates current incubation day starting from Day 7 (after 7 days candling)
+  /// e.g. Day 7, Day 8, up to hatchDay.
   int get currentIncubationDay {
-    final day = (elapsedSeconds ~/ 86400) + 1;
+    final day = startDay + (elapsedSeconds ~/ 86400);
     return day > profile.hatchDay ? profile.hatchDay : day;
   }
 
@@ -165,7 +229,9 @@ class IncubatorController extends ChangeNotifier {
   bool get isLockdown => currentIncubationDay >= profile.lockdownStartDay;
 
   /// Determines if incubation has reached final hatch day
-  bool get isBatchComplete => elapsedSeconds >= (profile.hatchDay * 86400);
+  bool get isBatchComplete =>
+      currentIncubationDay >= profile.hatchDay &&
+      elapsedSeconds >= ((profile.hatchDay - startDay) * 86400);
 
   /// Returns textual stage name
   String get stageName {
@@ -182,11 +248,13 @@ class IncubatorController extends ChangeNotifier {
   double get humidityHighLimit =>
       isLockdown ? profile.lockdownHumidityHigh : profile.activeHumidityHigh;
 
-  /// Returns remaining time until lockdown or hatch
+  /// Returns remaining time until lockdown or hatch from the current day
   Duration get remainingTime {
-    final totalDurationSeconds = profile.hatchDay * 86400;
+    final totalDurationSeconds = (profile.hatchDay - startDay) * 86400;
     final remainingSec = totalDurationSeconds - elapsedSeconds;
-    return Duration(seconds: remainingSec.clamp(0, totalDurationSeconds));
+    return Duration(
+      seconds: remainingSec.clamp(0, totalDurationSeconds > 0 ? totalDurationSeconds : 0),
+    );
   }
 
   // ============================================================
@@ -297,6 +365,10 @@ class IncubatorController extends ChangeNotifier {
       'eeprom_magic': '0x${profile.eepromMagic.toRadixString(16).toUpperCase()}',
       'hatch_day': profile.hatchDay,
       'lockdown_day': profile.lockdownStartDay,
+      'start_day': startDay,
+      'candling_days': candlingDays,
+      'egg_count': eggCount,
+      'is_fertile_verified': isFertileCandled,
       'target_temperature': profile.temperatureTarget,
       'humidity_low': humidityLowLimit,
       'humidity_high': humidityHighLimit,
