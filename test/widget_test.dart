@@ -3,15 +3,12 @@ import 'package:egg_incubator_app/main.dart';
 import 'package:egg_incubator_app/controllers/incubator_controller.dart';
 
 void main() {
-  testWidgets('SmartHatch Incubator Dashboard smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('App starts and shows landing page', (WidgetTester tester) async {
+    await tester.pumpWidget(const SmartHatchApp());
 
-    // Verify key titles and metrics are displayed
-    expect(find.text('SmartHatch Controller'), findsOneWidget);
-    expect(find.text('Species: Chicken'), findsOneWidget);
-    expect(find.text('Incubator Chamber'), findsOneWidget);
-    expect(find.text('Brooder Chamber'), findsOneWidget);
+    expect(find.text('Smarter Hatching,\nBetter Results.'), findsOneWidget);
+    expect(find.text('Next'), findsOneWidget);
+    expect(find.text('Skip'), findsOneWidget);
   });
 
   test('IncubatorController hysteresis and stage test', () {
