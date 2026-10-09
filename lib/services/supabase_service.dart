@@ -97,12 +97,42 @@ class SupabaseService {
 
   // ── Incubation Sessions ──
 
+  /// Minimum supported batch size of the SmartHatch incubator.
+  static const int minBatchSize = 6;
+
+  /// Maximum number of eggs the SmartHatch incubator can hold.
+  static const int maxCapacity = 12;
+
+  /// Egg quantity rule shared by the setup screen and [createSession].
+  ///
+  /// Returns a farmer-friendly message when [quantity] cannot be used to
+  /// start an incubation, or `null` when it is valid.
+  ///
+  /// SmartHatch holds 6 to 12 eggs, so every amount below [minBatchSize]
+  /// (zero included) or above [maxCapacity] is rejected.
+  static String? eggQuantityError(int quantity) {
+    if (quantity < minBatchSize) {
+      return 'Please choose at least $minBatchSize eggs. '
+          'SmartHatch incubates $minBatchSize to $maxCapacity eggs at a time.';
+    }
+    if (quantity > maxCapacity) {
+      return 'Please choose no more than $maxCapacity eggs. '
+          'SmartHatch holds $minBatchSize to $maxCapacity eggs at a time.';
+    }
+    return null;
+  }
+
   Future<int> createSession({
     required String eggType,
     required DateTime startDate,
     required int eggQuantity,
     double? temperature,
   }) async {
+    // Never store an unusable quantity (outside 6-12 eggs) in
+    // incubator_sessions.egg_quantity.
+    final quantityError = eggQuantityError(eggQuantity);
+    if (quantityError != null) throw EggQuantityException(quantityError);
+
     final response = await _client
         .from('incubator_sessions')
         .insert({
@@ -200,4 +230,16 @@ class SupabaseService {
         .maybeSingle();
     return response;
   }
+}
+
+/// Thrown when an incubation would be saved with an unusable egg quantity.
+///
+/// [message] is written for farmers, so screens can show it as-is.
+class EggQuantityException implements Exception {
+  EggQuantityException(this.message);
+
+  final String message;
+
+  @override
+  String toString() => message;
 }
