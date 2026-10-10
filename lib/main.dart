@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'services/supabase_service.dart';
 import 'controllers/incubator_controller.dart';
+import 'controllers/arduino_controller.dart';
 
 // ──────────────────────────────────────────────
 // App Entry Point
@@ -566,11 +567,23 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   List<BatchData> _batches = [];
   bool _loading = true;
+  final ArduinoController _arduino = ArduinoController.instance;
 
   @override
   void initState() {
     super.initState();
+    _arduino.addListener(_onArduinoChanged);
     _loadData();
+  }
+
+  void _onArduinoChanged() {
+    if (mounted) setState(() {});
+  }
+
+  @override
+  void dispose() {
+    _arduino.removeListener(_onArduinoChanged);
+    super.dispose();
   }
 
   Future<void> _loadData() async {
@@ -667,7 +680,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-            const SizedBox(height: 28),
+            const SizedBox(height: 24),
+
+            // Live incubator status (visible on the dashboard, no navigation needed)
+            _LiveIncubatorStatusCard(controller: _arduino),
+            const SizedBox(height: 24),
 
             const _SectionLabel(text: 'OVERVIEW'),
             const SizedBox(height: 10),
@@ -2125,10 +2142,24 @@ class ActiveIncubationScreen extends StatefulWidget {
 }
 
 class _ActiveIncubationScreenState extends State<ActiveIncubationScreen> {
-  bool _fanOn = true;
-  bool _eggTurningOn = true;
-  bool _temperatureAuto = true;
+  final ArduinoController _arduino = ArduinoController.instance;
   final AlertMode _alertMode = AlertMode.normal;
+
+  @override
+  void initState() {
+    super.initState();
+    _arduino.addListener(_onArduinoChanged);
+  }
+
+  @override
+  void dispose() {
+    _arduino.removeListener(_onArduinoChanged);
+    super.dispose();
+  }
+
+  void _onArduinoChanged() {
+    if (mounted) setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -2141,6 +2172,23 @@ class _ActiveIncubationScreenState extends State<ActiveIncubationScreen> {
     final progress = currentDay / totalDays;
     final hatchDate = startDate.add(Duration(days: totalDays));
     final isComplete = currentDay >= totalDays;
+    final targetTemp = double.tryParse(
+          species.temperature.replaceAll(RegExp(r'[^0-9.]'), ''),
+        ) ??
+        37.5;
+    final targetHumidity = species.targetHumidity.toDouble();
+    final tempStatus = _metricStatus(
+      connected: _arduino.isConnected,
+      value: _arduino.incubatorTemperature,
+      idealMin: targetTemp - 0.5,
+      idealMax: targetTemp + 0.5,
+    );
+    final humStatus = _metricStatus(
+      connected: _arduino.isConnected,
+      value: _arduino.incubatorHumidity,
+      idealMin: targetHumidity - 5,
+      idealMax: targetHumidity + 5,
+    );
 
     final statusLabel = isComplete ? 'Completed' : 'On track';
     final statusColor = isComplete
@@ -2202,6 +2250,10 @@ class _ActiveIncubationScreenState extends State<ActiveIncubationScreen> {
             ),
             const SizedBox(height: 20),
 
+            // ── ARDUINO CONNECTION ──
+            _ArduinoConnectionCard(controller: _arduino),
+            const SizedBox(height: 20),
+
             // ── INCUBATOR STATUS ──
             const _SectionLabel(text: 'INCUBATOR STATUS'),
             const SizedBox(height: 10),
@@ -2241,43 +2293,67 @@ class _ActiveIncubationScreenState extends State<ActiveIncubationScreen> {
                   _StatusIndicatorRow(
                     icon: Icons.thermostat,
                     label: 'Temperature',
-                    statusText: _temperatureAuto ? 'Normal' : 'Manual',
-                    statusColor: const Color(0xFF4CAF50),
+                    statusText: tempStatus.$1,
+                    statusColor: tempStatus.$2,
                   ),
                   const SizedBox(height: 10),
                   _StatusIndicatorRow(
                     icon: Icons.water_drop_outlined,
                     label: 'Humidity',
-                    statusText: 'Normal',
-                    statusColor: const Color(0xFF4CAF50),
+                    statusText: humStatus.$1,
+                    statusColor: humStatus.$2,
                   ),
                   const SizedBox(height: 10),
                   _StatusIndicatorRow(
                     icon: Icons.air,
                     label: 'Fan',
-                    statusText: _fanOn ? 'On' : 'Off',
-                    statusColor:
-                        _fanOn ? const Color(0xFF4CAF50) : Colors.grey.shade500,
+                    statusText: !_arduino.isConnected
+                        ? 'Offline'
+                        : (_arduino.actuatorOn('incubatorFan') ? 'On' : 'Off'),
+                    statusColor: !_arduino.isConnected
+                        ? Colors.grey.shade500
+                        : (_arduino.actuatorOn('incubatorFan')
+                            ? const Color(0xFF4CAF50)
+                            : Colors.grey.shade500),
                   ),
                   const SizedBox(height: 10),
                   _StatusIndicatorRow(
                     icon: Icons.sync,
                     label: 'Egg Turning',
-                    statusText: _eggTurningOn ? 'On' : 'Off',
-                    statusColor: _eggTurningOn
-                        ? const Color(0xFF4CAF50)
-                        : Colors.grey.shade500,
+                    statusText: _eggTurningRow,
+                    statusColor: !_arduino.isConnected
+                        ? Colors.grey.shade500
+                        : (_arduino.turningActive
+                            ? const Color(0xFF4CAF50)
+                            : Colors.grey.shade500),
                   ),
                   const SizedBox(height: 10),
                   _StatusIndicatorRow(
                     icon: Icons.wifi,
                     label: 'Connection',
-                    statusText: 'Connected',
-                    statusColor: const Color(0xFF4CAF50),
+                    statusText: _arduino.isConnected ? 'Connected' : 'Disconnected',
+                    statusColor: _arduino.isConnected
+                        ? const Color(0xFF4CAF50)
+                        : Colors.grey.shade500,
                   ),
+                  if (_arduino.isConnected && _arduino.isStale) ...[
+                    const SizedBox(height: 10),
+                    _StatusIndicatorRow(
+                      icon: Icons.history,
+                      label: 'Telemetry',
+                      statusText: 'Stale — no recent data',
+                      statusColor: const Color(0xFFFF9800),
+                    ),
+                  ],
                 ],
               ),
             ),
+            const SizedBox(height: 20),
+
+            // ── BROODER STATUS (live from Arduino) ──
+            const _SectionLabel(text: 'BROODER STATUS'),
+            const SizedBox(height: 10),
+            _buildBrooderStatusCard(),
             const SizedBox(height: 20),
 
             // ── SPECIES + BATCH ──
@@ -2365,19 +2441,34 @@ class _ActiveIncubationScreenState extends State<ActiveIncubationScreen> {
             ),
             const SizedBox(height: 20),
 
-            // ── TEMPERATURE GAUGE ──
-            TemperatureGauge(
-              currentTemp: double.tryParse(
-                    species.temperature.replaceAll(RegExp(r'[^0-9.]'), ''),
-                  ) ??
-                  37.5,
-            ),
+            // ── TEMPERATURE GAUGE (live Arduino data only) ──
+            if (_arduino.incubatorTemperature != null)
+              TemperatureGauge(
+                currentTemp: _arduino.incubatorTemperature!,
+                idealMin: targetTemp - 0.5,
+                idealMax: targetTemp + 0.5,
+              )
+            else
+              const _ArduinoPlaceholderCard(
+                icon: Icons.thermostat,
+                title: 'Temperature',
+                message: 'Waiting for live data from the Arduino…',
+              ),
             const SizedBox(height: 20),
 
-            // ── HUMIDITY GAUGE ──
-            const HumidityGauge(
-              currentHumidity: 55.0,
-            ),
+            // ── HUMIDITY GAUGE (live Arduino data only) ──
+            if (_arduino.incubatorHumidity != null)
+              HumidityGauge(
+                currentHumidity: _arduino.incubatorHumidity!,
+                idealMin: targetHumidity - 5,
+                idealMax: targetHumidity + 5,
+              )
+            else
+              const _ArduinoPlaceholderCard(
+                icon: Icons.water_drop,
+                title: 'Humidity',
+                message: 'Waiting for live data from the Arduino…',
+              ),
             const SizedBox(height: 16),
 
             // ── EGGS ──
@@ -2461,32 +2552,73 @@ class _ActiveIncubationScreenState extends State<ActiveIncubationScreen> {
             ),
             const SizedBox(height: 20),
 
-            // ── INCUBATION CONTROLS ──
+            // ── INCUBATION CONTROLS (live Arduino actuators) ──
             const _SectionLabel(text: 'INCUBATION CONTROLS'),
             const SizedBox(height: 10),
-            _IncubationControlTile(
+            _actuatorTile(
+              actuator: 'incubatorBulb',
+              icon: Icons.lightbulb_outline,
+              label: 'Incubator Bulb',
+              onSubtitle: 'Heating ON',
+              offSubtitle: 'Heating OFF',
+            ),
+            const SizedBox(height: 10),
+            _actuatorTile(
+              actuator: 'incubatorFan',
               icon: Icons.air,
-              label: 'Fan',
-              subtitle: _fanOn ? 'Circulating air' : 'Off',
-              isOn: _fanOn,
-              onToggle: () => setState(() => _fanOn = !_fanOn),
+              label: 'Circulation Fan',
+              onSubtitle: 'Circulating air',
+              offSubtitle: 'Off',
             ),
             const SizedBox(height: 10),
-            _IncubationControlTile(
-              icon: Icons.sync,
-              label: 'Egg Turning',
-              subtitle: _eggTurningOn ? 'Automatic' : 'Manual',
-              isOn: _eggTurningOn,
-              onToggle: () => setState(() => _eggTurningOn = !_eggTurningOn),
+            _actuatorTile(
+              actuator: 'exhaustFan',
+              icon: Icons.mode_fan_off,
+              label: 'Exhaust / Intake Fan',
+              onSubtitle: 'Venting',
+              offSubtitle: 'Closed',
             ),
             const SizedBox(height: 10),
-            _IncubationControlTile(
-              icon: Icons.thermostat,
-              label: 'Temperature',
-              subtitle: _temperatureAuto ? 'Automatic' : 'Manual',
-              isOn: _temperatureAuto,
-              onToggle: () =>
-                  setState(() => _temperatureAuto = !_temperatureAuto),
+            _actuatorTile(
+              actuator: 'incubatorHumidifier',
+              icon: Icons.water_drop_outlined,
+              label: 'Incubator Humidifier',
+              onSubtitle: 'Humidifying',
+              offSubtitle: 'Off',
+            ),
+            const SizedBox(height: 10),
+            _actuatorTile(
+              actuator: 'brooderBulb',
+              icon: Icons.lightbulb_outline,
+              label: 'Brooder Bulb',
+              onSubtitle: 'Heating ON',
+              offSubtitle: 'Heating OFF',
+            ),
+            const SizedBox(height: 10),
+            _actuatorTile(
+              actuator: 'brooderHumidifier',
+              icon: Icons.cloud_outlined,
+              label: 'Brooder Humidifier',
+              onSubtitle: 'Humidifying',
+              offSubtitle: 'Off',
+            ),
+            const SizedBox(height: 10),
+            Opacity(
+              opacity: _arduino.isConnected ? 1.0 : 0.5,
+              child: _IncubationControlTile(
+                icon: Icons.sync,
+                label: 'Egg Turning',
+                subtitle: _eggTurningDetail(_arduino),
+                isOn: _arduino.turningActive,
+                onToggle: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content:
+                          Text('Egg turning runs automatically every 4 hours.'),
+                    ),
+                  );
+                },
+              ),
             ),
             const SizedBox(height: 10),
 
@@ -2495,6 +2627,33 @@ class _ActiveIncubationScreenState extends State<ActiveIncubationScreen> {
             const SizedBox(height: 10),
             _buildAlertCard(),
             const SizedBox(height: 10),
+
+            SizedBox(
+              width: double.infinity,
+              height: 54,
+              child: OutlinedButton.icon(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const IncubatorDashboardPage(),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.developer_board),
+                label: const Text(
+                  'Open Hardware Console',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                ),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: const Color(0xFF3F51B5),
+                  side: const BorderSide(color: Color(0xFF3F51B5)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                ),
+              ),
+            ),
 
             const SizedBox(height: 24),
             SizedBox(
@@ -2602,6 +2761,144 @@ class _ActiveIncubationScreenState extends State<ActiveIncubationScreen> {
       'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
     ];
     return months[month];
+  }
+
+  Widget _buildBrooderStatusCard() {
+    final connected = _arduino.isConnected;
+    final tStatus = _metricStatus(
+      connected: connected,
+      value: _arduino.brooderTemperature,
+      idealMin: 30.0,
+      idealMax: 32.0,
+    );
+    final hStatus = _metricStatus(
+      connected: connected,
+      value: _arduino.brooderHumidity,
+      idealMin: 45.0,
+      idealMax: 60.0,
+    );
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: const Color(0xFF3F51B5).withValues(alpha: 0.06),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: const Color(0xFF3F51B5).withValues(alpha: 0.18)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Row(
+            children: [
+              Icon(Icons.nest_cam_wired_stand, color: Color(0xFF3F51B5), size: 22),
+              SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  'Brooder is monitored live',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF3F51B5),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          _StatusIndicatorRow(
+            icon: Icons.thermostat_outlined,
+            label: 'Brooder Temperature'
+                '${_arduino.brooderTemperature != null ? ' (${_arduino.brooderTemperature!.toStringAsFixed(1)} °C)' : ''}',
+            statusText: tStatus.$1,
+            statusColor: tStatus.$2,
+          ),
+          const SizedBox(height: 10),
+          _StatusIndicatorRow(
+            icon: Icons.water_drop_outlined,
+            label: 'Brooder Humidity'
+                '${_arduino.brooderHumidity != null ? ' (${_arduino.brooderHumidity!.toStringAsFixed(0)} %)' : ''}',
+            statusText: hStatus.$1,
+            statusColor: hStatus.$2,
+          ),
+        ],
+      ),
+    );
+  }
+
+  (String, Color) _metricStatus({
+    required bool connected,
+    required double? value,
+    required double idealMin,
+    required double idealMax,
+  }) {
+    if (!connected) return ('Offline', Colors.grey.shade500);
+    if (value == null) return ('Sensor error', const Color(0xFFFF9800));
+    if (value >= idealMin && value <= idealMax) {
+      return ('Normal', const Color(0xFF4CAF50));
+    }
+    return ('Out of range', const Color(0xFFFF9800));
+  }
+
+  Future<void> _toggleActuator(String actuator) async {
+    if (!_arduino.isConnected) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Connect the Arduino first.')),
+      );
+      return;
+    }
+    final desired = !_arduino.actuatorOn(actuator);
+    final ok = await _arduino.setActuator(actuator, desired);
+    if (!ok && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(_arduino.lastError ?? 'Command failed.')),
+      );
+    }
+  }
+
+  Widget _actuatorTile({
+    required String actuator,
+    required IconData icon,
+    required String label,
+    required String onSubtitle,
+    required String offSubtitle,
+  }) {
+    final connected = _arduino.isConnected;
+    final isOn = _arduino.actuatorOn(actuator);
+    final fallback = isOn ? onSubtitle : offSubtitle;
+    return Opacity(
+      opacity: connected ? 1.0 : 0.5,
+      child: _IncubationControlTile(
+        icon: icon,
+        label: label,
+        subtitle: _actuatorSubtitle(actuator, fallback),
+        isOn: isOn,
+        onToggle: () => _toggleActuator(actuator),
+      ),
+    );
+  }
+
+  String get _eggTurningRow {
+    if (!_arduino.isConnected) return 'Offline';
+    if (!_arduino.isLive) return 'Waiting…';
+    if (!_arduino.turningActive) return 'Disabled';
+    final done = _arduino.turnsToday ?? 0;
+    final planned = _arduino.scheduledTurnsPerDay;
+    return 'On ($done of $planned today)';
+  }
+
+  String _actuatorSubtitle(String actuator, String fallback) {
+    switch (_arduino.commandStatus(actuator)) {
+      case ActuatorCommandStatus.pending:
+        return 'Sending command…';
+      case ActuatorCommandStatus.confirmed:
+        return 'Confirmed by Arduino';
+      case ActuatorCommandStatus.rejected:
+        return 'Rejected by Arduino';
+      case ActuatorCommandStatus.failed:
+        return 'Command failed';
+      case ActuatorCommandStatus.idle:
+        return fallback;
+    }
   }
 }
 
@@ -5238,6 +5535,7 @@ class IncubatorDashboardPage extends StatefulWidget {
 
 class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
   late final IncubatorController _controller;
+  final ArduinoController _arduino = ArduinoController.instance;
 
   // Local simulated slider values to test the controller logic
   double _simulatedIncTemp = 37.2;
@@ -5249,6 +5547,7 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
   void initState() {
     super.initState();
     _controller = IncubatorController(profile: IncubationProfile.chicken);
+    _arduino.addListener(_syncFromArduino);
 
     // Initial sensor update to trigger hysteresis rules
     _controller.updateSensors(
@@ -5259,7 +5558,48 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
     );
   }
 
+  /// Mirrors live Arduino telemetry into the controller. While an Arduino is
+  /// connected the hardware owns the relays (manual commands win); otherwise
+  /// the local simulator keeps driving the controller exactly as before.
+  void _syncFromArduino() {
+    final connected = _arduino.isConnected;
+    _controller.externalControl = connected;
+    if (connected && _arduino.isLive) {
+      // Live telemetry: mirror real readings and reported relay states.
+      _controller.updateSensors(
+        incTemp: _arduino.incubatorTemperature,
+        incHumidity: _arduino.incubatorHumidity,
+        broodTemp: _arduino.brooderTemperature,
+        broodHumidity: _arduino.brooderHumidity,
+      );
+      _controller.applyActuatorStates({
+        'incubatorBulb': _arduino.actuatorOn('incubatorBulb'),
+        'incubatorHumidifier': _arduino.actuatorOn('incubatorHumidifier'),
+        'incubatorFan': _arduino.actuatorOn('incubatorFan'),
+        'exhaustFan': _arduino.actuatorOn('exhaustFan'),
+        'brooderBulb': _arduino.actuatorOn('brooderBulb'),
+        'brooderHumidifier': _arduino.actuatorOn('brooderHumidifier'),
+      });
+    } else if (connected) {
+      // Connected but no fresh frame yet: never show simulated readings as live.
+      _controller.updateSensors();
+    } else if (!connected) {
+      // Simulator owns the readings while no Arduino is attached.
+      _controller.updateSensors(
+        incTemp: _simulatedIncTemp,
+        incHumidity: _simulatedIncHumidity,
+        broodTemp: _simulatedBroodTemp,
+        broodHumidity: _simulatedBroodHumidity,
+      );
+    }
+    if (mounted) setState(() {});
+  }
+
   void _onSensorChanged() {
+    if (_arduino.isConnected) {
+      _syncFromArduino();
+      return;
+    }
     _controller.updateSensors(
       incTemp: _simulatedIncTemp,
       incHumidity: _simulatedIncHumidity,
@@ -5268,8 +5608,27 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
     );
   }
 
+  Future<void> _toggleActuator(String actuator) async {
+    if (!_arduino.isConnected) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Connect the Arduino first.')),
+      );
+      return;
+    }
+    final ok = await _arduino.setActuator(
+      actuator,
+      !_arduino.actuatorOn(actuator),
+    );
+    if (!ok && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(_arduino.lastError ?? 'Command failed.')),
+      );
+    }
+  }
+
   @override
   void dispose() {
+    _arduino.removeListener(_syncFromArduino);
     _controller.dispose();
     super.dispose();
   }
@@ -5277,7 +5636,7 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
-      listenable: _controller,
+      listenable: Listenable.merge([_controller, _arduino]),
       builder: (context, _) {
         final profile = _controller.profile;
         final currentDay = _controller.currentIncubationDay;
@@ -5325,7 +5684,11 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // 0. SPECIES QUICK SWITCHER (Chicken / Duck / Quail)
+                // 0. ARDUINO CONNECTION
+                _ArduinoConnectionCard(controller: _arduino),
+                const SizedBox(height: 12),
+
+                // SPECIES QUICK SWITCHER (Chicken / Duck / Quail)
                 _buildSpeciesQuickSelector(),
                 const SizedBox(height: 12),
 
@@ -5341,8 +5704,11 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
                 _buildBrooderChamberCard(),
                 const SizedBox(height: 16),
 
-                // 4. TEST SENSOR SLIDERS (Hardware Simulator)
-                _buildSimulatorCard(),
+                // 4. TEST SENSOR SLIDERS (Hardware Simulator) / live notice
+                if (_arduino.isConnected)
+                  _buildLiveNoticeCard()
+                else
+                  _buildSimulatorCard(),
               ],
             ),
           ),
@@ -5622,27 +5988,46 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
                 isOn: _controller.incubatorBulbState,
                 activeColor: Colors.orange,
                 icon: Icons.lightbulb_outline,
+                status: _arduino.commandStatus('incubatorBulb'),
+                onTap: () => _toggleActuator('incubatorBulb'),
               ),
               _buildRelayChip(
                 name: 'Humidifier (D6)',
                 isOn: _controller.incubatorHumidifierState,
                 activeColor: Colors.blue,
                 icon: Icons.cloud_outlined,
+                status: _arduino.commandStatus('incubatorHumidifier'),
+                onTap: () => _toggleActuator('incubatorHumidifier'),
               ),
               _buildRelayChip(
                 name: 'Circulation Fan (D12)',
                 isOn: _controller.incubatorFanState,
                 activeColor: Colors.teal,
                 icon: Icons.wind_power,
+                status: _arduino.commandStatus('incubatorFan'),
+                onTap: () => _toggleActuator('incubatorFan'),
               ),
               _buildRelayChip(
-                name: 'Egg Turner: ${_controller.eggTurningStatus}',
-                isOn: !_controller.isLockdown,
+                name: 'Exhaust Fan (D9)',
+                isOn: _controller.exhaustFanState,
+                activeColor: Colors.brown,
+                icon: Icons.mode_fan_off,
+                status: _arduino.commandStatus('exhaustFan'),
+                onTap: () => _toggleActuator('exhaustFan'),
+              ),
+              _buildRelayChip(
+                name: 'Egg Turner: '
+                    '${_arduino.isConnected ? (_arduino.turningActive ? 'AUTO' : 'OFF') : _controller.eggTurningStatus}',
+                isOn: _arduino.isConnected
+                    ? _arduino.turningActive
+                    : !_controller.isLockdown,
                 activeColor: Colors.purple,
                 icon: Icons.autorenew_rounded,
               ),
             ],
           ),
+          const SizedBox(height: 10),
+          _EggTurningStatus(controller: _arduino),
         ],
       ),
     );
@@ -5718,12 +6103,16 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
                 isOn: _controller.brooderBulbState,
                 activeColor: Colors.indigo,
                 icon: Icons.lightbulb_outline,
+                status: _arduino.commandStatus('brooderBulb'),
+                onTap: () => _toggleActuator('brooderBulb'),
               ),
               _buildRelayChip(
                 name: 'Brooder Humidifier (D5)',
                 isOn: _controller.brooderHumidifierState,
                 activeColor: Colors.cyan,
                 icon: Icons.cloud_outlined,
+                status: _arduino.commandStatus('brooderHumidifier'),
+                onTap: () => _toggleActuator('brooderHumidifier'),
               ),
             ],
           ),
@@ -5889,47 +6278,98 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
     required bool isOn,
     required Color activeColor,
     required IconData icon,
+    ActuatorCommandStatus status = ActuatorCommandStatus.idle,
+    VoidCallback? onTap,
   }) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: isOn ? activeColor.withValues(alpha: 0.12) : Colors.grey.shade100,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: isOn ? activeColor.withValues(alpha: 0.3) : Colors.grey.shade300,
+    final pending = status == ActuatorCommandStatus.pending;
+    final failed = status == ActuatorCommandStatus.failed ||
+        status == ActuatorCommandStatus.rejected;
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          color: isOn ? activeColor.withValues(alpha: 0.12) : Colors.grey.shade100,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: failed
+                ? const Color(0xFFD32F2F)
+                : (isOn
+                    ? activeColor.withValues(alpha: 0.3)
+                    : Colors.grey.shade300),
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon,
+              size: 16,
+              color: isOn ? activeColor : Colors.grey.shade500,
+            ),
+            const SizedBox(width: 6),
+            Text(
+              name,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: isOn ? activeColor : Colors.grey.shade600,
+              ),
+            ),
+            const SizedBox(width: 6),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              decoration: BoxDecoration(
+                color: failed
+                    ? const Color(0xFFD32F2F)
+                    : (pending
+                        ? Colors.amber.shade700
+                        : (isOn ? activeColor : Colors.grey.shade400)),
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: Text(
+                failed ? 'ERR' : (pending ? '…' : (isOn ? 'ON' : 'OFF')),
+                style: const TextStyle(
+                  fontSize: 10,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
+    );
+  }
+
+  Widget _buildLiveNoticeCard() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: const Color(0xFF4CAF50).withValues(alpha: 0.06),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFF4CAF50).withValues(alpha: 0.25)),
+      ),
       child: Row(
-        mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            icon,
-            size: 16,
-            color: isOn ? activeColor : Colors.grey.shade500,
-          ),
-          const SizedBox(width: 6),
-          Text(
-            name,
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: isOn ? activeColor : Colors.grey.shade600,
-            ),
-          ),
-          const SizedBox(width: 6),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-            decoration: BoxDecoration(
-              color: isOn ? activeColor : Colors.grey.shade400,
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: Text(
-              isOn ? 'ON' : 'OFF',
-              style: const TextStyle(
-                fontSize: 10,
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
+          const Icon(Icons.usb, color: Color(0xFF4CAF50)),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Live Arduino Telemetry',
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  _arduino.isLive
+                      ? 'Connected to ${_arduino.portName ?? "serial port"}. Readings and relay states come from the hardware; the simulator is paused.'
+                      : 'Connected. Waiting for the first telemetry frame…',
+                  style: TextStyle(fontSize: 12, color: Colors.grey.shade700),
+                ),
+              ],
             ),
           ),
         ],
@@ -5991,6 +6431,627 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
           TextButton(
             onPressed: () => Navigator.pop(ctx),
             child: const Text('Close'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Connection panel shared by the incubation screen and hardware console.
+class _ArduinoConnectionCard extends StatefulWidget {
+  const _ArduinoConnectionCard({required this.controller});
+
+  final ArduinoController controller;
+
+  @override
+  State<_ArduinoConnectionCard> createState() => _ArduinoConnectionCardState();
+}
+
+class _ArduinoConnectionCardState extends State<_ArduinoConnectionCard> {
+  ArduinoController get _arduino => widget.controller;
+  String? _selectedPort;
+
+  @override
+  void initState() {
+    super.initState();
+    _arduino.addListener(_onChanged);
+    _arduino.refreshPorts();
+  }
+
+  @override
+  void dispose() {
+    _arduino.removeListener(_onChanged);
+    super.dispose();
+  }
+
+  void _onChanged() {
+    if (mounted) setState(() {});
+  }
+
+  Future<void> _connect() async {
+    final port = _selectedPort ??
+        (_arduino.ports.isNotEmpty ? _arduino.ports.first : null);
+    if (port == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No serial port selected.')),
+      );
+      return;
+    }
+    try {
+      await _arduino.connect(port);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Could not connect: $e')),
+        );
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final connected = _arduino.isConnected;
+    final connecting = _arduino.isConnecting;
+    final ports = _arduino.ports;
+    if (_selectedPort == null && ports.isNotEmpty) {
+      _selectedPort = ports.first;
+    }
+    final statusColor = connected
+        ? const Color(0xFF4CAF50)
+        : (connecting ? const Color(0xFFFF9800) : Colors.grey.shade500);
+    final statusText = connected
+        ? 'Connected${_arduino.portName != null ? ' • ${_arduino.portName}' : ''}'
+        : (connecting ? 'Connecting…' : 'Disconnected');
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: statusColor.withValues(alpha: 0.35), width: 1.5),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.usb, color: statusColor, size: 22),
+              const SizedBox(width: 8),
+              const Expanded(
+                child: Text(
+                  'Arduino Connection',
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: statusColor.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  statusText,
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                    color: statusColor,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          if (!connected) ...[
+            Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey.shade400),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        isExpanded: true,
+                        value: ports.contains(_selectedPort) ? _selectedPort : null,
+                        hint: const Text('Select serial port'),
+                        items: ports
+                            .map((p) => DropdownMenuItem(value: p, child: Text(p)))
+                            .toList(),
+                        onChanged: connecting
+                            ? null
+                            : (v) => setState(() => _selectedPort = v),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                IconButton(
+                  tooltip: 'Refresh ports',
+                  onPressed: connecting ? null : () => _arduino.refreshPorts(),
+                  icon: const Icon(Icons.refresh),
+                ),
+              ],
+            ),
+            if (ports.isEmpty)
+              const Padding(
+                padding: EdgeInsets.only(top: 6),
+                child: Text(
+                  'No serial ports found. Plug in the Arduino over USB.',
+                  style: TextStyle(fontSize: 12, color: Colors.black54),
+                ),
+              ),
+            const SizedBox(height: 12),
+            SizedBox(
+              width: double.infinity,
+              height: 46,
+              child: FilledButton.icon(
+                onPressed: connecting ? null : _connect,
+                icon: connecting
+                    ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(Icons.link),
+                label: Text(connecting ? 'Connecting…' : 'Connect'),
+                style: FilledButton.styleFrom(
+                  backgroundColor: const Color(0xFFE8752A),
+                ),
+              ),
+            ),
+          ] else ...[
+            SizedBox(
+              width: double.infinity,
+              height: 46,
+              child: OutlinedButton.icon(
+                onPressed: () => _arduino.disconnect(),
+                icon: const Icon(Icons.link_off),
+                label: const Text('Disconnect'),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: const Color(0xFFE8752A),
+                  side: const BorderSide(color: Color(0xFFE8752A)),
+                ),
+              ),
+            ),
+          ],
+          if (_arduino.lastError != null) ...[
+            const SizedBox(height: 10),
+            Text(
+              _arduino.lastError!,
+              style: const TextStyle(fontSize: 12, color: Color(0xFFD32F2F)),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+/// Placeholder shown where a live-reading widget would appear while offline.
+class _ArduinoPlaceholderCard extends StatelessWidget {
+  const _ArduinoPlaceholderCard({
+    required this.icon,
+    required this.title,
+    required this.message,
+  });
+
+  final IconData icon;
+  final String title;
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade100,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey.shade300),
+      ),
+      child: Column(
+        children: [
+          Icon(icon, size: 32, color: Colors.grey.shade500),
+          const SizedBox(height: 10),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w600,
+              color: Colors.grey.shade700,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            message,
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Egg turning progress helpers ──
+
+/// Formats the time until the next automatic turn (e.g. "1 h 12 m").
+String _nextTurnInText(ArduinoController controller) {
+  final reading = controller.telemetry;
+  if (reading == null) return 'soon';
+  final remaining =
+      reading.turnIntervalMinutes * 60 - (reading.secondsSinceLastTurn ?? 0);
+  if (remaining <= 0) return 'now';
+  final h = remaining ~/ 3600;
+  final m = (remaining % 3600) ~/ 60;
+  if (h > 0) return m > 0 ? '$h h $m m' : '$h h';
+  return m > 0 ? '$m m' : 'less than a minute';
+}
+
+/// Short progress text for the egg turner, e.g. "3 of 6 turns done today ·
+/// next in 1 h 12 m". Display-only: turning is always automatic.
+String _eggTurningDetail(ArduinoController controller) {
+  if (!controller.isConnected) return 'Offline — connect the Arduino';
+  if (!controller.isLive) return 'Waiting for telemetry…';
+  if (!controller.turningActive) return 'Turning disabled — no auto turns';
+  final done = controller.turnsToday ?? 0;
+  final planned = controller.scheduledTurnsPerDay;
+  return '$done of $planned turns done today · next in ${_nextTurnInText(controller)}';
+}
+
+/// Compact egg-turning status row (used on Home, the console and incubation).
+class _EggTurningStatus extends StatelessWidget {
+  const _EggTurningStatus({required this.controller});
+
+  final ArduinoController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    final String detail;
+    final Color color;
+    if (!controller.isConnected) {
+      detail = 'Egg turning: offline';
+      color = Colors.grey.shade500;
+    } else if (!controller.isLive) {
+      detail = 'Egg turning: waiting for telemetry…';
+      color = const Color(0xFFFF9800);
+    } else if (!controller.turningActive) {
+      detail = 'Egg turning: disabled — no auto turns';
+      color = Colors.grey.shade600;
+    } else {
+      detail = 'Egg turning: ${_eggTurningDetail(controller)}';
+      color = const Color(0xFF4CAF50);
+    }
+    return Row(
+      children: [
+        Icon(Icons.sync, size: 16, color: color),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            detail,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: color,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Live incubator status panel for the Home dashboard. Shows real readings
+/// only when the Arduino is connected; otherwise a clear offline message and a
+/// shortcut to the hardware console.
+class _LiveIncubatorStatusCard extends StatelessWidget {
+  const _LiveIncubatorStatusCard({required this.controller});
+
+  final ArduinoController controller;
+
+  void _openConsole(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const IncubatorDashboardPage()),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListenableBuilder(
+      listenable: controller,
+      builder: (context, _) {
+        final connected = controller.isConnected;
+        final live = controller.isLive;
+
+        if (!connected) {
+          return Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: Colors.grey.shade200),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.usb_off, size: 20, color: Colors.grey.shade500),
+                    const SizedBox(width: 8),
+                    const Expanded(
+                      child: Text(
+                        'Live Incubator Status',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  'Connect the Arduino to see live temperature, humidity and egg-turning status here on the Home tab.',
+                  style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                ),
+                const SizedBox(height: 12),
+                SizedBox(
+                  width: double.infinity,
+                  height: 40,
+                  child: OutlinedButton.icon(
+                    onPressed: () => _openConsole(context),
+                    icon: const Icon(Icons.developer_board, size: 18),
+                    label: const Text('Open Hardware Console'),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: const Color(0xFFE8752A),
+                      side: const BorderSide(color: Color(0xFFE8752A)),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+
+        if (!live) {
+          return Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(
+                color: const Color(0xFFFF9800).withValues(alpha: 0.35),
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.usb, size: 20, color: const Color(0xFFFF9800)),
+                    const SizedBox(width: 8),
+                    const Expanded(
+                      child: Text(
+                        'Live Incubator Status',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFF9800).withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: const Text(
+                        'CONNECTING',
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFFFF9800),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  'Connected to ${controller.portName ?? 'Arduino'} — waiting for the first telemetry frame…',
+                  style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                ),
+                const SizedBox(height: 12),
+                SizedBox(
+                  width: double.infinity,
+                  height: 40,
+                  child: OutlinedButton.icon(
+                    onPressed: () => _openConsole(context),
+                    icon: const Icon(Icons.developer_board, size: 18),
+                    label: const Text('Open Hardware Console'),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: const Color(0xFFE8752A),
+                      side: const BorderSide(color: Color(0xFFE8752A)),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+
+        // Live data available.
+        return Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: const Color(0xFF4CAF50).withValues(alpha: 0.35),
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  const Icon(Icons.monitor_heart_outlined,
+                      color: Color(0xFF4CAF50), size: 20),
+                  const SizedBox(width: 8),
+                  const Expanded(
+                    child: Text(
+                      'Live Incubator Status',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF4CAF50).withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: const Text(
+                      'LIVE',
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF4CAF50),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Expanded(
+                    child: _LiveMetricTile(
+                      icon: Icons.thermostat_rounded,
+                      label: 'Incubator Temp',
+                      value: controller.incubatorTemperature != null
+                          ? '${controller.incubatorTemperature!.toStringAsFixed(1)} °C'
+                          : '—',
+                      color: Colors.deepOrange,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: _LiveMetricTile(
+                      icon: Icons.water_drop_rounded,
+                      label: 'Incubator Humidity',
+                      value: controller.incubatorHumidity != null
+                          ? '${controller.incubatorHumidity!.toStringAsFixed(0)} %'
+                          : '—',
+                      color: Colors.blue,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Expanded(
+                    child: _LiveMetricTile(
+                      icon: Icons.thermostat_outlined,
+                      label: 'Brooder Temp',
+                      value: controller.brooderTemperature != null
+                          ? '${controller.brooderTemperature!.toStringAsFixed(1)} °C'
+                          : '—',
+                      color: Colors.indigo,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: _LiveMetricTile(
+                      icon: Icons.water_drop_outlined,
+                      label: 'Brooder Humidity',
+                      value: controller.brooderHumidity != null
+                          ? '${controller.brooderHumidity!.toStringAsFixed(0)} %'
+                          : '—',
+                      color: Colors.cyan,
+                    ),
+                  ),
+                ],
+              ),
+              const Divider(height: 24, color: Color(0xFFF0F0F0)),
+              _EggTurningStatus(controller: controller),
+              const SizedBox(height: 12),
+              SizedBox(
+                width: double.infinity,
+                height: 40,
+                child: OutlinedButton.icon(
+                  onPressed: () => _openConsole(context),
+                  icon: const Icon(Icons.developer_board, size: 18),
+                  label: const Text('Open Hardware Console'),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: const Color(0xFFE8752A),
+                    side: const BorderSide(color: Color(0xFFE8752A)),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _LiveMetricTile extends StatelessWidget {
+  const _LiveMetricTile({
+    required this.icon,
+    required this.label,
+    required this.value,
+    required this.color,
+  });
+
+  final IconData icon;
+  final String label;
+  final String value;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFAFAFA),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: const Color(0xFFEEEEEE)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(icon, size: 15, color: color),
+              const SizedBox(width: 5),
+              Expanded(
+                child: Text(
+                  label,
+                  style: TextStyle(fontSize: 10, color: Colors.grey.shade600),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Text(
+            value,
+            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
           ),
         ],
       ),
