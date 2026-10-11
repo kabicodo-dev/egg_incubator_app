@@ -291,4 +291,20 @@ void main() {
 
     controller.dispose();
   });
+
+  testWidgets('Incubator LCD 16x2 Screen Display renders temperature, humidity, and egg days', (WidgetTester tester) async {
+    await tester.pumpWidget(const MyApp());
+
+    // Verify LCD header
+    expect(find.text('INCUBATOR LCD 16×2 DISPLAY'), findsOneWidget);
+    expect(find.text('I2C: 0x27 (A4/A5)'), findsOneWidget);
+
+    // Verify Temperature & Humidity display
+    expect(find.textContaining('T: 37.2°C'), findsOneWidget);
+    expect(find.textContaining('H: 48%'), findsOneWidget);
+
+    // Verify Day of the eggs display (starts on Day 7)
+    expect(find.textContaining('DAY: 7/21'), findsOneWidget);
+    expect(find.textContaining('[ACTIVE]'), findsOneWidget);
+  });
 }
