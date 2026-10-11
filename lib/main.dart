@@ -6323,6 +6323,10 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
               ),
             ],
           ),
+          const SizedBox(height: 12),
+
+          // Physical 16x2 I2C LCD Screen Display (Temperature, Humidity, Days of eggs)
+          _buildIncubatorLcdScreen(),
           const SizedBox(height: 14),
 
           // Temperature & Humidity metrics
@@ -6417,6 +6421,197 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
           ),
           const SizedBox(height: 10),
           _EggTurningStatus(controller: _arduino),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildIncubatorLcdScreen() {
+    final tempStr = _controller.incubatorTemperature != null
+        ? '${_controller.incubatorTemperature!.toStringAsFixed(1)}°C'
+        : 'ERR';
+    final humStr = _controller.incubatorHumidity != null
+        ? '${_controller.incubatorHumidity!.toStringAsFixed(0)}%'
+        : 'ERR';
+    final currentDay = _controller.currentIncubationDay;
+    final stageShort = _controller.isBatchComplete
+        ? 'HATCHED'
+        : _controller.isLockdown
+            ? 'LOCKDOWN'
+            : 'ACTIVE';
+
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFF1E2630),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: const Color(0xFF334155), width: 2),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.15),
+            blurRadius: 8,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.all(12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Hardware Header label
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    width: 8,
+                    height: 8,
+                    decoration: const BoxDecoration(
+                      color: Color(0xFF00E5FF),
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Color(0xFF00E5FF),
+                          blurRadius: 4,
+                          spreadRadius: 1,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  const Text(
+                    'INCUBATOR LCD 16×2 DISPLAY',
+                    style: TextStyle(
+                      fontFamily: 'monospace',
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.0,
+                      color: Color(0xFF94A3B8),
+                    ),
+                  ),
+                ],
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF0F172A),
+                  borderRadius: BorderRadius.circular(4),
+                  border: Border.all(color: const Color(0xFF334155)),
+                ),
+                child: const Text(
+                  'I2C: 0x27 (A4/A5)',
+                  style: TextStyle(
+                    fontFamily: 'monospace',
+                    fontSize: 10,
+                    color: Color(0xFF64748B),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+
+          // Inner Glass LCD Screen
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            decoration: BoxDecoration(
+              color: const Color(0xFF003865),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: const Color(0xFF002244), width: 2.5),
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xFF00E5FF).withValues(alpha: 0.2),
+                  blurRadius: 10,
+                  spreadRadius: 1,
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Line 1: Temperature & Humidity
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'T: $tempStr',
+                      style: const TextStyle(
+                        fontFamily: 'monospace',
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1.5,
+                        color: Color(0xFFE0F7FA),
+                        shadows: [
+                          Shadow(color: Color(0xFF00E5FF), blurRadius: 6),
+                        ],
+                      ),
+                    ),
+                    Text(
+                      'H: $humStr',
+                      style: const TextStyle(
+                        fontFamily: 'monospace',
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1.5,
+                        color: Color(0xFFE0F7FA),
+                        shadows: [
+                          Shadow(color: Color(0xFF00E5FF), blurRadius: 6),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+
+                // Line 2: Incubation Days & Stage
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'DAY: $currentDay/${_controller.profile.hatchDay}',
+                      style: const TextStyle(
+                        fontFamily: 'monospace',
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1.2,
+                        color: Color(0xFFB2EBF2),
+                        shadows: [
+                          Shadow(color: Color(0xFF00E5FF), blurRadius: 4),
+                        ],
+                      ),
+                    ),
+                    Text(
+                      '[$stageShort]',
+                      style: TextStyle(
+                        fontFamily: 'monospace',
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1.0,
+                        color: _controller.isLockdown
+                            ? const Color(0xFFFFD54F)
+                            : const Color(0xFF80DEEA),
+                        shadows: const [
+                          Shadow(color: Color(0xFF00E5FF), blurRadius: 4),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 6),
+          const Row(
+            children: [
+              Icon(Icons.tv_rounded, size: 12, color: Color(0xFF64748B)),
+              SizedBox(width: 4),
+              Text(
+                'Live physical LCD display telemetry (LiquidCrystal_I2C)',
+                style: TextStyle(fontSize: 10, color: Color(0xFF64748B)),
+              ),
+            ],
+          ),
         ],
       ),
     );
