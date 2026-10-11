@@ -161,12 +161,16 @@ class IncubatorController extends ChangeNotifier {
   // Egg turning tracking
   DateTime? lastEggTurnTime;
 
-  // Post-incubation Brooder Stage controls (matching Arduino Uno Brooder Controller)
+// Post-incubation Brooder Stage controls (matching Arduino Uno Brooder Controller)
   bool brooderStarted = false;
   int brooderDay = 1;
   DateTime? brooderStartTime;
   bool brooderBuzzerAlarm = false;
   String? brooderAlarmMessage;
+
+  /// When an Arduino is connected, relay states come from hardware telemetry
+  /// (and user commands) instead of the local hysteresis evaluation.
+  bool externalControl = false;
 
   // Brooder settings constants matching the Arduino sketch
   static const double brooderHumidityLow = 45.0;
@@ -354,13 +358,45 @@ class IncubatorController extends ChangeNotifier {
     brooderTemperature = broodTemp;
     brooderHumidity = broodHumidity;
 
-    _evaluateIncubatorHeating();
-    _evaluateIncubatorHumidifier();
-    _evaluateBrooderHeating();
-    _evaluateBrooderHumidifier();
+    // While an Arduino owns the relays, keep the readings but do not override
+    // its reported actuator states with local hysteresis.
+    if (!externalControl) {
+      _evaluateIncubatorHeating();
+      _evaluateIncubatorHumidifier();
+      _evaluateBrooderHeating();
+      _evaluateBrooderHumidifier();
+    }
 
     notifyListeners();
   }
+
+  /// Applies relay states reported by the connected Arduino.
+  void applyActuatorStates(Map<String, bool> states) {
+    if (states.containsKey('incubatorBulb')) {
+      incubatorBulbState = states['incubatorBulb']!;
+    }
+    if (states.containsKey('incubatorHumidifier')) {
+      incubatorHumidifierState = states['incubatorHumidifier']!;
+    }
+    if (states.containsKey('incubatorFan')) {
+      incubatorFanState = states['incubatorFan']!;
+    }
+    if (states.containsKey('exhaustFan')) {
+      exhaustFanState = states['exhaustFan']!;
+    }
+    if (states.containsKey('brooderBulb')) {
+      brooderBulbState = states['brooderBulb']!;
+    }
+    if (states.containsKey('brooderHumidifier')) {
+      brooderHumidifierState = states['brooderHumidifier']!;
+    }
+    notifyListeners();
+  }
+
+  /// Scheduled egg turns per day from the profile's interval (0 during
+  /// lockdown, when turning is halted).
+  int get scheduledTurnsPerDay =>
+      isLockdown ? 0 : (1440 ~/ profile.eggTurnInterval.inMinutes);
 
   /// Control Incubator Bulb with hysteresis (ON <= 37.5°C, OFF >= 38.0°C)
   void _evaluateIncubatorHeating() {

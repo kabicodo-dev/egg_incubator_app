@@ -1,11 +1,21 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:egg_incubator_app/main.dart';
 import 'package:egg_incubator_app/controllers/incubator_controller.dart';
 
 void main() {
+  testWidgets('App starts and shows landing page', (WidgetTester tester) async {
+    await tester.pumpWidget(const SmartHatchApp());
+
+    expect(find.text('Smarter Hatching,\nBetter Results.'), findsOneWidget);
+    expect(find.text('Next'), findsOneWidget);
+    expect(find.text('Skip'), findsOneWidget);
+  });
+
   testWidgets('SmartHatch Incubator Dashboard smoke test with Day 7 start and 6-12 egg capacity', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+    await tester.pumpWidget(
+      const MaterialApp(home: IncubatorDashboardPage()),
+    );
 
     // Verify key titles, Day 7 post-candling start, and egg capacity card are displayed
     expect(find.text('SmartHatch Controller'), findsOneWidget);
@@ -14,6 +24,9 @@ void main() {
     expect(find.text('Incubator Chamber'), findsOneWidget);
     expect(find.text('Brooder Chamber'), findsOneWidget);
     expect(find.textContaining('Fertile Verified'), findsWidgets);
+
+    // Dispose the dashboard so the incubator controller's ticker is released.
+    await tester.pumpWidget(const SizedBox.shrink());
   });
 
   test('Egg count validation: starts at 6, enforces 6-12 range, strictly disallows 0 eggs', () {
