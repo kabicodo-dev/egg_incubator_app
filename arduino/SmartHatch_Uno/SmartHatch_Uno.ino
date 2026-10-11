@@ -18,10 +18,14 @@
  *   - "DHT sensor library" (Adafruit)
  *   - "Adafruit Unified Sensor" (dependency of the above)
  *   - Servo (bundled with the Arduino IDE)
+ *   - "LiquidCrystal I2C" (Frank de Brabander) for 16×2 LCD
+ *   - Wire (bundled with the Arduino IDE)
  *
  * See docs/arduino_integration.md for wiring, upload and test steps.
  */
 
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
 #include <DHT.h>
 #include <Servo.h>
 
@@ -47,6 +51,7 @@ static const unsigned long TURN_INTERVAL_MS = 4UL * 60UL * 60UL * 1000UL; // 4 h
 static const int SERVO_POS_A = 25;   // egg tray position A (degrees)
 static const int SERVO_POS_B = 155;  // egg tray position B (degrees)
 static const int SERVO_MOVE_MS = 900; // time allowed for the sweep
+static const unsigned long LCD_ALTERNATE_MS = 3000; // alternate LCD screens
 
 struct RelayDef {
   const char* name;
@@ -67,6 +72,7 @@ static const uint8_t RELAY_COUNT = sizeof(RELAYS) / sizeof(RELAYS[0]);
 DHT incubatorDht(PIN_DHT_INCUBATOR, DHTTYPE);
 DHT brooderDht(PIN_DHT_BROODER, DHTTYPE);
 Servo eggServo;
+LiquidCrystal_I2C lcd(0x27, 16, 2);  // I2C address 0x27, 16 cols × 2 rows
 
 // Cached sensor state (valid==false => report JSON null, never a fake value).
 bool incValid = false;
@@ -81,12 +87,19 @@ unsigned long lastTurnMillis = 0;
 unsigned long turnsToday = 0;
 unsigned long turnsDay = 0;
 
+// LCD display state
+char lcdEggType[12] = "Not Set";
+int  lcdIncubationDay = 0;
+int  lcdIncubationDuration = 0;
+bool lcdShowEggScreen = true;         // alternates between egg-info and sensor screens
+unsigned long lastLcdAlternate = 0;
+
 // Timers
 unsigned long lastTelemetryMillis = 0;
 unsigned long lastSensorMillis = 0;
 
 // Serial command buffer
-static const size_t CMD_BUFFER_SIZE = 160;
+static const size_t CMD_BUFFER_SIZE = 192;
 char cmdBuffer[CMD_BUFFER_SIZE];
 size_t cmdLength = 0;
 
@@ -125,6 +138,16 @@ void initAllHardware() {
 
   // Servo stays detached until a turn is actually performed.
   eggServo.detach();
+
+  // I2C LCD initialisation
+  lcd.init();
+  lcd.backlight();
+  lcd.setCursor(0, 0);
+  lcd.print("SmartHatch");
+  lcd.setCursor(0, 1);
+  lcd.print("Starting...");
+  delay(1500);
+  lcd.clear();
 }
 
 // ── Minimal JSON value extraction (no external JSON library) ──
@@ -249,12 +272,66 @@ void sendTelemetry() {
   Serial.println(buf);
 }
 
+// ── LCD display ──
+
+void updateLcd() {
+  lcd.clear();
+
+  if (lcdShowEggScreen) {
+    // Line 1: Egg type
+    lcd.setCursor(0, 0);
+    lcd.print("Egg: ");
+    lcd.print(lcdEggType);
+
+    // Line 2: Incubation day or prompt
+    lcd.setCursor(0, 1);
+    if (lcdIncubationDuration > 0) {
+      lcd.print("Day: ");
+      if (lcdIncubationDay < 10) lcd.print('0');
+      lcd.print(lcdIncubationDay);
+      lcd.print('/');
+      lcd.print(lcdIncubationDuration);
+    } else {
+      lcd.print("Select in app");
+    }
+  } else {
+    // Line 1: Temperature
+    lcd.setCursor(0, 0);
+    if (incValid) {
+      lcd.print("Temp: ");
+      lcd.print(incTemp, 1);
+      lcd.print((char)223);   // degree symbol
+      lcd.print('C');
+    } else {
+      lcd.print("Temp: Sensor Err");
+    }
+
+    // Line 2: Humidity
+    lcd.setCursor(0, 1);
+    if (incValid) {
+      lcd.print("Humidity: ");
+      lcd.print(incHum, 0);
+      lcd.print('%');
+    } else {
+      lcd.print("Humidity: Error");
+    }
+  }
+}
+
 // ── Incoming commands ──
 void handleCommand(const char* line) {
   char type[16];
   if (!jsonGetString(line, "type", type, sizeof(type))) {
     return; // no type -> ignore malformed input, never actuate
   }
+
+  // ── LCD update command ──
+  // {"type":"lcdUpdate","eggType":"Chicken","day":5,"duration":21}
+  if (strcmp(type, "lcdUpdate") == 0) {
+    handleLcdUpdate(line);
+    return;
+  }
+
   if (strcmp(type, "command") != 0) {
     return; // unknown message types are ignored safely
   }
@@ -287,6 +364,26 @@ void handleCommand(const char* line) {
   }
 
   sendAck(id, true, actuator, state, "");
+}
+
+/// Handle an lcdUpdate message from the Flutter app.
+void handleLcdUpdate(const char* line) {
+  jsonGetString(line, "eggType", lcdEggType, sizeof(lcdEggType));
+
+  // Parse day and duration integers from the JSON value pointers.
+  const char* dayVal = jsonFindValue(line, "day");
+  if (dayVal != nullptr) lcdIncubationDay = atoi(dayVal);
+
+  const char* durVal = jsonFindValue(line, "duration");
+  if (durVal != nullptr) lcdIncubationDuration = atoi(durVal);
+
+  // Show the egg screen immediately after receiving an update.
+  lcdShowEggScreen = true;
+  lastLcdAlternate = millis();
+  updateLcd();
+
+  // Send acknowledgement back to the app.
+  Serial.println("{\"type\":\"lcdAck\",\"success\":true}");
 }
 
 void pollSerial() {
@@ -366,6 +463,13 @@ void loop() {
   if (now - lastTelemetryMillis >= TELEMETRY_INTERVAL_MS) {
     lastTelemetryMillis = now;
     sendTelemetry();
+  }
+
+  // Alternate LCD between egg-info and sensor screens every 3 s
+  if (now - lastLcdAlternate >= LCD_ALTERNATE_MS) {
+    lastLcdAlternate = now;
+    lcdShowEggScreen = !lcdShowEggScreen;
+    updateLcd();
   }
 
   checkTurningSchedule();

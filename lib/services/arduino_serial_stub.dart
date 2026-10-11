@@ -57,6 +57,11 @@ class UnsupportedArduinoSerialService implements ArduinoSerialService {
   }
 
   @override
+  Future<void> sendLcdUpdate(LcdUpdateCommand lcdCommand) async {
+    throw const ArduinoCommandException(_message);
+  }
+
+  @override
   Future<void> dispose() async {
     await _connectionController.close();
   }
