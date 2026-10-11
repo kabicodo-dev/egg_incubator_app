@@ -192,4 +192,90 @@ void main() {
 
     controller.dispose();
   });
+
+  test('Post-Incubation Brooder Controller species schedule, safety cutoff, and hysteresis', () {
+    final controller = IncubatorController(profile: IncubationProfile.chicken);
+
+    // Initial state: brooder stage not started
+    expect(controller.brooderStarted, false);
+    expect(controller.brooderBulbState, false);
+    expect(controller.brooderBuzzerAlarm, false);
+
+    // Sensor update while brooder is inactive keeps bulb OFF
+    controller.updateSensors(broodTemp: 28.0, broodHumidity: 50.0);
+    expect(controller.brooderBulbState, false);
+
+    // Activate brooding (equivalent to pressing START_BUTTON A0)
+    controller.startBrooding();
+    expect(controller.brooderStarted, true);
+    expect(controller.brooderDay, 1);
+
+    // Chicken Day 1: Target is 32.0 - 35.0 °C
+    expect(controller.brooderTargetLow, 32.0);
+    expect(controller.brooderTargetHigh, 35.0);
+
+    // Temp < 32.0 °C (e.g. 31.0 °C) -> Bulb turns ON
+    controller.updateSensors(broodTemp: 31.0, broodHumidity: 50.0);
+    expect(controller.brooderBulbState, true);
+    expect(controller.brooderBuzzerAlarm, false);
+
+    // Temp >= 35.0 °C (e.g. 35.2 °C) -> Bulb turns OFF
+    controller.updateSensors(broodTemp: 35.2, broodHumidity: 50.0);
+    expect(controller.brooderBulbState, false);
+    expect(controller.brooderBuzzerAlarm, false);
+
+    // Advance to Chicken Week 2 (Day 8): Target is 29.0 - 32.0 °C
+    controller.setBrooderDay(8);
+    expect(controller.brooderTargetLow, 29.0);
+    expect(controller.brooderTargetHigh, 32.0);
+
+    // Advance to Chicken Week 3 (Day 15): Target is 27.0 - 29.0 °C
+    controller.setBrooderDay(15);
+    expect(controller.brooderTargetLow, 27.0);
+    expect(controller.brooderTargetHigh, 29.0);
+
+    // Advance to Chicken Week 4 (Day 22): Target is 24.0 - 27.0 °C
+    controller.setBrooderDay(22);
+    expect(controller.brooderTargetLow, 24.0);
+    expect(controller.brooderTargetHigh, 27.0);
+
+    // Advance to Chicken Week 5 (Day 29): Target is 21.0 - 24.0 °C
+    controller.setBrooderDay(29);
+    expect(controller.brooderTargetLow, 21.0);
+    expect(controller.brooderTargetHigh, 24.0);
+
+    // Safety Cutoff Test: Temp < 10.0 °C (e.g. 8.5 °C) -> Bulb OFF, Buzzer ON
+    controller.updateSensors(broodTemp: 8.5, broodHumidity: 50.0);
+    expect(controller.brooderBulbState, false);
+    expect(controller.brooderBuzzerAlarm, true);
+
+    // Safety Cutoff Test: Temp > 40.0 °C (e.g. 42.0 °C) -> Bulb OFF, Buzzer ON
+    controller.updateSensors(broodTemp: 42.0, broodHumidity: 50.0);
+    expect(controller.brooderBulbState, false);
+    expect(controller.brooderBuzzerAlarm, true);
+
+    // Sensor Failure Test: NaN -> Bulb OFF, Buzzer ON
+    controller.updateSensors(broodTemp: double.nan, broodHumidity: 50.0);
+    expect(controller.brooderBulbState, false);
+    expect(controller.brooderBuzzerAlarm, true);
+
+    // Switch species to Duck
+    controller.startNewBatch(IncubationProfile.duck, 6, 7);
+    controller.startBrooding();
+    // Duck Day 1: Target is 30.0 - 32.0 °C
+    expect(controller.brooderTargetLow, 30.0);
+    expect(controller.brooderTargetHigh, 32.0);
+
+    // Duck Day 7: Target is 27.0 - 29.0 °C
+    controller.setBrooderDay(7);
+    expect(controller.brooderTargetLow, closeTo(27.0, 0.01));
+    expect(controller.brooderTargetHigh, closeTo(29.0, 0.01));
+
+    // Duck Day 14: Target is 23.0 - 25.0 °C
+    controller.setBrooderDay(14);
+    expect(controller.brooderTargetLow, closeTo(23.0, 0.01));
+    expect(controller.brooderTargetHigh, closeTo(25.0, 0.01));
+
+    controller.dispose();
+  });
 }

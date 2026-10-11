@@ -88,13 +88,17 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
           appBar: AppBar(
             elevation: 0,
             backgroundColor: Colors.white,
-            title: Row(
+            title: const Row(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.egg_rounded, color: Color(0xFFE8752A), size: 28),
-                const SizedBox(width: 8),
-                const Text(
-                  'SmartHatch Controller',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                Icon(Icons.egg_rounded, color: Color(0xFFE8752A), size: 24),
+                SizedBox(width: 8),
+                Flexible(
+                  child: Text(
+                    'SmartHatch Controller',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
               ],
             ),
@@ -786,6 +790,13 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
   }
 
   Widget _buildBrooderChamberCard() {
+    final low = _controller.brooderTargetLow;
+    final high = _controller.brooderTargetHigh;
+    final isMet = _controller.brooderStarted &&
+        _controller.brooderTemperature != null &&
+        _controller.brooderTemperature! >= low &&
+        _controller.brooderTemperature! <= high;
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -802,17 +813,229 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Row(
+          // Header with Stage Status
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Icon(Icons.nest_cam_wired_stand, color: Colors.indigo, size: 22),
-              SizedBox(width: 8),
-              Text(
-                'Brooder Chamber',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              const Row(
+                children: [
+                  Icon(Icons.nest_cam_wired_stand, color: Colors.indigo, size: 22),
+                  SizedBox(width: 8),
+                  Text(
+                    'Brooder Chamber',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: _controller.brooderStarted
+                      ? Colors.green.withValues(alpha: 0.12)
+                      : Colors.orange.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: _controller.brooderStarted
+                        ? Colors.green.shade400
+                        : Colors.orange.shade400,
+                  ),
+                ),
+                child: Text(
+                  _controller.brooderStarted
+                      ? 'Brooder Day ${_controller.brooderDay} (Active)'
+                      : 'Awaiting Transfer',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: _controller.brooderStarted
+                        ? Colors.green.shade800
+                        : Colors.orange.shade900,
+                  ),
+                ),
               ),
             ],
           ),
+          const SizedBox(height: 6),
+          Text(
+            'Post-incubation brooding stage with weekly species temperature reductions (Arduino Uno Controller).',
+            style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+          ),
+
+          // Safety Alert Banner (Sensor Error or Temp Out of Safe Bounds)
+          if (_controller.brooderAlarmMessage != null) ...[
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.red.shade50,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Colors.red.shade400, width: 1.2),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.warning_amber_rounded, color: Colors.red, size: 22),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      _controller.brooderAlarmMessage!,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.red,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+
           const SizedBox(height: 14),
+
+          // Action / Stage Controls
+          if (!_controller.brooderStarted) ...[
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.indigo.shade50,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.indigo.shade100),
+              ),
+              child: Row(
+                children: [
+                  const Expanded(
+                    child: Text(
+                      'Incubation finished? Transfer hatchlings to brooder and start Day 1.',
+                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.indigo),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.indigo,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    ),
+                    icon: const Icon(Icons.play_arrow_rounded, size: 18),
+                    label: const Text(
+                      'Start Brooder (A0)',
+                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                    ),
+                    onPressed: () {
+                      _controller.startBrooding();
+                      _onSensorChanged();
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ] else ...[
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade50,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.grey.shade200),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(Icons.calendar_today_rounded, size: 16, color: Colors.indigo),
+                          const SizedBox(width: 6),
+                          Text(
+                            'Brooder Day Stepper: Day ${_controller.brooderDay}',
+                            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.remove_circle_outline, size: 20),
+                            color: _controller.brooderDay > 1 ? Colors.indigo : Colors.grey,
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints(),
+                            onPressed: _controller.brooderDay > 1
+                                ? () {
+                                    _controller.setBrooderDay(_controller.brooderDay - 1);
+                                    _onSensorChanged();
+                                  }
+                                : null,
+                          ),
+                          const SizedBox(width: 8),
+                          IconButton(
+                            icon: const Icon(Icons.add_circle_outline, size: 20),
+                            color: _controller.brooderDay < 42 ? Colors.indigo : Colors.grey,
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints(),
+                            onPressed: _controller.brooderDay < 42
+                                ? () {
+                                    _controller.setBrooderDay(_controller.brooderDay + 1);
+                                    _onSensorChanged();
+                                  }
+                                : null,
+                          ),
+                          const SizedBox(width: 12),
+                          TextButton(
+                            style: TextButton.styleFrom(
+                              foregroundColor: Colors.red.shade700,
+                              padding: EdgeInsets.zero,
+                              minimumSize: Size.zero,
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            ),
+                            onPressed: () {
+                              _controller.stopBrooding();
+                              _onSensorChanged();
+                            },
+                            child: const Text('Reset Brooder', style: TextStyle(fontSize: 11)),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        const Text('Quick Week: ', style: TextStyle(fontSize: 11, color: Colors.grey)),
+                        for (final day in [1, 8, 15, 22, 29, 36])
+                          Padding(
+                            padding: const EdgeInsets.only(right: 6),
+                            child: ActionChip(
+                              label: Text('Day $day'),
+                              padding: const EdgeInsets.symmetric(horizontal: 4),
+                              backgroundColor: _controller.brooderDay == day
+                                  ? Colors.indigo.shade100
+                                  : Colors.grey.shade100,
+                              labelStyle: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                                color: _controller.brooderDay == day ? Colors.indigo : Colors.black87,
+                              ),
+                              onPressed: () {
+                                _controller.setBrooderDay(day);
+                                _onSensorChanged();
+                              },
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+
+          const SizedBox(height: 14),
+
+          // Sensor Metric Tiles
           Row(
             children: [
               Expanded(
@@ -821,10 +1044,8 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
                   value: _controller.brooderTemperature != null
                       ? '${_controller.brooderTemperature!.toStringAsFixed(1)} °C'
                       : 'ERROR',
-                  target: 'Target: 30.0 - 32.0 °C',
-                  isTargetMet: _controller.brooderTemperature != null &&
-                      _controller.brooderTemperature! >= 30.0 &&
-                      _controller.brooderTemperature! <= 32.0,
+                  target: 'Target: ${low.toStringAsFixed(1)} - ${high.toStringAsFixed(1)} °C',
+                  isTargetMet: isMet,
                   icon: Icons.thermostat_outlined,
                   iconColor: Colors.indigo,
                 ),
@@ -847,17 +1068,26 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
             ],
           ),
           const SizedBox(height: 12),
+
+          // Actuator Relay & Buzzer Chips
           Wrap(
             spacing: 8,
+            runSpacing: 8,
             children: [
               _buildRelayChip(
-                name: 'Brooder Bulb (D11)',
+                name: 'Brooder Bulb (D11 / IN3)',
                 isOn: _controller.brooderBulbState,
                 activeColor: Colors.indigo,
                 icon: Icons.lightbulb_outline,
               ),
               _buildRelayChip(
-                name: 'Brooder Humidifier (D5)',
+                name: 'Brooder Buzzer (D8)',
+                isOn: _controller.brooderBuzzerAlarm,
+                activeColor: Colors.red,
+                icon: Icons.notifications_active_outlined,
+              ),
+              _buildRelayChip(
+                name: 'Brooder Humidifier (D5 / IN1)',
                 isOn: _controller.brooderHumidifierState,
                 activeColor: Colors.cyan,
                 icon: Icons.cloud_outlined,
@@ -892,7 +1122,7 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
           ),
           const SizedBox(height: 6),
           Text(
-            'Move the sliders to simulate live DHT readings and observe how the controller automatically triggers the bulb and humidifier relays based on hysteresis thresholds.',
+            'Move the sliders to simulate live DHT readings and observe how the controller automatically triggers the bulb and humidifier relays based on hysteresis and safety cutoff rules.',
             style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
           ),
           const SizedBox(height: 14),
@@ -926,13 +1156,13 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
           ),
           const SizedBox(height: 8),
 
-          // Brooder Temp Slider
-          Text('Brooder Temp: ${_simulatedBroodTemp.toStringAsFixed(1)} °C'),
+          // Brooder Temp Slider (expanded range 5.0 to 45.0 to test safety cutoff)
+          Text('Brooder Temp: ${_simulatedBroodTemp.toStringAsFixed(1)} °C (Cutoff <10°C or >40°C)'),
           Slider(
             value: _simulatedBroodTemp,
-            min: 25.0,
-            max: 38.0,
-            divisions: 52,
+            min: 5.0,
+            max: 45.0,
+            divisions: 80,
             activeColor: Colors.indigo,
             onChanged: (val) {
               setState(() => _simulatedBroodTemp = val);

@@ -81,6 +81,44 @@ class IncubationProfile {
 
   /// List of all supported species profiles
   static const List<IncubationProfile> allProfiles = [chicken, duck, quail];
+
+  /// Brooder starting guideline target low limit (°C) based on species and brooder day
+  static double getBrooderTargetLow(String speciesName, int day) {
+    final species = speciesName.toUpperCase();
+    if (species == 'DUCK') {
+      if (day <= 1) return 30.0;
+      if (day <= 7) return 30.0 - (day - 1) * 0.5;
+      if (day <= 14) return 27.0 - (day - 7) * (4.0 / 7.0);
+      if (day <= 21) return 23.0 - (day - 14) * (4.0 / 7.0);
+      if (day <= 28) return 19.0 - (day - 21) * (4.0 / 7.0);
+      if (day <= 35) return 15.0 - (day - 28) * (2.0 / 7.0);
+      return 13.0;
+    } else {
+      // Chicken and Quail share the standard weekly reduction schedule
+      if (day <= 7) return 32.0;
+      if (day <= 14) return 29.0;
+      if (day <= 21) return 27.0;
+      if (day <= 28) return 24.0;
+      if (day <= 35) return 21.0;
+      return 21.0;
+    }
+  }
+
+  /// Brooder starting guideline target high limit (°C) based on species and brooder day
+  static double getBrooderTargetHigh(String speciesName, int day) {
+    final species = speciesName.toUpperCase();
+    if (species == 'DUCK') {
+      return getBrooderTargetLow(speciesName, day) + 2.0;
+    } else {
+      // Chicken and Quail
+      if (day <= 7) return 35.0;
+      if (day <= 14) return 32.0;
+      if (day <= 21) return 29.0;
+      if (day <= 28) return 27.0;
+      if (day <= 35) return 24.0;
+      return 21.0;
+    }
+  }
 }
 
 /// Incubator and Brooder controller logic translated from the Arduino sketch.
@@ -123,11 +161,24 @@ class IncubatorController extends ChangeNotifier {
   // Egg turning tracking
   DateTime? lastEggTurnTime;
 
+  // Post-incubation Brooder Stage controls (matching Arduino Uno Brooder Controller)
+  bool brooderStarted = false;
+  int brooderDay = 1;
+  DateTime? brooderStartTime;
+  bool brooderBuzzerAlarm = false;
+  String? brooderAlarmMessage;
+
   // Brooder settings constants matching the Arduino sketch
-  static const double brooderHeatOnBelow = 30.0;
-  static const double brooderHeatOffAbove = 32.0;
   static const double brooderHumidityLow = 45.0;
   static const double brooderHumidityHigh = 60.0;
+
+  /// Dynamic target low temperature for the current brooder day
+  double get brooderTargetLow =>
+      IncubationProfile.getBrooderTargetLow(profile.speciesName, brooderDay);
+
+  /// Dynamic target high temperature for the current brooder day
+  double get brooderTargetHigh =>
+      IncubationProfile.getBrooderTargetHigh(profile.speciesName, brooderDay);
 
   IncubatorController({
     this.profile = IncubationProfile.chicken,
@@ -257,6 +308,35 @@ class IncubatorController extends ChangeNotifier {
     );
   }
 
+  /// Starts the post-incubation brooding stage (triggered via UI or physical A0 button)
+  void startBrooding() {
+    brooderStarted = true;
+    brooderStartTime = DateTime.now();
+    brooderDay = 1;
+    brooderBulbState = false;
+    brooderBuzzerAlarm = false;
+    brooderAlarmMessage = null;
+    _evaluateBrooderHeating();
+    _evaluateBrooderHumidifier();
+    notifyListeners();
+  }
+
+  /// Stops or resets the brooder stage
+  void stopBrooding() {
+    brooderStarted = false;
+    brooderBulbState = false;
+    brooderBuzzerAlarm = false;
+    brooderAlarmMessage = null;
+    notifyListeners();
+  }
+
+  /// Sets or simulates the current brooder day (Day 1 - 42)
+  void setBrooderDay(int day) {
+    brooderDay = day.clamp(1, 60);
+    _evaluateBrooderHeating();
+    notifyListeners();
+  }
+
   // ============================================================
   // SENSOR UPDATES & RELAY CONTROL LOGIC
   // ============================================================
@@ -308,21 +388,55 @@ class IncubatorController extends ChangeNotifier {
     }
   }
 
-  /// Control Brooder Bulb with hysteresis (ON <= 30.0°C, OFF >= 32.0°C)
+  /// Control Brooder Bulb with species/day target schedule and safety cutoff.
+  /// Matches Arduino Uno SmartHatch Post-Incubation Brooder Controller.
   void _evaluateBrooderHeating() {
-    if (brooderTemperature == null || brooderTemperature!.isNaN) {
+    if (!brooderStarted) {
       brooderBulbState = false;
+      brooderBuzzerAlarm = false;
+      brooderAlarmMessage = null;
       return;
     }
-    if (brooderTemperature! <= brooderHeatOnBelow) {
-      brooderBulbState = true;
-    } else if (brooderTemperature! >= brooderHeatOffAbove) {
+
+    // Sensor failure: switch heater off and sound alarm (D8 buzzer)
+    if (brooderTemperature == null ||
+        brooderTemperature!.isNaN ||
+        brooderHumidity == null ||
+        brooderHumidity!.isNaN) {
       brooderBulbState = false;
+      brooderBuzzerAlarm = true;
+      brooderAlarmMessage = 'ERROR: Brooder DHT11 reading failed! Brooder bulb OFF.';
+      return;
+    }
+
+    final low = brooderTargetLow;
+    final high = brooderTargetHigh;
+
+    // Conservative safety cutoff (< 10°C or > 40°C)
+    if (brooderTemperature! < 10.0 || brooderTemperature! > 40.0) {
+      brooderBulbState = false;
+      brooderBuzzerAlarm = true;
+      brooderAlarmMessage =
+          'CRITICAL SAFETY CUTOFF: Brooder temperature (${brooderTemperature!.toStringAsFixed(1)}°C) out of safe range (10–40°C)! Bulb OFF.';
+    } else {
+      brooderBuzzerAlarm = false;
+      brooderAlarmMessage = null;
+
+      // Hysteresis: avoid rapid relay switching.
+      if (brooderTemperature! < low) {
+        brooderBulbState = true;
+      } else if (brooderTemperature! >= high) {
+        brooderBulbState = false;
+      }
     }
   }
 
   /// Control Brooder Humidifier (ON < 45%, OFF >= 60%)
   void _evaluateBrooderHumidifier() {
+    if (!brooderStarted) {
+      brooderHumidifierState = false;
+      return;
+    }
     if (brooderHumidity == null || brooderHumidity!.isNaN) {
       brooderHumidifierState = false;
       return;
@@ -355,8 +469,8 @@ class IncubatorController extends ChangeNotifier {
   bool get hasBrooderSensorError =>
       brooderTemperature == null ||
       brooderHumidity == null ||
-      brooderTemperature!.isNaN ||
-      brooderHumidity!.isNaN;
+      brooderHumidity!.isNaN ||
+      brooderTemperature!.isNaN;
 
   /// Generates the Serial / Supabase sync payload to transmit to Arduino
   Map<String, dynamic> toSyncPayload() {
@@ -376,6 +490,12 @@ class IncubatorController extends ChangeNotifier {
       'current_day': currentIncubationDay,
       'stage': stageName,
       'turning_active': !isLockdown,
+      'brooder_started': brooderStarted,
+      'brooder_day': brooderDay,
+      'brooder_target_low': brooderTargetLow,
+      'brooder_target_high': brooderTargetHigh,
+      'brooder_bulb_state': brooderBulbState,
+      'brooder_buzzer_alarm': brooderBuzzerAlarm,
     };
   }
 
