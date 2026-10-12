@@ -188,9 +188,10 @@ void main() {
     api.sessions = [_activeRow()];
     await pumpAt(tester, const IncubatorDashboardPage());
 
-    // Change the simulated profile to Duck.
-    await tester.ensureVisible(find.text('28 Days'));
-    await tester.tap(find.text('28 Days'));
+    // Change the simulated profile to Duck. (The chip label carries the
+    // merged Day-7 candling suffix from development's controller work.)
+    await tester.ensureVisible(find.text('28 Days (Day 7+)'));
+    await tester.tap(find.text('28 Days (Day 7+)'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 300));
 
