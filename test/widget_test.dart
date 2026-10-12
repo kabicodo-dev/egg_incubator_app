@@ -7,7 +7,7 @@ void main() {
   testWidgets('App starts and shows landing page', (WidgetTester tester) async {
     await tester.pumpWidget(const SmartHatchApp());
 
-    expect(find.text('Smarter Hatching,\nBetter Results.'), findsOneWidget);
+    expect(find.text('Smarter Hatching, Better Results.'), findsOneWidget);
     expect(find.text('Next'), findsOneWidget);
     expect(find.text('Skip'), findsOneWidget);
   });
@@ -18,7 +18,8 @@ void main() {
     );
 
     // Verify key titles, Day 7 post-candling start, and egg capacity card are displayed
-    expect(find.text('SmartHatch Controller'), findsOneWidget);
+    // UI-01/P6.4: the console was renamed 'Hardware Console' (PR #42 side).
+    expect(find.text('Hardware Console'), findsOneWidget);
     expect(find.text('Day 7'), findsOneWidget);
     expect(find.text('Fertile Egg Tray & Capacity'), findsOneWidget);
     expect(find.text('Incubator Chamber'), findsOneWidget);
@@ -293,7 +294,10 @@ void main() {
   });
 
   testWidgets('Incubator LCD 16x2 Screen Display renders temperature, humidity, and egg days', (WidgetTester tester) async {
-    await tester.pumpWidget(const MyApp());
+    // The LCD panel lives inside the dashboard, so pump that page directly
+    // (the original reference to a 'MyApp' class never existed and this test
+    // could not even compile before).
+    await tester.pumpWidget(const MaterialApp(home: IncubatorDashboardPage()));
 
     // Verify LCD header
     expect(find.text('INCUBATOR LCD 16×2 DISPLAY'), findsOneWidget);
@@ -306,5 +310,8 @@ void main() {
     // Verify Day of the eggs display (starts on Day 7)
     expect(find.textContaining('DAY: 7/21'), findsOneWidget);
     expect(find.textContaining('[ACTIVE]'), findsOneWidget);
+
+    // Dispose the dashboard so the incubator controller's ticker is released.
+    await tester.pumpWidget(const SizedBox.shrink());
   });
 }

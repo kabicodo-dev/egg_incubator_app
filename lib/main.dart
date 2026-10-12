@@ -7,6 +7,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'services/supabase_service.dart';
 import 'controllers/incubator_controller.dart';
 import 'controllers/arduino_controller.dart';
+import 'theme/app_theme.dart';
 
 // ──────────────────────────────────────────────
 // App Entry Point
@@ -44,10 +45,10 @@ class SmartHatchApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFFE8752A),
+          seedColor: AppColors.primary,
           brightness: Brightness.light,
         ),
-        scaffoldBackgroundColor: const Color(0xFFF5F6FA),
+        scaffoldBackgroundColor: AppColors.background,
         useMaterial3: true,
         textTheme: GoogleFonts.poppinsTextTheme(),
         appBarTheme: const AppBarTheme(
@@ -199,6 +200,261 @@ class BatchData {
   }
 }
 
+/// Species description for a stored session's egg_type: the shared defaults
+/// when the name matches, or a safe generic fallback for an unknown/legacy
+/// value so the real batch still renders. Top-level so Home, the setup
+/// guard, and Batch Details all resolve species identically.
+SpeciesData speciesDataForName(String name) {
+  for (final s in defaultSpeciesList) {
+    if (s.name == name) return s;
+  }
+  return SpeciesData(
+    name: name.isEmpty ? 'Eggs' : name,
+    emoji: '\uD83E\uDD5A',
+    incubationDays: 21,
+    temperature: '37.5\u00B0C',
+    targetHumidity: 55,
+    description: '',
+  );
+}
+
+/// The farmer-facing Active Incubation screen for a raw Supabase session
+/// row. The incubation day is always derived from the SAVED start date -
+/// never a default or a simulation.
+ActiveIncubationScreen activeIncubationScreenFor(Map<String, dynamic> row) {
+  final species = speciesDataForName((row['egg_type'] as String?) ?? '');
+  final startDate =
+      DateTime.tryParse('${row['start_date']}') ?? DateTime.now();
+  return ActiveIncubationScreen(
+    species: species,
+    eggCount: (row['egg_quantity'] as int?) ?? 0,
+    batchId: 'Batch #${row['id']}',
+    sessionId: (row['id'] as int?) ?? 0,
+    startDate: startDate,
+  );
+}
+
+/// The Active Incubation screen for an already-parsed [BatchData] batch
+/// (Home's Current Incubation card).
+ActiveIncubationScreen activeIncubationScreenForBatch(BatchData batch) {
+  final species = speciesDataForName(batch.species);
+  final startDate = DateTime.tryParse(batch.startDate) ?? DateTime.now();
+  return ActiveIncubationScreen(
+    species: species,
+    eggCount: batch.eggsTotal,
+    batchId: batch.batchNumber,
+    sessionId: batch.id,
+    startDate: startDate,
+  );
+}
+
+/// Shows the validated Finish Batch dialog and runs the single completion
+/// path shared by every entry point (Active Incubation screen, Batch
+/// Details). Returns true only when the batch was Completed in the
+/// database - never on a dismissed or failed dialog.
+Future<bool> showFinishBatchDialog(
+  BuildContext context, {
+  required Map<String, dynamic> session,
+}) async {
+  final done = await showDialog<bool>(
+    context: context,
+    barrierDismissible: false,
+    builder: (_) => _FinishBatchDialog(session: session),
+  );
+  return done ?? false;
+}
+
+/// The farmer's Finish Batch dialog: shows the batch details, requires a
+/// manually entered hatched-egg count (0..egg_quantity, whole numbers only),
+/// previews the hatch success percentage live, explains that finishing ends
+/// the incubation, and saves exactly one UPDATE. The batch is only marked
+/// Completed when the database confirms the write.
+class _FinishBatchDialog extends StatefulWidget {
+  const _FinishBatchDialog({required this.session});
+
+  /// The raw Supabase row of the batch being finished.
+  final Map<String, dynamic> session;
+
+  @override
+  State<_FinishBatchDialog> createState() => _FinishBatchDialogState();
+}
+
+class _FinishBatchDialogState extends State<_FinishBatchDialog> {
+  final _controller = TextEditingController();
+  bool _saving = false;
+  String? _error;
+
+  int get _quantity => (widget.session['egg_quantity'] as int?) ?? 0;
+  String get _batchNumber => 'Batch #${widget.session['id']}';
+  String get _species => (widget.session['egg_type'] as String?) ?? 'Eggs';
+
+  int? get _entered => int.tryParse(_controller.text.trim());
+
+  /// A count is valid only as a whole number from 0 through the original
+  /// egg quantity, inclusive.
+  bool get _valid {
+    final v = _entered;
+    return v != null && v >= 0 && v <= _quantity;
+  }
+
+  /// Live hatch-success preview for the entered count (null while invalid).
+  double? get _hatchRate {
+    if (!_valid) return null;
+    if (_quantity == 0) return 0.0;
+    return _entered! / _quantity;
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  Future<void> _finish() async {
+    final count = _entered;
+    if (!_valid || _saving) return;
+    setState(() {
+      _saving = true;
+      _error = null;
+    });
+    try {
+      await SupabaseService().completeSession(
+        sessionId: widget.session['id'] as int,
+        endDate: DateTime.now(),
+        eggsHatched: count,
+      );
+      if (mounted) Navigator.of(context).pop(true);
+    } catch (_) {
+      // The batch stays Active: explain why and let the farmer retry.
+      if (mounted) {
+        setState(() {
+          _saving = false;
+          _error = 'Could not save the results. $_batchNumber is still '
+              'incubating - check the connection and try again.';
+        });
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final start = DateTime.tryParse('${widget.session['start_date']}');
+    final startLabel = start == null
+        ? ''
+        : ' \u00B7 started ${start.day}/${start.month}/${start.year}';
+    final rate = _hatchRate;
+
+    return AlertDialog(
+      title: Text('Finish $_batchNumber'),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '$_species \u00B7 $_quantity eggs$startLabel',
+              style: const TextStyle(
+                fontSize: 13,
+                color: AppColors.textSecondary,
+              ),
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'Eggs hatched',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textPrimary,
+              ),
+            ),
+            const SizedBox(height: 8),
+            TextField(
+              controller: _controller,
+              autofocus: true,
+              enabled: !_saving,
+              keyboardType: TextInputType.number,
+              onChanged: (_) => setState(() {}),
+              decoration: InputDecoration(
+                hintText: 'Enter the number of eggs that hatched',
+                errorText: _valid || _controller.text.trim().isEmpty
+                    ? null
+                    : 'Enter a whole number from 0 to $_quantity.',
+                border: const OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 12),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: AppColors.peach,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Text(
+                rate == null
+                    ? 'Enter the hatched count to preview the hatch success.'
+                    : 'Hatch success: ${(rate * 100).round()}%',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                  color: rate == null
+                      ? AppColors.textSecondary
+                      : AppColors.primaryDark,
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            const Text(
+              'Finishing ends this incubation. The batch moves to History '
+              'as Completed with the count you enter - it cannot go back '
+              'to incubating.',
+              style: TextStyle(
+                fontSize: 12.5,
+                height: 1.4,
+                color: AppColors.textSecondary,
+              ),
+            ),
+            if (_error != null) ...[
+              const SizedBox(height: 12),
+              Text(
+                _error!,
+                style: const TextStyle(
+                  fontSize: 13,
+                  height: 1.4,
+                  color: AppColors.danger,
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: _saving ? null : () => Navigator.of(context).pop(false),
+          child: const Text('Cancel'),
+        ),
+        ElevatedButton(
+          onPressed: _valid && !_saving ? _finish : null,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.primaryDark,
+            foregroundColor: Colors.white,
+          ),
+          child: _saving
+              ? const SizedBox(
+                  width: 18,
+                  height: 18,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: Colors.white,
+                  ),
+                )
+              : const Text('Finish Batch'),
+        ),
+      ],
+    );
+  }
+}
+
 // ══════════════════════════════════════════════
 // LANDING PAGE
 // ══════════════════════════════════════════════
@@ -217,19 +473,19 @@ class _LandingPageState extends State<LandingPage> {
   static const _slides = [
     _OnboardingSlide(
       icon: Icons.egg_outlined,
-      title: 'Smarter Hatching,\nBetter Results.',
+      title: 'Smarter Hatching, Better Results.',
       body:
           'SmartHatch helps you monitor and manage your egg incubation with ease.',
     ),
     _OnboardingSlide(
       icon: Icons.monitor_heart_outlined,
-      title: 'Track Your\nIncubation',
+      title: 'Track Your Incubation',
       body:
           'Keep track of your eggs, incubation progress, temperature, and expected hatch date in one place.',
     ),
     _OnboardingSlide(
       icon: Icons.inventory_2_outlined,
-      title: 'Manage Your\nBatches',
+      title: 'Manage Your Batches',
       body:
           'Review previous incubation batches and easily check your results anytime.',
     ),
@@ -293,10 +549,16 @@ class _LandingPageState extends State<LandingPage> {
                       final slide = _slides[index];
                       return Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 32),
-                        child: Column(
+                        // Scrollable so a slide never clips its text at very
+                        // large accessibility text sizes; when the content
+                        // fits it renders centered exactly as before.
+                        child: Center(
+                          child: SingleChildScrollView(
+                            child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            // Icon
+                            // Icon - slide 1 carries the SmartHatch logo,
+                            // the rest keep their illustrative icons.
                             Container(
                               width: 120,
                               height: 120,
@@ -304,24 +566,83 @@ class _LandingPageState extends State<LandingPage> {
                                 color: const Color(0xFFE8752A).withValues(alpha: 0.1),
                                 shape: BoxShape.circle,
                               ),
-                              child: Icon(
-                                slide.icon,
-                                size: 60,
-                                color: const Color(0xFFE8752A),
+                              child: Center(
+                                child: index == 0
+                                    ? Container(
+                                        width: 96,
+                                        height: 96,
+                                        decoration: const BoxDecoration(
+                                          color: Colors.white,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: Center(
+                                          child: Semantics(
+                                            image: true,
+                                            label: 'SmartHatch logo',
+                                            excludeSemantics: true,
+                                            child: SizedBox(
+                                              width: 84,
+                                              height: 84,
+                                              child: Image.asset(
+                                                'assets/logo.png',
+                                                fit: BoxFit.contain,
+                                                errorBuilder: (context, error,
+                                                        stackTrace) =>
+                                                    Icon(
+                                                  slide.icon,
+                                                  size: 56,
+                                                  color: const Color(
+                                                      0xFFE8752A),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    : Icon(
+                                        slide.icon,
+                                        size: 60,
+                                        color: const Color(0xFFE8752A),
+                                      ),
                               ),
                             ),
                             const SizedBox(height: 40),
 
-                            // Title
-                            Text(
-                              slide.title,
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black87,
-                                height: 1.3,
-                              ),
+                            // Title - kept on one line whenever the natural
+                            // width fits, natural word wrap otherwise. No
+                            // hardcoded line breaks, no shrinking, no
+                            // clipping.
+                            LayoutBuilder(
+                              builder: (context, constraints) {
+                                final style = const TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black87,
+                                  height: 1.3,
+                                );
+                                // Measure with the current text scale so 1.3x
+                                // accessibility sizing decides correctly too.
+                                final double fontSize = MediaQuery.textScalerOf(
+                                        context)
+                                    .scale(style.fontSize!);
+                                final painter = TextPainter(
+                                  text: TextSpan(
+                                    text: slide.title,
+                                    style: style.copyWith(
+                                        fontSize: fontSize),
+                                  ),
+                                  textDirection: TextDirection.ltr,
+                                )..layout();
+                                final bool oneLine =
+                                    painter.width <= constraints.maxWidth;
+                                painter.dispose();
+                                return Text(
+                                  slide.title,
+                                  textAlign: TextAlign.center,
+                                  maxLines: oneLine ? 1 : null,
+                                  style: style,
+                                );
+                              },
                             ),
                             const SizedBox(height: 14),
 
@@ -337,7 +658,9 @@ class _LandingPageState extends State<LandingPage> {
                             ),
                           ],
                         ),
-                      );
+                          ),
+                      ),
+                    );
                     },
                   ),
                 ),
@@ -500,6 +823,12 @@ class _MainNavigationState extends State<MainNavigation> {
 /// The SmartHatch bottom navigation bar. The shell provides it for its tabs;
 /// History and Species render the same bar when they are opened as routes so
 /// Home, Species and History stay one tap away there too (issue #14).
+///
+/// Rendered as a floating dark-charcoal pill with a solid orange indicator
+/// and a dark charcoal icon on top of it. The bar still lives in the
+/// Scaffold's reserved bottom-navigation slot, so it can never cover the
+/// content above it, and the pill gets its own safe-area spacing so it stays
+/// clear of the Android/iOS system navigation.
 class _MainBottomBar extends StatelessWidget {
   const _MainBottomBar({required this.selectedIndex, required this.onSelected});
 
@@ -510,29 +839,92 @@ class _MainBottomBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return NavigationBar(
-      selectedIndex: selectedIndex,
-      onDestinationSelected: onSelected,
-      backgroundColor: Colors.white,
-      indicatorColor: const Color(0xFFE8752A).withValues(alpha: 0.15),
-      labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
-      destinations: const [
-        NavigationDestination(
-          icon: Icon(Icons.home_outlined),
-          selectedIcon: Icon(Icons.home, color: Color(0xFFE8752A)),
-          label: 'Home',
+    // Space below the pill for the system navigation bar / gesture area.
+    // This is 0 when the window does not extend behind the system bars
+    // (and in tests), so the pill never gets a double inset.
+    final double systemInset = MediaQuery.of(context).padding.bottom;
+
+    return Padding(
+      // Transparent margins around the pill let the screen background show.
+      padding: EdgeInsets.fromLTRB(
+        AppSpacing.lg,
+        AppSpacing.sm,
+        AppSpacing.lg,
+        AppSpacing.sm + systemInset,
+      ),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: AppColors.navigationSurface,
+          borderRadius: BorderRadius.circular(AppRadius.pill),
+          // Warm hairline so the white pill separates gently from the cream
+          // page background.
+          border: Border.all(color: AppColors.borderWarm),
+          boxShadow: AppShadows.navigationPill,
         ),
-        NavigationDestination(
-          icon: Icon(Icons.egg_outlined),
-          selectedIcon: Icon(Icons.egg, color: Color(0xFFE8752A)),
-          label: 'Species',
+        // The system inset is already applied above so the pill itself - not
+        // only its content - clears the system navigation; without this the
+        // NavigationBar's own SafeArea would apply it a second time.
+        child: MediaQuery.removePadding(
+          context: context,
+          removeBottom: true,
+          child: NavigationBar(
+            selectedIndex: selectedIndex,
+            onDestinationSelected: onSelected,
+            // Transparent so the white pill shows through the bar.
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            shadowColor: Colors.transparent,
+            surfaceTintColor: Colors.transparent,
+            height: 64,
+            // Soft peach indicator behind a dark orange icon.
+            indicatorColor: AppColors.peach,
+            labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+            // Labels stay visible for every state; the selected one is the
+            // brand orange and heavier so the active tab is obvious without
+            // relying on colour alone.
+            labelTextStyle: WidgetStateProperty.resolveWith<TextStyle>(
+              (states) {
+                final bool selected = states.contains(WidgetState.selected);
+                return TextStyle(
+                  fontSize: 12,
+                  height: 1.2,
+                  fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
+                  color: selected ? AppColors.primaryDark : AppColors.navigationInactive,
+                );
+              },
+            ),
+            destinations: const [
+              NavigationDestination(
+                icon: Icon(
+                  Icons.home_outlined,
+                  color: AppColors.navigationInactive,
+                ),
+                selectedIcon: Icon(Icons.home, color: AppColors.primaryDark),
+                label: 'Home',
+              ),
+              NavigationDestination(
+                icon: Icon(
+                  Icons.egg_outlined,
+                  color: AppColors.navigationInactive,
+                ),
+                selectedIcon: Icon(Icons.egg, color: AppColors.primaryDark),
+                label: 'Species',
+              ),
+              NavigationDestination(
+                icon: Icon(
+                  Icons.history_outlined,
+                  color: AppColors.navigationInactive,
+                ),
+                selectedIcon: Icon(
+                  Icons.history,
+                  color: AppColors.primaryDark,
+                ),
+                label: 'History',
+              ),
+            ],
+          ),
         ),
-        NavigationDestination(
-          icon: Icon(Icons.history_outlined),
-          selectedIcon: Icon(Icons.history, color: Color(0xFFE8752A)),
-          label: 'History',
-        ),
-      ],
+      ),
     );
   }
 }
@@ -605,6 +997,50 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  /// Home's primary full-width pill in the readable dark orange with white
+  /// AA-contrast labels. The label is flexible, so the button can never
+  /// overflow on narrow screens - it shortens with an ellipsis instead.
+  Widget _primaryPill({
+    required IconData icon,
+    required String label,
+    required VoidCallback onPressed,
+  }) {
+    return SizedBox(
+      width: double.infinity,
+      height: 56,
+      child: ElevatedButton(
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.primaryDark,
+          foregroundColor: Colors.white,
+          shadowColor: AppColors.primaryDark.withValues(alpha: 0.35),
+          elevation: 3,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppRadius.pill),
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 22),
+            const SizedBox(width: 10),
+            Flexible(
+              child: Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final totalBatches = _batches.length;
@@ -627,9 +1063,25 @@ class _HomeScreenState extends State<HomeScreen> {
           })()
         : '-';
 
+    // P6.2 - at most ONE batch is ever Active (enforced in the service and
+    // by the database index), so the first Active row IS the current batch.
+    final activeBatch = _batches.cast<BatchData?>().firstWhere(
+          (b) => b!.status == 'Active',
+          orElse: () => null,
+        );
+    // "Last Batch" shows only the most recently COMPLETED batch - an
+    // incubating batch is never presented as a finished result.
+    final lastCompleted =
+        completedBatches.isNotEmpty ? completedBatches.first : null;
+
     return SafeArea(
       child: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.lg,
+          AppSpacing.md,
+          AppSpacing.lg,
+          AppSpacing.xl,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -643,43 +1095,61 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: 24),
 
-            SizedBox(
-              width: double.infinity,
-              height: 54,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
+            // Primary action: a full-width pill in the readable dark orange
+            // with white AA-contrast labels. The label is flexible, so the
+            // button can never overflow on narrow screens - it shortens with
+            // an ellipsis instead.
+            //
+            // P6.2 - one active batch: while a batch is incubating, Home
+            // offers only "View Active Incubation"; "Start New Incubation"
+            // appears solely when no batch is running.
+            if (activeBatch != null) ...[
+              const _SectionLabel(text: 'CURRENT INCUBATION'),
+              const SizedBox(height: 10),
+              _CurrentIncubationCard(
+                batch: activeBatch,
+                onTap: () async {
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          activeIncubationScreenForBatch(activeBatch),
+                    ),
+                  );
+                  if (mounted) _loadData();
+                },
+              ),
+              const SizedBox(height: 16),
+              _primaryPill(
+                icon: Icons.visibility_outlined,
+                label: 'View Active Incubation',
+                onPressed: () async {
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          activeIncubationScreenForBatch(activeBatch),
+                    ),
+                  );
+                  if (mounted) _loadData();
+                },
+              ),
+            ] else
+              _primaryPill(
+                icon: Icons.add,
+                label: 'Start New Incubation',
+                onPressed: () async {
+                  await Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (_) => const IncubationSetupScreen(),
                     ),
                   );
+                  // Returning from setup/starting a batch refreshes Home so
+                  // the Current Incubation card appears immediately.
+                  if (mounted) _loadData();
                 },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFE8752A),
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                  elevation: 2,
-                ),
-                child: const Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.add, size: 22),
-                    SizedBox(width: 10),
-                    Text(
-                      'Start New Incubation',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
               ),
-            ),
             const SizedBox(height: 24),
 
             // Live incubator status (visible on the dashboard, no navigation needed)
@@ -713,39 +1183,180 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: 24),
 
-            const _SectionLabel(text: 'LAST BATCH'),
+            // P6.2 - only a COMPLETED batch is shown as a finished result;
+            // active batches live in the Current Incubation card above.
+            const _SectionLabel(text: 'LAST COMPLETED BATCH'),
             const SizedBox(height: 10),
             if (_loading)
               const Center(child: CircularProgressIndicator())
-            else if (_batches.isNotEmpty)
+            else if (lastCompleted != null)
               _LastBatchCard(
-                batch: _batches.first,
-                onTap: () {
-                  Navigator.push(
+                batch: lastCompleted,
+                onTap: () async {
+                  await Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => BatchDetailsScreen(batch: _batches.first),
+                      builder: (_) => BatchDetailsScreen(batch: lastCompleted),
                     ),
                   );
+                  if (mounted) _loadData();
                 },
               )
             else
               Container(
-                padding: const EdgeInsets.all(24),
+                width: double.infinity,
+                padding: const EdgeInsets.all(AppSpacing.xl),
                 decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: Colors.grey.shade100),
+                  color: AppColors.card,
+                  borderRadius: BorderRadius.circular(AppRadius.card),
+                  border: Border.all(
+                    color: AppColors.primaryDark.withValues(alpha: 0.12),
+                  ),
                 ),
                 child: Center(
                   child: Text(
-                    'No batches yet. Start your first incubation!',
-                    style: TextStyle(fontSize: 14, color: Colors.grey.shade500),
+                    _batches.isEmpty
+                        ? 'No batches yet. Start your first incubation!'
+                        : 'No completed batches yet. Your hatch results '
+                            'will appear here.',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      height: 1.4,
+                      color: AppColors.textSecondary,
+                    ),
                   ),
                 ),
               ),
             const SizedBox(height: 24),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// The farmer's single source of truth for the batch incubating right now
+/// (P6.2): real batch number, species, egg quantity, actual start date, the
+/// incubation day calculated FROM THE SAVED START DATE, and progress over
+/// the species' real duration - never simulated data. The whole card opens
+/// the Active Incubation screen.
+class _CurrentIncubationCard extends StatelessWidget {
+  const _CurrentIncubationCard({required this.batch, required this.onTap});
+
+  final BatchData batch;
+  final VoidCallback onTap;
+
+  static String _formatDate(DateTime d) {
+    const months = [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December',
+    ];
+    return '${months[d.month - 1]} ${d.day}, ${d.year}';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final species = speciesDataForName(batch.species);
+    final totalDays = species.incubationDays;
+    final start = DateTime.tryParse(batch.startDate) ?? DateTime.now();
+    final elapsed = DateTime.now().difference(start).inDays;
+    final day = (elapsed + 1).clamp(1, totalDays).toInt();
+    final daysLeft = totalDays - day;
+    final progress = (day / totalDays).clamp(0.0, 1.0);
+
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.card,
+        borderRadius: BorderRadius.circular(AppRadius.card),
+        border: Border.all(color: AppColors.borderWarm),
+        boxShadow: AppShadows.card,
+      ),
+      child: Semantics(
+        button: true,
+        label: 'Open current incubation, ${batch.batchNumber}',
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(AppRadius.card),
+            child: Padding(
+              padding: const EdgeInsets.all(AppSpacing.lg),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SpeciesIllustration(species: batch.species, size: 48),
+                      const SizedBox(width: AppSpacing.md),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '${batch.batchNumber} \u00B7 ${batch.species}',
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.textPrimary,
+                              ),
+                            ),
+                            const SizedBox(height: 3),
+                            Text(
+                              '${batch.eggsTotal} eggs \u00B7 '
+                              'Started ${_formatDate(start)}',
+                              style: const TextStyle(
+                                fontSize: 13,
+                                color: AppColors.textSecondary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const _StatusBadge(
+                        label: 'Incubating',
+                        color: AppColors.warning,
+                        icon: Icons.play_circle_outline,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Day $day of $totalDays',
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.primaryDark,
+                        ),
+                      ),
+                      Text(
+                        daysLeft <= 0 ? 'Hatch day' : '$daysLeft days left',
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: LinearProgressIndicator(
+                      value: progress,
+                      minHeight: 10,
+                      backgroundColor: AppColors.peach,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
       ),
     );
@@ -816,21 +1427,31 @@ class _SpeciesScreenState extends State<SpeciesScreen> {
             ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.lg,
+            AppSpacing.md,
+            AppSpacing.lg,
+            AppSpacing.xl,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Short, plain-language intro under the screen heading.
               const Text(
                 'Choose the type of eggs you want to incubate.',
-                style: TextStyle(fontSize: 14, color: Colors.black54),
+                style: TextStyle(
+                  fontSize: 15,
+                  height: 1.4,
+                  color: AppColors.textSecondary,
+                ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.lg),
               if (_loading)
                 const Center(child: CircularProgressIndicator())
               else
                 ..._species.map(
                   (species) => Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
+                    padding: const EdgeInsets.only(bottom: AppSpacing.md),
                     child: _SpeciesCard(
                       name: species.name,
                       description: species.description,
@@ -874,16 +1495,10 @@ class SpeciesDetailsScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Center(
-              child: Container(
-                width: 80,
-                height: 80,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFE8752A).withValues(alpha: 0.1),
-                  shape: BoxShape.circle,
-                ),
-                child: Center(
-                  child: Text(species.emoji, style: const TextStyle(fontSize: 44)),
-                ),
+              child: SpeciesIllustration(
+                species: species.name,
+                emoji: species.emoji,
+                size: 80,
               ),
             ),
             const SizedBox(height: 24),
@@ -984,12 +1599,19 @@ class _IncubationSetupScreenState extends State<IncubationSetupScreen> {
   bool _customMode = false;
   String? _quantityError;
 
+  // P6.1 - one active incubation: while a batch is incubating this screen
+  // shows a blocking panel (and the route to the current incubation) instead
+  // of the setup form. [_activeSession] is the raw Supabase row.
+  bool _checkingActive = true;
+  Map<String, dynamic>? _activeSession;
+
   @override
   void initState() {
     super.initState();
     _selectedSpecies = widget.selectedSpecies;
     if (_selectedSpecies != null) _currentStep = 2;
     _loadSpecies();
+    _checkActiveBatch();
   }
 
   @override
@@ -1099,12 +1721,132 @@ class _IncubationSetupScreenState extends State<IncubationSetupScreen> {
     }
   }
 
+  /// Blocks setup while a batch is incubating (P6.1).
+  ///
+  /// [SupabaseService.createSession] stays the authoritative guard; this
+  /// only avoids offering a form the farmer cannot use. A failed lookup
+  /// (e.g. offline) falls through to the form - the start button still
+  /// refuses through the service.
+  Future<void> _checkActiveBatch() async {
+    try {
+      final active = await SupabaseService().getActiveSession();
+      if (mounted) {
+        setState(() {
+          _activeSession = active;
+          _checkingActive = false;
+        });
+      }
+    } catch (_) {
+      if (mounted) {
+        setState(() => _checkingActive = false);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    // P6.1 - one active incubation: setup closes while a batch runs.
+    if (_checkingActive) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('New Incubation')),
+        body: const Center(child: CircularProgressIndicator()),
+      );
+    }
+    final active = _activeSession;
+    if (active != null) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('New Incubation')),
+        body: _buildBlockedByActiveBatch(active),
+      );
+    }
     return Scaffold(
       appBar: AppBar(title: Text(_currentStep == 1 ? 'Select Species' : 'Egg Quantity')),
       body: _currentStep == 1 ? _buildStep1() : _buildStep2(),
     );
+  }
+
+  // ── P6.1: blocked while a batch is incubating ──
+
+  /// Full-screen refusal shown while another batch is running: names the
+  /// batch and sends the farmer to it instead of the setup form.
+  Widget _buildBlockedByActiveBatch(Map<String, dynamic> active) {
+    final batchId = 'Batch #${active['id']}';
+    final speciesName = (active['egg_type'] as String?) ?? 'Eggs';
+    final start = DateTime.tryParse('${active['start_date']}');
+    final startLabel = start == null
+        ? 'recently'
+        : '${start.day}/${start.month}/${start.year}';
+
+    return Padding(
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SpeciesIllustration(species: speciesName, size: 56),
+          const SizedBox(height: 20),
+          const Text(
+            'A batch is already incubating',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            '$batchId ($speciesName) started on $startLabel and must be '
+            'finished before a new incubation can start. '
+            'SmartHatch runs one batch at a time.',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 14.5,
+              height: 1.4,
+              color: Colors.grey.shade600,
+            ),
+          ),
+          const SizedBox(height: 28),
+          SizedBox(
+            width: double.infinity,
+            height: 54,
+            child: ElevatedButton.icon(
+              onPressed: () => _openCurrentIncubation(active),
+              icon: const Icon(Icons.monitor_heart_outlined, size: 20),
+              label: const Text(
+                'View Current Incubation',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFE8752A),
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                elevation: 2,
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Go back'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Opens the farmer-facing Active Incubation screen for [active], and
+  /// re-checks on return so the panel clears as soon as the batch is no
+  /// longer active.
+  Future<void> _openCurrentIncubation(Map<String, dynamic> active) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => activeIncubationScreenFor(active),
+      ),
+    );
+    if (mounted) await _checkActiveBatch();
   }
 
   // ── Step 1: What are you hatching? ──
@@ -1169,21 +1911,10 @@ class _IncubationSetupScreenState extends State<IncubationSetupScreen> {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          width: 56,
-                          height: 56,
-                          decoration: BoxDecoration(
-                            color: isSelected
-                                ? const Color(0xFFE8752A).withValues(alpha: 0.15)
-                                : const Color(0xFFE8752A).withValues(alpha: 0.08),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Center(
-                            child: Text(
-                              species.emoji,
-                              style: const TextStyle(fontSize: 30),
-                            ),
-                          ),
+                        SpeciesIllustration(
+                          species: species.name,
+                          emoji: species.emoji,
+                          size: 56,
                         ),
                         const SizedBox(width: 14),
                         Expanded(
@@ -1316,9 +2047,12 @@ class _IncubationSetupScreenState extends State<IncubationSetupScreen> {
             ),
             child: Row(
               children: [
-                Text(
-                  _selectedSpecies?.emoji ?? '\uD83E\uDD5A',
-                  style: const TextStyle(fontSize: 32),
+                // Species illustration (quail glyph placeholder until a
+                // species is chosen, exactly as before).
+                SpeciesIllustration(
+                  species: _selectedSpecies?.name,
+                  emoji: _selectedSpecies?.emoji ?? '\uD83E\uDD5A',
+                  size: 56,
                 ),
                 const SizedBox(width: 16),
                 Expanded(
@@ -1585,31 +2319,133 @@ class _InfoChip extends StatelessWidget {
   final IconData icon;
   final String label;
 
-  const _InfoChip({required this.icon, required this.label});
+  /// When true the chip uses the warm SmartHatch palette (soft peach surface,
+  /// dark orange icon). The default keeps the original cool-grey look so
+  /// other screens are unaffected.
+  final bool warm;
+
+  const _InfoChip({
+    required this.icon,
+    required this.label,
+    this.warm = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
-        color: const Color(0xFFF5F6FA),
+        color: warm ? AppColors.peach : const Color(0xFFF5F6FA),
         borderRadius: BorderRadius.circular(6),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 13, color: Colors.black45),
+          Icon(
+            icon,
+            size: 13,
+            color: warm ? AppColors.primaryDark : Colors.black45,
+          ),
           const SizedBox(width: 4),
           Text(
             label,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w500,
-              color: Colors.black54,
+              color: warm ? AppColors.textSecondary : Colors.black54,
             ),
           ),
         ],
       ),
+    );
+  }
+}
+
+// ── Shared species illustration ──
+
+/// The local bird PNG from `assets/species/` on a soft-peach circle, used
+/// everywhere a species-specific graphic appears.
+///
+/// Species names are matched case-insensitively ('Chicken', 'duck', …).
+/// Unknown or missing species fall back to [emoji] (or a generic egg glyph)
+/// so future presets never crash, and each illustration is announced to
+/// screen readers as its own image node.
+class SpeciesIllustration extends StatelessWidget {
+  const SpeciesIllustration({
+    super.key,
+    required this.species,
+    this.emoji,
+    this.size = 56,
+    this.artwork,
+    this.label,
+  });
+
+  /// Species name, e.g. 'Chicken'. Case-insensitive; may be null/unknown.
+  final String? species;
+
+  /// Fallback glyph shown when [species] has no local illustration.
+  final String? emoji;
+
+  /// Diameter of the peach circle.
+  final double size;
+
+  /// Diameter of the artwork; defaults to ~76% of [size].
+  final double? artwork;
+
+  /// Screen-reader label; defaults to 'Illustration of a [species] bird'
+  /// for known species and 'Species illustration' otherwise.
+  final String? label;
+
+  /// Species that have a local illustration asset.
+  static const Set<String> _illustrated = {'chicken', 'duck', 'quail'};
+
+  @override
+  Widget build(BuildContext context) {
+    final String key = (species ?? '').trim().toLowerCase();
+    final bool hasArt = _illustrated.contains(key);
+    final double art = artwork ?? size * 0.76;
+    final String friendly = (species ?? '').trim();
+    return Semantics(
+      container: true,
+      image: true,
+      excludeSemantics: true,
+      label: label ??
+          (hasArt ? 'Illustration of a $friendly bird' : 'Species illustration'),
+      child: Container(
+        width: size,
+        height: size,
+        decoration: const BoxDecoration(
+          color: AppColors.peach,
+          shape: BoxShape.circle,
+        ),
+        child: Center(
+          child: hasArt
+              ? SizedBox(
+                  width: art,
+                  height: art,
+                  child: Image.asset(
+                    'assets/species/$key.png',
+                    fit: BoxFit.contain,
+                    errorBuilder: (context, error, stackTrace) =>
+                        _fallbackGlyph(art),
+                  ),
+                )
+              : _fallbackGlyph(art),
+        ),
+      ),
+    );
+  }
+
+  /// Emoji when we have one, otherwise a generic egg mark - never a crash.
+  Widget _fallbackGlyph(double art) {
+    final String? glyph = emoji;
+    if (glyph != null && glyph.isNotEmpty) {
+      return Text(glyph, style: TextStyle(fontSize: art * 0.62));
+    }
+    return Icon(
+      Icons.egg_outlined,
+      size: art * 0.75,
+      color: AppColors.primaryDark,
     );
   }
 }
@@ -1718,6 +2554,10 @@ class _IncubationChecklistScreenState extends State<IncubationChecklistScreen> {
   ];
   final List<bool> _checked = [false, false, false, false];
 
+  // P6.1: blocks a second tap while the start request is in flight, so one
+  // tap can never create two sessions.
+  bool _starting = false;
+
   bool get _allChecked => _checked.every((c) => c);
 
   @override
@@ -1756,7 +2596,14 @@ class _IncubationChecklistScreenState extends State<IncubationChecklistScreen> {
               ),
               child: Row(
                 children: [
-                  Text(widget.species.emoji, style: const TextStyle(fontSize: 28)),
+                  SpeciesIllustration(
+                    species: widget.species.name,
+                    emoji: widget.species.emoji,
+                    // Footprint-matched to the old 28px glyph: this screen's
+                    // body is a non-scrollable column, so the circle must not
+                    // grow the card.
+                    size: 36,
+                  ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Column(
@@ -1836,8 +2683,13 @@ class _IncubationChecklistScreenState extends State<IncubationChecklistScreen> {
               width: double.infinity,
               height: 54,
               child: ElevatedButton(
-                onPressed: _allChecked
+                onPressed: _allChecked && !_starting
                     ? () async {
+                        // Re-entrancy gate for the whole handler: a second
+                        // tap in the same frame (before the disabled rebuild
+                        // lands) is ignored just the same.
+                        if (_starting) return;
+
                         // Final gate: an incubation can never start with an
                         // unusable egg quantity.
                         final quantityError =
@@ -1849,6 +2701,11 @@ class _IncubationChecklistScreenState extends State<IncubationChecklistScreen> {
                           return;
                         }
 
+                        // One-active rule, tap edition: the button disables
+                        // itself while the start request is in flight, so a
+                        // double-tap can never create two sessions.
+                        setState(() => _starting = true);
+
                         try {
                           final service = SupabaseService();
                           final now = DateTime.now();
@@ -1856,7 +2713,20 @@ class _IncubationChecklistScreenState extends State<IncubationChecklistScreen> {
                             widget.species.temperature.replaceAll(RegExp(r'[^0-9.]'), ''),
                           ) ?? 37.5;
 
-                          // 1. Update active_settings with current config
+                          // 1. Create the session - the one-active rule
+                          // lives here: an active batch (any species) refuses
+                          // the start, and the database unique index settles
+                          // any tie between devices or tabs.
+                          final sessionId = await service.createSession(
+                            eggType: widget.species.name,
+                            startDate: now,
+                            eggQuantity: widget.eggCount,
+                            temperature: tempNum,
+                          );
+
+                          // 2. Hardware targets are written only AFTER the
+                          // batch exists, so a refused start can never
+                          // overwrite the settings of a running batch.
                           await service.updateActiveSettings(
                             eggType: widget.species.name,
                             temperature: tempNum,
@@ -1864,14 +2734,7 @@ class _IncubationChecklistScreenState extends State<IncubationChecklistScreen> {
                             incubationDays: widget.species.incubationDays,
                           );
 
-                          // 2. Create the incubation session
-                          final sessionId = await service.createSession(
-                            eggType: widget.species.name,
-                            startDate: now,
-                            eggQuantity: widget.eggCount,
-                            temperature: tempNum,
-                          );
-                           if (mounted) {
+                          if (mounted) {
                             Navigator.pushReplacement(
                               this.context,
                               MaterialPageRoute(
@@ -1883,8 +2746,17 @@ class _IncubationChecklistScreenState extends State<IncubationChecklistScreen> {
                               ),
                             );
                           }
+                        } on ActiveBatchException catch (e) {
+                          // Farmer-friendly refusal: a batch is incubating.
+                          if (mounted) {
+                            setState(() => _starting = false);
+                            ScaffoldMessenger.of(this.context).showSnackBar(
+                              SnackBar(content: Text(e.message)),
+                            );
+                          }
                         } catch (e) {
                           if (mounted) {
+                            setState(() => _starting = false);
                             ScaffoldMessenger.of(this.context).showSnackBar(
                               SnackBar(
                                 content: Text(
@@ -1908,12 +2780,22 @@ class _IncubationChecklistScreenState extends State<IncubationChecklistScreen> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),
                   ),
-                  elevation: _allChecked ? 2 : 0,
+                  elevation: _allChecked && !_starting ? 2 : 0,
                 ),
-                child: const Text(
-                  'Start Incubation',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                ),
+                child: _starting
+                    ? const SizedBox(
+                        width: 22,
+                        height: 22,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2.4,
+                          color: Colors.white,
+                        ),
+                      )
+                    : const Text(
+                        'Start Incubation',
+                        style:
+                            TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                      ),
               ),
             ),
             const SizedBox(height: 8),
@@ -2029,7 +2911,12 @@ class IncubationStartedScreen extends StatelessWidget {
                       const SizedBox(height: 12),
                       _DetailRow(
                           label: 'Species',
-                          value: '${species.emoji} ${species.name}'),
+                          leading: SpeciesIllustration(
+                            species: species.name,
+                            emoji: species.emoji,
+                            size: 32,
+                          ),
+                          value: species.name),
                       const SizedBox(height: 12),
                       _DetailRow(label: 'Eggs', value: '$eggCount'),
                       const SizedBox(height: 12),
@@ -2126,7 +3013,6 @@ class ActiveIncubationScreen extends StatefulWidget {
   final String batchId;
   final int sessionId;
   final DateTime startDate;
-  final int currentDay;
   const ActiveIncubationScreen({
     super.key,
     required this.species,
@@ -2134,7 +3020,6 @@ class ActiveIncubationScreen extends StatefulWidget {
     required this.batchId,
     required this.sessionId,
     required this.startDate,
-    this.currentDay = 8,
   });
 
   @override
@@ -2145,10 +3030,72 @@ class _ActiveIncubationScreenState extends State<ActiveIncubationScreen> {
   final ArduinoController _arduino = ArduinoController.instance;
   final AlertMode _alertMode = AlertMode.normal;
 
+  /// The REAL saved session, loaded from Supabase on open. The finish flow
+  /// only ever acts on this row - never on screen parameters.
+  Map<String, dynamic>? _session;
+  bool _sessionLoading = true;
+  bool _sessionMissing = false;
+
   @override
   void initState() {
     super.initState();
     _arduino.addListener(_onArduinoChanged);
+    _loadSession();
+  }
+
+  /// Fetches this batch's saved row so the screen shows what is actually
+  /// stored. A batch that no longer exists (or was already finished)
+  /// replaces the incubation UI with a clear explanation.
+  Future<void> _loadSession() async {
+    try {
+      final row = await SupabaseService().getSessionById(widget.sessionId);
+      if (!mounted) return;
+      setState(() {
+        _session = row;
+        _sessionMissing = row == null;
+        _sessionLoading = false;
+      });
+    } catch (_) {
+      // Offline: keep showing the parameter-based view; the finish flow
+      // still validates and the service refuses anything that cannot save.
+      if (mounted) setState(() => _sessionLoading = false);
+    }
+  }
+
+  /// True while the stored row still says Active (or could not be fetched,
+  /// in which case the finish attempt itself is the authority).
+  bool get _isActive =>
+      !_sessionMissing &&
+      (_session == null ||
+          '${_session!['status']}'.toLowerCase() == 'active');
+
+  /// The incubation day calculated from the SAVED start date - day 1 is
+  /// the start day itself. Never a default and never a simulation.
+  int _dayFromStart(SpeciesData species) {
+    final elapsed = DateTime.now().difference(widget.startDate).inDays;
+    final day = elapsed + 1;
+    if (day < 1) return 1;
+    return day > species.incubationDays ? species.incubationDays : day;
+  }
+
+  /// Opens the validated Finish Batch dialog. On success the batch is
+  /// Completed in the database and the farmer lands on a fresh dashboard
+  /// where the result shows under Last Completed Batch and a new
+  /// incubation can be started.
+  Future<void> _confirmFinish() async {
+    final session = _session;
+    if (session == null) return;
+    final done = await showFinishBatchDialog(context, session: session);
+    if (done && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('${widget.batchId} finished - see History.')),
+      );
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => const MainNavigation()),
+        (route) => false,
+      );
+    }
   }
 
   @override
@@ -2163,11 +3110,82 @@ class _ActiveIncubationScreenState extends State<ActiveIncubationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (_sessionLoading) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Current Incubation')),
+        body: const Center(child: CircularProgressIndicator()),
+      );
+    }
+    if (!_isActive) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Current Incubation')),
+        body: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.check_circle_outline,
+                  size: 56, color: AppColors.success),
+              const SizedBox(height: 20),
+              const Text(
+                'This batch is no longer incubating',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                '${widget.batchId} has already been finished. '
+                'Its hatch results are saved in History.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 14.5,
+                  height: 1.4,
+                  color: Colors.grey.shade600,
+                ),
+              ),
+              const SizedBox(height: 28),
+              SizedBox(
+                width: double.infinity,
+                height: 54,
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => const MainNavigation()),
+                      (route) => false,
+                    );
+                  },
+                  icon: const Icon(Icons.home_outlined, size: 20),
+                  label: const Text(
+                    'Back to Dashboard',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primaryDark,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    elevation: 2,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     final species = widget.species;
     final eggCount = widget.eggCount;
     final batchId = widget.batchId;
     final startDate = widget.startDate;
-    final currentDay = widget.currentDay;
+    final currentDay = _dayFromStart(species);
     final totalDays = species.incubationDays;
     final progress = currentDay / totalDays;
     final hatchDate = startDate.add(Duration(days: totalDays));
@@ -2359,7 +3377,11 @@ class _ActiveIncubationScreenState extends State<ActiveIncubationScreen> {
             // ── SPECIES + BATCH ──
             Row(
               children: [
-                Text(species.emoji, style: const TextStyle(fontSize: 30)),
+                SpeciesIllustration(
+                  species: species.name,
+                  emoji: species.emoji,
+                  size: 52,
+                ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
@@ -2655,6 +3677,44 @@ class _ActiveIncubationScreenState extends State<ActiveIncubationScreen> {
               ),
             ),
 
+            // ── FINISH BATCH (P6.3) ──
+            // The only way a batch ends: the farmer enters the real hatched
+            // count in a validated dialog and confirms. Nothing ever
+            // completes automatically.
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              height: 54,
+              child: OutlinedButton.icon(
+                onPressed: _confirmFinish,
+                icon: const Icon(Icons.check_circle_outline, size: 20),
+                label: const Text(
+                  'Finish Batch',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                ),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: AppColors.danger,
+                  side: BorderSide(
+                    color: AppColors.danger.withValues(alpha: 0.5),
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'Finishing ends this incubation and records the number of '
+              'eggs that actually hatched.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 12,
+                height: 1.4,
+                color: AppColors.textSecondary,
+              ),
+            ),
+
             const SizedBox(height: 24),
             SizedBox(
               width: double.infinity,
@@ -2919,6 +3979,18 @@ class _HistoryScreenState extends State<HistoryScreen> {
   List<BatchData> _batches = [];
   bool _loading = true;
 
+  // Local-only filters - purely in-memory views over the loaded batches;
+  // stored records are never changed, deleted, or overwritten.
+  String _statusFilter = 'All'; // All | Active | Completed
+  String _speciesFilter = 'All'; // All | Chicken | Duck | Quail
+  int _daysFilter = 0; // 0 = any time, otherwise a "last N days" cutoff
+
+  bool get _hasFilters =>
+      _statusFilter != 'All' || _speciesFilter != 'All' || _daysFilter != 0;
+
+  bool get _hasActiveQuery =>
+      _searchQuery.isNotEmpty || _hasFilters;
+
   @override
   void initState() {
     super.initState();
@@ -2950,13 +4022,245 @@ class _HistoryScreenState extends State<HistoryScreen> {
     }
   }
 
-  List<BatchData> get _filteredBatches {
-    if (_searchQuery.isEmpty) return _batches;
-    final q = _searchQuery.toLowerCase();
-    return _batches.where((b) {
-      return b.batchNumber.toLowerCase().contains(q) ||
-          b.species.toLowerCase().contains(q);
+  /// Applies the search text and the status/species/date filters to an
+  /// in-memory list. Used both for the visible list and for the live count
+  /// preview inside the filter sheet.
+  static List<BatchData> _applyFilters(
+    List<BatchData> batches, {
+    required String query,
+    required String status,
+    required String species,
+    required int days,
+  }) {
+    final q = query.trim().toLowerCase();
+    final cutoff =
+        days == 0 ? null : DateTime.now().subtract(Duration(days: days));
+    return batches.where((b) {
+      if (q.isNotEmpty &&
+          !(b.batchNumber.toLowerCase().contains(q) ||
+              b.species.toLowerCase().contains(q))) {
+        return false;
+      }
+      if (status != 'All' && b.status != status) return false;
+      if (species != 'All' && b.species != species) return false;
+      if (cutoff != null) {
+        final start = DateTime.tryParse(b.startDate);
+        if (start == null || start.isBefore(cutoff)) return false;
+      }
+      return true;
     }).toList();
+  }
+
+  List<BatchData> get _filteredBatches => _applyFilters(
+        _batches,
+        query: _searchQuery,
+        status: _statusFilter,
+        species: _speciesFilter,
+        days: _daysFilter,
+      );
+
+  void _resetAllFilters() {
+    _searchController.clear();
+    setState(() {
+      _searchQuery = '';
+      _statusFilter = 'All';
+      _speciesFilter = 'All';
+      _daysFilter = 0;
+    });
+  }
+
+  /// Opens the filter bottom sheet with staged selections; nothing is
+  /// applied until the user confirms with the "Show ... batches" button.
+  Future<void> _openFilterSheet() async {
+    var status = _statusFilter;
+    var species = _speciesFilter;
+    var days = _daysFilter;
+
+    final applied = await showModalBottomSheet<_FilterSelection>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: AppColors.card,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (sheetContext) => StatefulBuilder(
+        builder: (sheetContext, setSheetState) {
+          final int count = _applyFilters(
+            _batches,
+            query: _searchQuery,
+            status: status,
+            species: species,
+            days: days,
+          ).length;
+          return SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.xl, AppSpacing.sm, AppSpacing.xl, AppSpacing.lg),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Drag handle.
+                  Center(
+                    child: Container(
+                      width: 40,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: AppColors.borderWarm,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
+                  Row(
+                    children: [
+                      const Expanded(
+                        child: Text(
+                          'Filter batches',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.textPrimary,
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        tooltip: 'Close filters',
+                        onPressed: () => Navigator.of(sheetContext).pop(),
+                        icon: const Icon(Icons.close,
+                            color: AppColors.textSecondary),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
+                  const _SectionLabel(text: 'STATUS'),
+                  const SizedBox(height: AppSpacing.sm),
+                  Wrap(
+                    spacing: AppSpacing.sm,
+                    runSpacing: AppSpacing.sm,
+                    children: [
+                      for (final option in const ['All', 'Active', 'Completed'])
+                        _FilterChoiceChip(
+                          label: option,
+                          selected: status == option,
+                          onTap: () =>
+                              setSheetState(() => status = option),
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
+                  const _SectionLabel(text: 'SPECIES'),
+                  const SizedBox(height: AppSpacing.sm),
+                  Wrap(
+                    spacing: AppSpacing.sm,
+                    runSpacing: AppSpacing.sm,
+                    children: [
+                      for (final option
+                          in const ['All', 'Chicken', 'Duck', 'Quail'])
+                        _FilterChoiceChip(
+                          label: option,
+                          selected: species == option,
+                          onTap: () =>
+                              setSheetState(() => species = option),
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
+                  const _SectionLabel(text: 'DATE'),
+                  const SizedBox(height: AppSpacing.sm),
+                  Wrap(
+                    spacing: AppSpacing.sm,
+                    runSpacing: AppSpacing.sm,
+                    children: [
+                      _FilterChoiceChip(
+                        label: 'Any time',
+                        selected: days == 0,
+                        onTap: () => setSheetState(() => days = 0),
+                      ),
+                      _FilterChoiceChip(
+                        label: 'Last 7 days',
+                        selected: days == 7,
+                        onTap: () => setSheetState(() => days = 7),
+                      ),
+                      _FilterChoiceChip(
+                        label: 'Last 30 days',
+                        selected: days == 30,
+                        onTap: () => setSheetState(() => days = 30),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
+                  const Text(
+                    'Filters combine with your search.',
+                    style: TextStyle(
+                        fontSize: 12, color: AppColors.textSecondary),
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
+                  Row(
+                    children: [
+                      SizedBox(
+                        height: 48,
+                        child: OutlinedButton(
+                          onPressed: () => setSheetState(() {
+                            status = 'All';
+                            species = 'All';
+                            days = 0;
+                          }),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: AppColors.primaryDark,
+                            side: const BorderSide(color: AppColors.borderWarm),
+                            shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.circular(AppRadius.control),
+                            ),
+                          ),
+                          child: const Text('Reset'),
+                        ),
+                      ),
+                      const SizedBox(width: AppSpacing.md),
+                      Expanded(
+                        child: SizedBox(
+                          height: 48,
+                          child: ElevatedButton(
+                            onPressed: () => Navigator.of(sheetContext).pop(
+                              _FilterSelection(status, species, days),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.primaryDark,
+                              foregroundColor: Colors.white,
+                              disabledBackgroundColor:
+                                  AppColors.primaryDark.withValues(alpha: 0.6),
+                              shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.circular(AppRadius.control),
+                              ),
+                              elevation: 0,
+                            ),
+                            child: Text(
+                              'Show $count ${count == 1 ? 'batch' : 'batches'}',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+
+    if (applied != null && mounted) {
+      setState(() {
+        _statusFilter = applied.status;
+        _speciesFilter = applied.species;
+        _daysFilter = applied.days;
+      });
+    }
   }
 
   @override
@@ -2992,61 +4296,133 @@ class _HistoryScreenState extends State<HistoryScreen> {
           children: [
             const Text(
               'View and search your previous batches.',
-              style: TextStyle(fontSize: 14, color: Colors.black54),
+              style: TextStyle(
+                  fontSize: 14, color: AppColors.textSecondary),
             ),
             const SizedBox(height: 16),
-            TextField(
-              controller: _searchController,
-              onChanged: (value) {
-                setState(() {
-                  _searchQuery = value;
-                });
-              },
-              style: const TextStyle(fontSize: 15),
-              decoration: InputDecoration(
-                hintText: 'Search batches...',
-                hintStyle: TextStyle(
-                  color: Colors.grey.shade400,
-                  fontSize: 15,
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _searchController,
+                    onChanged: (value) {
+                      setState(() {
+                        _searchQuery = value;
+                      });
+                    },
+                    style: const TextStyle(fontSize: 15),
+                    decoration: InputDecoration(
+                      hintText: 'Search batches...',
+                      hintStyle: TextStyle(
+                        color: Colors.grey.shade400,
+                        fontSize: 15,
+                      ),
+                      prefixIcon: Icon(
+                        Icons.search,
+                        color: Colors.grey.shade400,
+                        size: 22,
+                      ),
+                      suffixIcon: _searchQuery.isNotEmpty
+                          ? IconButton(
+                              icon: Icon(
+                                Icons.clear,
+                                color: Colors.grey.shade400,
+                                size: 20,
+                              ),
+                              onPressed: () {
+                                _searchController.clear();
+                                setState(() {
+                                  _searchQuery = '';
+                                });
+                              },
+                            )
+                          : null,
+                      filled: true,
+                      fillColor: Colors.white,
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 14),
+                      border: OutlineInputBorder(
+                        borderRadius:
+                            BorderRadius.circular(AppRadius.control),
+                        borderSide:
+                            const BorderSide(color: AppColors.borderWarm),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius:
+                            BorderRadius.circular(AppRadius.control),
+                        borderSide:
+                            const BorderSide(color: AppColors.borderWarm),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius:
+                            BorderRadius.circular(AppRadius.control),
+                        borderSide: const BorderSide(
+                            color: AppColors.primaryDark, width: 1.5),
+                      ),
+                    ),
+                  ),
                 ),
-                prefixIcon: Icon(
-                  Icons.search,
-                  color: Colors.grey.shade400,
-                  size: 22,
-                ),
-                suffixIcon: _searchQuery.isNotEmpty
-                    ? IconButton(
-                        icon: Icon(
-                          Icons.clear,
-                          color: Colors.grey.shade400,
-                          size: 20,
+                const SizedBox(width: 10),
+                // 48x48 filter button with an accent dot while filters are
+                // active; opens the filter bottom sheet.
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: AppColors.card,
+                    borderRadius:
+                        BorderRadius.circular(AppRadius.control),
+                  ),
+                  // Border painted as foreground so it does not inset the
+                  // tappable area: the InkWell keeps the full 48x48 target.
+                  foregroundDecoration: BoxDecoration(
+                    borderRadius:
+                        BorderRadius.circular(AppRadius.control),
+                    border: Border.all(
+                      color: _hasFilters
+                          ? AppColors.primaryDark
+                          : AppColors.borderWarm,
+                    ),
+                  ),
+                  child: Semantics(
+                    button: true,
+                    label: 'Filters',
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: _openFilterSheet,
+                        borderRadius:
+                            BorderRadius.circular(AppRadius.control),
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Icon(
+                              Icons.tune,
+                              size: 22,
+                              color: _hasFilters
+                                  ? AppColors.primaryDark
+                                  : AppColors.textSecondary,
+                            ),
+                            if (_hasFilters)
+                              Positioned(
+                                top: 10,
+                                right: 10,
+                                child: Container(
+                                  width: 8,
+                                  height: 8,
+                                  decoration: const BoxDecoration(
+                                    color: AppColors.primaryDark,
+                                    shape: BoxShape.circle,
+                                  ),
+                                ),
+                              ),
+                          ],
                         ),
-                        onPressed: () {
-                          _searchController.clear();
-                          setState(() {
-                            _searchQuery = '';
-                          });
-                        },
-                      )
-                    : null,
-                filled: true,
-                fillColor: Colors.white,
-                contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16, vertical: 14),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(14),
-                  borderSide: BorderSide(color: Colors.grey.shade200),
+                      ),
+                    ),
+                  ),
                 ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(14),
-                  borderSide: BorderSide(color: Colors.grey.shade200),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(14),
-                  borderSide: const BorderSide(
-                      color: Color(0xFFE8752A), width: 1.5),
-                ),
-              ),
+              ],
             ),
             const SizedBox(height: 16),
             if (_loading)
@@ -3062,17 +4438,20 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 child: Column(
                   children: [
                     Icon(
-                      _searchQuery.isEmpty
-                          ? Icons.egg_outlined
-                          : Icons.search_off,
+                      // A filtered-out result is a search miss, not an
+                      // empty incubator.
+                      _hasActiveQuery
+                          ? Icons.search_off
+                          : Icons.egg_outlined,
                       size: 48,
                       color: Colors.grey.shade300,
                     ),
                     const SizedBox(height: 12),
                     Text(
-                      _searchQuery.isEmpty
-                          ? 'No batches yet'
-                          : 'No batches found',
+                      _hasActiveQuery
+                          ? 'No batches match your search or filters'
+                          : 'No batches yet',
+                      textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
@@ -3081,14 +4460,34 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      _searchQuery.isEmpty
-                          ? 'Start your first incubation!'
-                          : 'Try a different search.',
+                      _hasActiveQuery
+                          ? 'Try changing your search or resetting the filters.'
+                          : 'Start your first incubation!',
+                      textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 13,
                         color: Colors.grey.shade400,
                       ),
                     ),
+                    if (_hasActiveQuery) ...[
+                      const SizedBox(height: 16),
+                      OutlinedButton.icon(
+                        onPressed: _resetAllFilters,
+                        icon: const Icon(Icons.filter_alt_off_outlined,
+                            size: 18),
+                        label: const Text('Reset filters'),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: AppColors.primaryDark,
+                          side: const BorderSide(
+                              color: AppColors.borderWarm),
+                          minimumSize: const Size(48, 48),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                                AppRadius.control),
+                          ),
+                        ),
+                      ),
+                    ],
                   ],
                 ),
               ),
@@ -3106,11 +4505,103 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     eggsHatched: batch.eggsHatched,
                     status: batch.status,
                     isSuccess: batch.isSuccess,
+                    // Reloading on return keeps Active/Completed statuses
+                    // and hatch results accurate after the details screen -
+                    // including a batch finished from its details.
+                    onOpenDetails: (b) async {
+                      await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => BatchDetailsScreen(batch: b),
+                        ),
+                      );
+                      if (mounted) _loadBatches();
+                    },
                   ),
                 ),
               ),
           ],
         ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Staged selections coming back from the History filter sheet.
+class _FilterSelection {
+  const _FilterSelection(this.status, this.species, this.days);
+
+  final String status;
+  final String species;
+  final int days;
+}
+
+/// Warm, touch-friendly (>=48px) choice chip for the filter sheet.
+class _FilterChoiceChip extends StatelessWidget {
+  const _FilterChoiceChip({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      selected: selected,
+      label: label,
+      child: Container(
+        // Guarantees the 48px accessibility touch minimum.
+        constraints: const BoxConstraints(minHeight: 48),
+        decoration: BoxDecoration(
+          color: selected ? AppColors.peach : AppColors.card,
+          borderRadius: BorderRadius.circular(AppRadius.control),
+        ),
+        // Border painted as foreground so it does not inset the tappable
+        // area: the InkWell keeps the full 48px touch target.
+        foregroundDecoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(AppRadius.control),
+          border: Border.all(
+            color: selected ? AppColors.primaryDark : AppColors.borderWarm,
+            width: selected ? 1.5 : 1,
+          ),
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(AppRadius.control),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.lg, vertical: 13),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (selected) ...[
+                    const Icon(Icons.check,
+                        size: 16, color: AppColors.primaryDark),
+                    const SizedBox(width: 6),
+                  ],
+                  Text(
+                    label,
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight:
+                          selected ? FontWeight.w600 : FontWeight.w500,
+                      color: selected
+                          ? AppColors.primaryDark
+                          : AppColors.textSecondary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
       ),
     );
@@ -3179,6 +4670,27 @@ class _BatchDetailsScreenState extends State<BatchDetailsScreen> {
       );
 
   bool get _isCompleted => widget.batch.status.toLowerCase() == 'completed';
+
+  /// The stored-session view of this batch: enough for the shared finish
+  /// flow and the Active Incubation screen, assembled from what History
+  /// already loaded.
+  Map<String, dynamic> get _sessionRow => {
+        'id': widget.batch.id,
+        'egg_type': widget.batch.species,
+        'start_date': widget.batch.startDate,
+        'egg_quantity': widget.batch.eggsTotal,
+        'status': widget.batch.status,
+        'end_date': widget.batch.endDate,
+        'eggs_hatched': widget.batch.eggsHatched,
+      };
+
+  /// The SAME validated completion flow as the Active Incubation screen
+  /// (P6.4). On success the dialog performed the database update; popping
+  /// back to History reloads it so the batch shows as Completed.
+  Future<void> _finishFromDetails() async {
+    final done = await showFinishBatchDialog(context, session: _sessionRow);
+    if (done && mounted) Navigator.pop(context);
+  }
 
   double? _liveValue(List<String> keys) {
     final reading = _reading;
@@ -3301,17 +4813,13 @@ class _BatchDetailsScreenState extends State<BatchDetailsScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Center(
-              child: Container(
-                width: 80,
-                height: 80,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFE8752A).withValues(alpha: 0.1),
-                  shape: BoxShape.circle,
-                ),
-                child: Center(
-                  child: Text(speciesData.emoji,
-                      style: const TextStyle(fontSize: 44)),
-                ),
+              // Quail batch → quail illustration, etc.; species presets
+              // without a preset (e.g. 'Goose') resolve to the same
+              // fallback species the emoji path used before.
+              child: SpeciesIllustration(
+                species: speciesData.name,
+                emoji: speciesData.emoji,
+                size: 80,
               ),
             ),
             const SizedBox(height: 20),
@@ -3333,6 +4841,64 @@ class _BatchDetailsScreenState extends State<BatchDetailsScreen> {
               ),
             ),
             const SizedBox(height: 24),
+
+            // ── ACTIVE BATCH ACTIONS (P6.4) ──
+            // An incubating batch is opened or finished right here, through
+            // the exact same validated flow as the Current Incubation
+            // screen. A completed batch offers neither - results never
+            // revert to incubating.
+            if (!_isCompleted) ...[
+              SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: OutlinedButton.icon(
+                  onPressed: () async {
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => activeIncubationScreenFor(_sessionRow),
+                      ),
+                    );
+                    if (mounted) setState(() {});
+                  },
+                  icon: const Icon(Icons.visibility_outlined, size: 20),
+                  label: const Text(
+                    'View Current Incubation',
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppColors.primaryDark,
+                    side: const BorderSide(color: AppColors.borderWarm),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+              SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: OutlinedButton.icon(
+                  onPressed: _finishFromDetails,
+                  icon: const Icon(Icons.check_circle_outline, size: 20),
+                  label: const Text(
+                    'Finish Batch',
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppColors.danger,
+                    side: BorderSide(
+                      color: AppColors.danger.withValues(alpha: 0.5),
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+            ],
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(16),
@@ -3351,14 +4917,18 @@ class _BatchDetailsScreenState extends State<BatchDetailsScreen> {
                   const SizedBox(height: 12),
                   _DetailRow(
                       label: 'Total Eggs', value: '${batch.eggsTotal}'),
-                  const SizedBox(height: 12),
-                  _DetailRow(
-                      label: 'Hatched', value: '${batch.eggsHatched}'),
-                  const SizedBox(height: 12),
-                  _DetailRow(
-                    label: 'Success Rate',
-                    value: '${(hatchRate * 100).toStringAsFixed(0)}%',
-                  ),
+                  // Hatch results only exist once the farmer finishes the
+                  // batch - an incubating batch shows no fabricated counts.
+                  if (_isCompleted) ...[
+                    const SizedBox(height: 12),
+                    _DetailRow(
+                        label: 'Hatched', value: '${batch.eggsHatched}'),
+                    const SizedBox(height: 12),
+                    _DetailRow(
+                      label: 'Success Rate',
+                      value: '${(hatchRate * 100).toStringAsFixed(0)}%',
+                    ),
+                  ],
                   const SizedBox(height: 12),
                   _DetailRow(
                       label: 'Temperature', value: batch.temperature),
@@ -4470,43 +6040,118 @@ class _HomeHeader extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'SmartHatch',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
+              Row(
+                children: [
+                  // Brand mark: the SmartHatch logo on a soft peach badge
+                  // (matches the onboarding branding; egg icon as fallback).
+                  Container(
+                    width: 38,
+                    height: 38,
+                    decoration: const BoxDecoration(
+                      color: AppColors.peach,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Center(
+                      child: Semantics(
+                        image: true,
+                        label: 'SmartHatch logo',
+                        excludeSemantics: true,
+                        child: Container(
+                          width: 30,
+                          height: 30,
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Center(
+                            child: SizedBox(
+                              width: 26,
+                              height: 26,
+                              child: Image.asset(
+                                'assets/logo.png',
+                                fit: BoxFit.contain,
+                                errorBuilder: (context, error, stackTrace) =>
+                                    const Icon(
+                                  Icons.egg_outlined,
+                                  size: 20,
+                                  color: AppColors.primaryDark,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  const Expanded(
+                    child: Text(
+                      'SmartHatch',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.textPrimary,
+                        height: 1.2,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 2),
-              Text(
-                dateStr,
-                style: TextStyle(fontSize: 13, color: Colors.grey.shade500),
+              const SizedBox(height: 6),
+              Row(
+                children: [
+                  const Icon(
+                    Icons.calendar_today_outlined,
+                    size: 13,
+                    color: AppColors.textSecondary,
+                  ),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      dateStr,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
         ),
-        GestureDetector(
-          onTap: onProfileTap,
-          child: Container(
-            width: 42,
-            height: 42,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.circle,
-              border: Border.all(color: Colors.grey.shade200),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.04),
-                  blurRadius: 6,
-                  offset: const Offset(0, 2),
+        const SizedBox(width: 12),
+        // Profile shortcut - a 48px target, labelled for screen readers.
+        Semantics(
+          button: true,
+          label: 'Open profile',
+          child: Material(
+            color: Colors.transparent,
+            clipBehavior: Clip.antiAlias,
+            shape: const CircleBorder(),
+            child: InkWell(
+              onTap: onProfileTap,
+              customBorder: const CircleBorder(),
+              child: Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: AppColors.card,
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: AppColors.primaryDark.withValues(alpha: 0.16),
+                  ),
+                  boxShadow: AppShadows.card,
                 ),
-              ],
-            ),
-            child: const Icon(
-              Icons.person_outline,
-              size: 22,
-              color: Colors.black54,
+                child: const Icon(
+                  Icons.person_outline,
+                  size: 24,
+                  color: AppColors.textPrimary,
+                ),
+              ),
             ),
           ),
         ),
@@ -4534,44 +6179,50 @@ class _OverviewCards extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: GestureDetector(
-            onTap: onTotalBatchesTap,
-            child: _OverviewCard(
-              value: totalBatches,
-              label: 'TOTAL BATCHES',
-              supportingText: 'completed',
-              icon: Icons.inventory_2_outlined,
+    // IntrinsicHeight + stretch gives the three cards one shared height
+    // (tidy aligned bottoms) without assuming a fixed height - stretch alone
+    // is invalid inside the scroll view's unbounded height.
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(
+            child: GestureDetector(
+              onTap: onTotalBatchesTap,
+              child: _OverviewCard(
+                value: totalBatches,
+                label: 'TOTAL BATCHES',
+                supportingText: 'completed',
+                icon: Icons.inventory_2_outlined,
+              ),
             ),
           ),
-        ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: GestureDetector(
-            onTap: onBestSuccessTap,
-            child: _OverviewCard(
-              value: bestSuccess,
-              label: 'BEST HATCH\nSUCCESS',
-              supportingText: 'batch success',
-              icon: Icons.emoji_events_outlined,
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: GestureDetector(
+              onTap: onBestSuccessTap,
+              child: _OverviewCard(
+                value: bestSuccess,
+                label: 'BEST HATCH\nSUCCESS',
+                supportingText: 'batch success',
+                icon: Icons.emoji_events_outlined,
+              ),
             ),
           ),
-        ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: GestureDetector(
-            onTap: onTopSpeciesTap,
-            child: _OverviewCard(
-              value: topSpecies,
-              label: 'TOP SPECIES',
-              supportingText: '',
-              icon: Icons.egg_outlined,
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: GestureDetector(
+              onTap: onTopSpeciesTap,
+              child: _OverviewCard(
+                value: topSpecies,
+                label: 'TOP SPECIES',
+                supportingText: '',
+                icon: Icons.egg_outlined,
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -4594,47 +6245,64 @@ class _OverviewCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: Colors.grey.shade100),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        color: AppColors.card,
+        borderRadius: BorderRadius.circular(AppRadius.card),
+        border: Border.all(
+          color: AppColors.primaryDark.withValues(alpha: 0.10),
+        ),
+        boxShadow: AppShadows.card,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: const Color(0xFFE8752A), size: 20),
-          const SizedBox(height: 10),
-          Text(
-            value,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
+          // Warm icon badge keeps the accent friendly and on-brand.
+          Container(
+            width: 38,
+            height: 38,
+            decoration: const BoxDecoration(
+              color: AppColors.peach,
+              shape: BoxShape.circle,
             ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
+            child: Icon(icon, color: AppColors.primaryDark, size: 20),
           ),
-          const SizedBox(height: 2),
+          const SizedBox(height: 12),
+          // Scales long values (e.g. a species name) down instead of clipping
+          // them on narrow screens.
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(
+              value,
+              maxLines: 1,
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w700,
+                color: AppColors.textPrimary,
+                height: 1.2,
+              ),
+            ),
+          ),
+          const SizedBox(height: 4),
           Text(
             label,
-            style: TextStyle(
-              fontSize: 10,
-              fontWeight: FontWeight.w600,
-              color: Colors.grey.shade500,
-              letterSpacing: 0.3,
+            style: const TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textSecondary,
+              letterSpacing: 0.4,
+              height: 1.3,
             ),
           ),
           if (supportingText.isNotEmpty) ...[
             const SizedBox(height: 2),
             Text(
               supportingText,
-              style: TextStyle(fontSize: 11, color: Colors.grey.shade400),
+              style: const TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w500,
+                color: AppColors.textSecondary,
+                height: 1.3,
+              ),
             ),
           ],
         ],
@@ -4659,16 +6327,14 @@ class _LastBatchCard extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: Colors.grey.shade100),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        // Subtle cream highlight + warm hairline: noticeable, but clearly a
+        // summary card - not an "active/incubating" status.
+        color: AppColors.cream,
+        borderRadius: BorderRadius.circular(AppRadius.card),
+        border: Border.all(
+          color: AppColors.primaryDark.withValues(alpha: 0.14),
+        ),
+        boxShadow: AppShadows.card,
       ),
       // The whole card is one navigation target: a farmer can tap anywhere -
       // including the "View Details" footer - to open the batch details.
@@ -4676,31 +6342,21 @@ class _LastBatchCard extends StatelessWidget {
         button: true,
         label: 'View details for ${batch.batchNumber}',
         child: Material(
-          // Transparent so the white card below still shows through; the ink
+          // Transparent so the cream card below still shows through; the ink
           // splash then paints above it and gives visible tap feedback.
           color: Colors.transparent,
           child: InkWell(
             onTap: onTap,
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(AppRadius.card),
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
                   Row(
                     children: [
-                      Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFE8752A).withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: const Icon(
-                          Icons.egg_outlined,
-                          color: Color(0xFFE8752A),
-                          size: 22,
-                        ),
-                      ),
+                      // Batch's species illustration; unknown species keep a
+                      // generic egg mark in the same peach circle.
+                      SpeciesIllustration(species: batch.species, size: 40),
                       const SizedBox(width: 12),
                       Expanded(
                         child: Column(
@@ -4708,19 +6364,23 @@ class _LastBatchCard extends StatelessWidget {
                           children: [
                             Text(
                               batch.batchNumber,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
-                                color: Colors.black87,
+                                color: AppColors.textPrimary,
                               ),
                             ),
                             const SizedBox(height: 2),
                             Text(
                               '${batch.species.toUpperCase()} \u2022 ${batch.startDate}',
-                              style: TextStyle(
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w500,
-                                color: Colors.grey.shade500,
+                                color: AppColors.textSecondary,
                                 letterSpacing: 0.3,
                               ),
                             ),
@@ -4731,16 +6391,17 @@ class _LastBatchCard extends StatelessWidget {
                         padding:
                             const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                         decoration: BoxDecoration(
-                          color:
-                              const Color(0xFF4CAF50).withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(20),
+                          // Hatch percentage only - green here is a result
+                          // figure, not a claim that the batch is running.
+                          color: AppColors.success.withValues(alpha: 0.10),
+                          borderRadius: BorderRadius.circular(AppRadius.badge),
                         ),
                         child: Text(
                           percentage,
                           style: const TextStyle(
                             fontSize: 13,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF4CAF50),
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.success,
                           ),
                         ),
                       ),
@@ -4748,7 +6409,7 @@ class _LastBatchCard extends StatelessWidget {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 14),
-                    child: Divider(height: 1, color: Colors.grey.shade200),
+                    child: Divider(height: 1, color: const Color(0x14000000)),
                   ),
                   Row(
                     children: [
@@ -4758,10 +6419,10 @@ class _LastBatchCard extends StatelessWidget {
                           children: [
                             Text(
                               'RESULT',
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 11,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.grey.shade500,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.textSecondary,
                                 letterSpacing: 0.5,
                               ),
                             ),
@@ -4769,9 +6430,9 @@ class _LastBatchCard extends StatelessWidget {
                             Text(
                               '${batch.eggsHatched}/${batch.eggsTotal} hatched',
                               style: const TextStyle(
-                                fontSize: 15,
+                                fontSize: 16,
                                 fontWeight: FontWeight.w600,
-                                color: Colors.black87,
+                                color: AppColors.textPrimary,
                               ),
                             ),
                           ],
@@ -4780,7 +6441,7 @@ class _LastBatchCard extends StatelessWidget {
                       Container(
                         width: 1,
                         height: 36,
-                        color: Colors.grey.shade200,
+                        color: const Color(0x1F000000),
                       ),
                       const SizedBox(width: 16),
                       Expanded(
@@ -4789,10 +6450,10 @@ class _LastBatchCard extends StatelessWidget {
                           children: [
                             Text(
                               'AVG TEMP',
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 11,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.grey.shade500,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.textSecondary,
                                 letterSpacing: 0.5,
                               ),
                             ),
@@ -4800,9 +6461,9 @@ class _LastBatchCard extends StatelessWidget {
                             Text(
                               batch.temperature,
                               style: const TextStyle(
-                                fontSize: 15,
+                                fontSize: 16,
                                 fontWeight: FontWeight.w600,
-                                color: Colors.black87,
+                                color: AppColors.textPrimary,
                               ),
                             ),
                           ],
@@ -4822,14 +6483,14 @@ class _LastBatchCard extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
-                          color: const Color(0xFFE8752A),
+                          color: AppColors.primaryDark,
                         ),
                       ),
                       const SizedBox(width: 4),
                       const Icon(
                         Icons.chevron_right,
                         size: 18,
-                        color: Color(0xFFE8752A),
+                        color: AppColors.primaryDark,
                       ),
                     ],
                   ),
@@ -4862,83 +6523,107 @@ class _SpeciesCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: Colors.grey.shade100),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.04),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: 56,
-              height: 56,
-              decoration: BoxDecoration(
-                color: const Color(0xFFE8752A).withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Center(
-                child: Text(emoji, style: const TextStyle(fontSize: 28)),
-              ),
-            ),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Column(
+    // Illustration badge: ~64px artwork on an 84px peach circle on normal
+    // phones, slightly smaller below 360px so the text column keeps room.
+    final bool narrow = MediaQuery.of(context).size.width < 360;
+    final double badgeSize = narrow ? 72 : 84;
+    final double imageSize = narrow ? 52 : 64;
+    // One tappable card per species: warm white surface, soft peach
+    // illustration badge, ripple feedback and a screen-reader label naming
+    // the species.
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.card,
+        borderRadius: BorderRadius.circular(AppRadius.card),
+        border: Border.all(color: AppColors.borderWarm),
+        boxShadow: AppShadows.card,
+      ),
+      child: Semantics(
+        button: true,
+        label: 'Select $name',
+        child: Material(
+          // Transparent so the white card below still shows through; the ink
+          // splash then paints above it and gives visible tap feedback.
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(AppRadius.card),
+            child: Padding(
+              padding: const EdgeInsets.all(AppSpacing.lg),
+              child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    name,
-                    style: const TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black87,
+                  // Local bird illustration on a soft-peach circle; a touch
+                  // smaller on the narrowest phones so the text column keeps
+                  // room. Falls back to the emoji if an asset cannot load.
+                  SpeciesIllustration(
+                    species: name,
+                    emoji: emoji,
+                    size: badgeSize,
+                    artwork: imageSize,
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.textPrimary,
+                            height: 1.2,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        // Wraps onto a second run instead of overflowing on
+                        // narrow screens - every chip stays visible.
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 6,
+                          children: [
+                            _InfoChip(
+                              icon: Icons.calendar_today_rounded,
+                              label: '$incubationDays days',
+                              warm: true,
+                            ),
+                            _InfoChip(
+                              icon: Icons.thermostat,
+                              label: temperature,
+                              warm: true,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          description,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 13,
+                            color: AppColors.textSecondary,
+                            height: 1.35,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 5),
-                  Row(
-                    children: [
-                      _InfoChip(
-                        icon: Icons.calendar_today_rounded,
-                        label: '$incubationDays days',
-                      ),
-                      const SizedBox(width: 8),
-                      _InfoChip(
-                        icon: Icons.thermostat,
-                        label: temperature,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    description,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontSize: 13,
-                      color: Colors.black54,
-                      height: 1.3,
+                  const SizedBox(width: 8),
+                  const Padding(
+                    padding: EdgeInsets.only(top: 2),
+                    child: Icon(
+                      Icons.chevron_right,
+                      size: 22,
+                      color: AppColors.primaryDark,
                     ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(width: 8),
-            const Padding(
-              padding: EdgeInsets.only(top: 2),
-              child: Icon(Icons.chevron_right, color: Colors.black38),
-            ),
-          ],
+          ),
         ),
       ),
     );
@@ -4956,6 +6641,11 @@ class _HistoryBatchCard extends StatelessWidget {
   final String status;
   final bool isSuccess;
 
+  /// Opens the details for this batch. When provided (by History) it also
+  /// reloads the list on return, so a batch finished from its details shows
+  /// the saved result immediately. Falls back to a plain push otherwise.
+  final Future<void> Function(BatchData batch)? onOpenDetails;
+
   const _HistoryBatchCard({
     required this.id,
     required this.batchNumber,
@@ -4966,6 +6656,7 @@ class _HistoryBatchCard extends StatelessWidget {
     required this.eggsHatched,
     required this.status,
     required this.isSuccess,
+    this.onOpenDetails,
   });
 
   String _formatDate(String dateStr) {
@@ -4984,150 +6675,225 @@ class _HistoryBatchCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final double hatchRate = eggsTotal > 0 ? eggsHatched / eggsTotal : 0;
     final percentage = '${(hatchRate * 100).round()}%';
+    // Worded status badge: green when the batch finished, amber while it is
+    // still running (an in-progress batch is not an error, so no red).
+    final bool completed = status.toLowerCase() == 'completed';
 
-    return GestureDetector(
-      onTap: () {
-        final batch = BatchData(
-          id: id,
-          batchNumber: batchNumber,
-          species: species,
-          startDate: startDate,
-          endDate: endDate,
-          eggsTotal: eggsTotal,
-          eggsHatched: eggsHatched,
-          temperature: '37.5\u00B0C',
-          status: status,
-          isSuccess: isSuccess,
-        );
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => BatchDetailsScreen(batch: batch),
-          ),
-        );
-      },
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: Colors.grey.shade100),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.04),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    batchNumber,
-                    style: const TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
-                    ),
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.card,
+        borderRadius: BorderRadius.circular(AppRadius.card),
+        border: Border.all(color: AppColors.borderWarm),
+        boxShadow: AppShadows.card,
+      ),
+      child: Semantics(
+        button: true,
+        label: 'View details for $batchNumber',
+        child: Material(
+          // Transparent so the warm card surface shows through while the
+          // ink ripple paints above it.
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: () {
+              final batch = BatchData(
+                id: id,
+                batchNumber: batchNumber,
+                species: species,
+                startDate: startDate,
+                endDate: endDate,
+                eggsTotal: eggsTotal,
+                eggsHatched: eggsHatched,
+                temperature: '37.5\u00B0C',
+                status: status,
+                isSuccess: isSuccess,
+              );
+              final open = onOpenDetails;
+              if (open != null) {
+                open(batch);
+              } else {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => BatchDetailsScreen(batch: batch),
                   ),
-                ),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: (isSuccess
-                            ? const Color(0xFF4CAF50)
-                            : const Color(0xFFE53935))
-                        .withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
+                );
+              }
+            },
+            borderRadius: BorderRadius.circular(AppRadius.card),
+            child: Padding(
+              padding: const EdgeInsets.all(AppSpacing.lg),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(
-                        isSuccess ? Icons.check_circle_outline : Icons.error_outline,
-                        size: 14,
-                        color: isSuccess
-                            ? const Color(0xFF4CAF50)
-                            : const Color(0xFFE53935),
+                      SpeciesIllustration(species: species, size: 44),
+                      const SizedBox(width: AppSpacing.md),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              batchNumber,
+                              style: const TextStyle(
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.textPrimary,
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              species,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.textSecondary,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                      const SizedBox(width: 4),
-                      Text(
-                        status,
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: isSuccess
-                              ? const Color(0xFF4CAF50)
-                              : const Color(0xFFE53935),
+                      _StatusBadge(
+                        label: status,
+                        color: completed
+                            ? AppColors.success
+                            : AppColors.warning,
+                        icon: completed
+                            ? Icons.check_circle_outline
+                            : Icons.schedule,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  // UI-01: a hatch result only exists once the farmer has
+                  // finished the batch. While a batch is incubating the card
+                  // says so plainly instead of implying a finished 0% result.
+                  if (completed)
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            '$eggsHatched / $eggsTotal eggs hatched',
+                            style: const TextStyle(
+                                fontSize: 13, color: AppColors.textSecondary),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        const SizedBox(width: AppSpacing.sm),
+                        // Hatch rate is a result figure, so it keeps the green
+                        // pill treatment from the Home last-batch card.
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: AppColors.success.withValues(alpha: 0.12),
+                            borderRadius:
+                                BorderRadius.circular(AppRadius.pill),
+                          ),
+                          child: Text(
+                            percentage,
+                            style: const TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.success,
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  else
+                    Text(
+                      'Incubation in progress \u00B7 $eggsTotal eggs',
+                      style: const TextStyle(
+                        fontSize: 13,
+                        color: AppColors.textSecondary,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  const SizedBox(height: AppSpacing.sm),
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.calendar_today_outlined,
+                        size: 13,
+                        color: AppColors.textSecondary,
+                      ),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: Text(
+                          _formatDate(startDate),
+                          style: const TextStyle(
+                              fontSize: 13, color: AppColors.textSecondary),
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ],
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 6),
-            Text(
-              species,
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                color: Colors.black87,
+                  const SizedBox(height: AppSpacing.md),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text(
+                        'View details',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.primaryDark,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      const Icon(
+                        Icons.chevron_right,
+                        color: AppColors.primaryDark,
+                        size: 18,
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    '$eggsHatched / $eggsTotal eggs hatched',
-                    style: const TextStyle(fontSize: 13, color: Colors.black54),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  percentage,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xFFE8752A),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 4),
-            Text(
-              _formatDate(startDate),
-              style: const TextStyle(fontSize: 13, color: Colors.black54),
-            ),
-            const SizedBox(height: 10),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  'View details',
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: const Color(0xFFE8752A),
-                  ),
-                ),
-                const SizedBox(width: 4),
-                const Icon(
-                  Icons.chevron_right,
-                  color: Color(0xFFE8752A),
-                  size: 18,
-                ),
-              ],
-            ),
-          ],
+          ),
         ),
+      ),
+    );
+  }
+}
+
+/// Worded status pill for a history card (no bare colour-only status).
+class _StatusBadge extends StatelessWidget {
+  const _StatusBadge({
+    required this.label,
+    required this.color,
+    required this.icon,
+  });
+
+  final String label;
+  final Color color;
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(AppRadius.pill),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 14, color: color),
+          const SizedBox(width: 4),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: color,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -5312,10 +7078,22 @@ class _DetailRow extends StatelessWidget {
   final String label;
   final String value;
 
-  const _DetailRow({required this.label, required this.value});
+  /// Optional widget shown just before the value (e.g. a small species
+  /// illustration); every other row keeps the plain text value.
+  final Widget? leading;
+
+  const _DetailRow({required this.label, required this.value, this.leading});
 
   @override
   Widget build(BuildContext context) {
+    final Widget valueText = Text(
+      value,
+      style: const TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+        color: Colors.black87,
+      ),
+    );
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -5323,14 +7101,17 @@ class _DetailRow extends StatelessWidget {
           label,
           style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
         ),
-        Text(
-          value,
-          style: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-            color: Colors.black87,
+        if (leading == null)
+          valueText
+        else
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              leading!,
+              const SizedBox(width: 6),
+              valueText,
+            ],
           ),
-        ),
       ],
     );
   }
@@ -5588,11 +7369,17 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
   double _simulatedBroodTemp = 31.0;
   double _simulatedBroodHumidity = 50.0;
 
+  /// The REAL batch incubating right now, loaded from Supabase. The
+  /// simulator on this screen is local-only and never touches it.
+  Map<String, dynamic>? _realBatch;
+  bool _realBatchLoaded = false;
+
   @override
   void initState() {
     super.initState();
     _controller = IncubatorController(profile: IncubationProfile.chicken);
     _arduino.addListener(_syncFromArduino);
+    _loadRealBatch();
 
     // Initial sensor update to trigger hysteresis rules
     _controller.updateSensors(
@@ -5601,6 +7388,30 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
       broodTemp: _simulatedBroodTemp,
       broodHumidity: _simulatedBroodHumidity,
     );
+  }
+
+  /// Loads the single active batch so the console identifies it clearly and
+  /// separates it from the simulation. Offline: nothing renders, the
+  /// SIMULATION labels still describe the simulator accurately.
+  Future<void> _loadRealBatch() async {
+    try {
+      final row = await SupabaseService().getActiveSession();
+      if (mounted) {
+        setState(() {
+          _realBatch = row;
+          _realBatchLoaded = true;
+        });
+      }
+    } catch (_) {
+      if (mounted) setState(() => _realBatchLoaded = true);
+    }
+  }
+
+  /// The simulator's stage, labeled so it can never read as a real batch:
+  /// the active-humidity phase says "ACTIVE PHASE", not "ACTIVE INCUBATION".
+  String get _simStageLabel {
+    final stage = _controller.stageName;
+    return stage == 'ACTIVE INCUBATION' ? 'ACTIVE PHASE' : stage;
   }
 
   /// Mirrors live Arduino telemetry into the controller. While an Arduino is
@@ -5698,13 +7509,16 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
             title: const Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.egg_rounded, color: Color(0xFFE8752A), size: 24),
+                Icon(Icons.egg_rounded, color: Color(0xFFE8752A), size: 28),
                 SizedBox(width: 8),
+                // Flexible + ellipsis: the title never overflows the bar on
+                // narrow phones, whatever actions sit beside it.
                 Flexible(
                   child: Text(
-                    'SmartHatch Controller',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                    'Hardware Console',
+                    maxLines: 1,
                     overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                   ),
                 ),
               ],
@@ -5747,7 +7561,7 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
               ),
               IconButton(
                 icon: const Icon(Icons.refresh_rounded),
-                tooltip: 'Start New Batch / Reset',
+                tooltip: 'Simulator: reset or change profile',
                 onPressed: _showSpeciesSelectDialog,
               ),
             ],
@@ -5761,7 +7575,15 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
                 _ArduinoConnectionCard(controller: _arduino),
                 const SizedBox(height: 12),
 
-                // SPECIES QUICK SWITCHER (Chicken / Duck / Quail)
+                // 0b. THE ONE REAL BATCH (P6.4) - always identified first so
+                // the simulator below can never be mistaken for it.
+                _buildRealBatchBand(),
+                _buildNoRealBatchNote(),
+
+                // SIMULATOR PROFILE - LOCAL PREVIEW ONLY (P6.4): switching
+                // changes the simulation, never the real batch or hardware.
+                _buildSimulatorProfileLabel(),
+                const SizedBox(height: 6),
                 _buildSpeciesQuickSelector(),
                 const SizedBox(height: 12),
 
@@ -5791,6 +7613,138 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
           ),
         );
       },
+    );
+  }
+
+  /// The single real incubation, named at the top of the console so the
+  /// simulation below can never be mistaken for it. Tapping the band opens
+  /// the Active Incubation screen for that batch.
+  Widget _buildRealBatchBand() {
+    if (!_realBatchLoaded) return const SizedBox.shrink();
+    final row = _realBatch;
+    if (row == null) return const SizedBox.shrink();
+    final species = speciesDataForName((row['egg_type'] as String?) ?? '');
+    final id = row['id'];
+    final start = DateTime.tryParse('${row['start_date']}');
+    final elapsed =
+        start == null ? 0 : DateTime.now().difference(start).inDays;
+    final day = (elapsed + 1).clamp(1, species.incubationDays).toInt();
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: AppColors.peach,
+        borderRadius: BorderRadius.circular(14),
+        border:
+            Border.all(color: AppColors.primaryDark.withValues(alpha: 0.25)),
+      ),
+      child: Semantics(
+        button: true,
+        label: 'Open current incubation, Batch #$id',
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(14),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => activeIncubationScreenFor(row),
+                ),
+              ).then((_) => _loadRealBatch());
+            },
+            child: Row(
+              children: [
+                SpeciesIllustration(species: species.name, size: 40),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'INCUBATING NOW \u00B7 Batch #$id \u00B7 '
+                        '${species.name}',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w800,
+                          fontSize: 13,
+                          color: AppColors.primaryDark,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        'Day $day of ${species.incubationDays} '
+                        '\u00B7 real saved batch',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const Icon(Icons.chevron_right, color: AppColors.primaryDark),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Shown when no batch is incubating: everything below is a simulation.
+  Widget _buildNoRealBatchNote() {
+    if (!_realBatchLoaded || _realBatch != null) {
+      return const SizedBox.shrink();
+    }
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade100,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.shade300),
+      ),
+      child: const Row(
+        children: [
+          Icon(Icons.science_outlined, size: 18, color: Colors.grey),
+          SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              'No real batch incubating. The progress shown on this '
+              'screen is a SIMULATION.',
+              style: TextStyle(fontSize: 12.5, color: Colors.black54),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Titles the profile switcher and states plainly that it is a preview -
+  /// it never touches the real batch or the hardware.
+  Widget _buildSimulatorProfileLabel() {
+    return Row(
+      children: [
+        const Icon(Icons.tune_rounded, size: 16, color: Color(0xFFE8752A)),
+        const SizedBox(width: 6),
+        const Text(
+          'SIMULATOR PROFILE',
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w800,
+            letterSpacing: 0.6,
+            color: Color(0xFF6B6B6B),
+          ),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            'preview only - does not change the real batch',
+            style: TextStyle(fontSize: 11, color: Colors.grey.shade500),
+          ),
+        ),
+      ],
     );
   }
 
@@ -5889,18 +7843,38 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // SIMULATION chips (P6.4): this whole card is the local simulator,
+          // so every label here is explicitly simulated - never a real batch.
           Wrap(
-            spacing: 6,
-            runSpacing: 6,
+            spacing: 8,
+            runSpacing: 8,
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Colors.black.withValues(alpha: 0.78),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: const Text(
+                  'SIMULATION',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w800,
+                    fontSize: 11,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+              ),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
                   color: Colors.white.withValues(alpha: 0.25),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
-                  'Species: ${profile.speciesName}',
+                  'Profile: ${profile.speciesName}',
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
@@ -5909,7 +7883,8 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
                   color: Colors.white.withValues(alpha: 0.25),
                   borderRadius: BorderRadius.circular(20),
@@ -5919,12 +7894,16 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
                   children: [
                     const Icon(Icons.check_circle, size: 13, color: Colors.white),
                     const SizedBox(width: 4),
-                    Text(
-                      'Day ${_controller.startDay} Candled • Fertile (${_controller.eggCount} Eggs)',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 12,
+                    Flexible(
+                      child: Text(
+                        'Day ${_controller.startDay} Candled • Fertile (${_controller.eggCount} Eggs)',
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 12,
+                        ),
                       ),
                     ),
                   ],
@@ -5937,9 +7916,11 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
-                  _controller.stageName,
+                  _simStageLabel,
                   style: TextStyle(
-                    color: isLockdown ? const Color(0xFFC9302C) : const Color(0xFFE8752A),
+                    color: isLockdown
+                        ? const Color(0xFFC9302C)
+                        : const Color(0xFFE8752A),
                     fontWeight: FontWeight.bold,
                     fontSize: 11,
                   ),
@@ -5961,12 +7942,16 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
                 ),
               ),
               const SizedBox(width: 8),
-              Text(
-                '/ ${profile.hatchDay} days',
-                style: TextStyle(
-                  color: Colors.white.withValues(alpha: 0.85),
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
+              Flexible(
+                child: Text(
+                  '/ ${profile.hatchDay} days',
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                  style: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.85),
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
               const Spacer(),
@@ -6008,23 +7993,30 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
           ),
           const SizedBox(height: 10),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'Incubator Elapsed: ${hours}h ${minutes}m ${seconds}s',
-                style: TextStyle(
-                  color: Colors.white.withValues(alpha: 0.9),
-                  fontSize: 12,
+              Flexible(
+                child: Text(
+                  'Elapsed: ${hours}h ${minutes}m ${seconds}s',
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.9),
+                    fontSize: 13,
+                  ),
                 ),
               ),
-              Text(
-                isLockdown
-                    ? 'Lockdown Active (Turning Halted)'
-                    : 'Lockdown starts on Day ${profile.lockdownStartDay}',
-                style: TextStyle(
-                  color: Colors.white.withValues(alpha: 0.9),
-                  fontSize: 12,
-                  fontStyle: FontStyle.italic,
+              const SizedBox(width: 8),
+              Flexible(
+                child: Text(
+                  isLockdown
+                      ? 'Lockdown Active (Turning Halted)'
+                      : 'Lockdown starts on Day ${profile.lockdownStartDay}',
+                  textAlign: TextAlign.right,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.9),
+                    fontSize: 12,
+                    fontStyle: FontStyle.italic,
+                  ),
                 ),
               ),
             ],
@@ -6461,35 +8453,43 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  Container(
-                    width: 8,
-                    height: 8,
-                    decoration: const BoxDecoration(
-                      color: Color(0xFF00E5FF),
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Color(0xFF00E5FF),
-                          blurRadius: 4,
-                          spreadRadius: 1,
+              // Flexible + ellipsis: the mono title truncates on very narrow
+              // screens instead of overflowing beside the I2C chip.
+              Flexible(
+                child: Row(
+                  children: [
+                    Container(
+                      width: 8,
+                      height: 8,
+                      decoration: const BoxDecoration(
+                        color: Color(0xFF00E5FF),
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Color(0xFF00E5FF),
+                            blurRadius: 4,
+                            spreadRadius: 1,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Flexible(
+                      child: Text(
+                        'INCUBATOR LCD 16×2 DISPLAY',
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        style: const TextStyle(
+                          fontFamily: 'monospace',
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1.0,
+                          color: Color(0xFF94A3B8),
                         ),
-                      ],
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 6),
-                  const Text(
-                    'INCUBATOR LCD 16×2 DISPLAY',
-                    style: TextStyle(
-                      fontFamily: 'monospace',
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.0,
-                      color: Color(0xFF94A3B8),
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
@@ -6602,13 +8602,17 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
             ),
           ),
           const SizedBox(height: 6),
-          const Row(
+          Row(
             children: [
-              Icon(Icons.tv_rounded, size: 12, color: Color(0xFF64748B)),
-              SizedBox(width: 4),
-              Text(
-                'Live physical LCD display telemetry (LiquidCrystal_I2C)',
-                style: TextStyle(fontSize: 10, color: Color(0xFF64748B)),
+              const Icon(Icons.tv_rounded, size: 12, color: Color(0xFF64748B)),
+              const SizedBox(width: 4),
+              Expanded(
+                child: Text(
+                  'Live physical LCD display telemetry (LiquidCrystal_I2C)',
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                  style: const TextStyle(fontSize: 10, color: Color(0xFF64748B)),
+                ),
               ),
             ],
           ),
@@ -6645,15 +8649,23 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Row(
-                children: [
-                  Icon(Icons.nest_cam_wired_stand, color: Colors.indigo, size: 22),
-                  SizedBox(width: 8),
-                  Text(
-                    'Brooder Chamber',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                ],
+              // Flexible + ellipsis: the title shrinks before the status
+              // chip on very narrow screens instead of overflowing.
+              Flexible(
+                child: Row(
+                  children: [
+                    const Icon(Icons.nest_cam_wired_stand, color: Colors.indigo, size: 22),
+                    const SizedBox(width: 8),
+                    Flexible(
+                      child: Text(
+                        'Brooder Chamber',
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ],
+                ),
               ),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -6946,9 +8958,13 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
             children: [
               Icon(Icons.tune_rounded, color: Colors.grey.shade700, size: 20),
               const SizedBox(width: 8),
-              const Text(
-                'Hardware Telemetry Simulator',
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+              const Flexible(
+                child: Text(
+                  'Hardware Telemetry Simulator',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                ),
               ),
             ],
           ),
@@ -7118,12 +9134,15 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
               color: isOn ? activeColor : Colors.grey.shade500,
             ),
             const SizedBox(width: 6),
-            Text(
-              name,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: isOn ? activeColor : Colors.grey.shade600,
+            Flexible(
+              child: Text(
+                name,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: isOn ? activeColor : Colors.grey.shade600,
+                ),
               ),
             ),
             const SizedBox(width: 6),
@@ -7200,13 +9219,17 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
               selectedEggs <= IncubatorController.maxEggCount;
 
           return AlertDialog(
-            title: const Row(
+            title: Row(
               children: [
-                Icon(Icons.tune_rounded, color: Color(0xFFE8752A), size: 24),
-                SizedBox(width: 8),
-                Text(
-                  'Configure Incubation Batch',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                const Icon(Icons.tune_rounded, color: Color(0xFFE8752A), size: 24),
+                const SizedBox(width: 8),
+                Flexible(
+                  child: Text(
+                    'Simulator Profile',
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  ),
                 ),
               ],
             ),
@@ -7215,6 +9238,14 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  const Text(
+                    'Preview a species\' programmed incubation profile '
+                    '(temperatures, stages, humidity, and lockdown day), then '
+                    'pick the simulated egg count below. This changes the '
+                    'simulator only - never the real batch or the hardware:',
+                    style: TextStyle(fontSize: 13, color: Colors.black54),
+                  ),
+                  const SizedBox(height: 12),
                   // Section 1: Species Selection
                   const Text(
                     '1. Select Species Profile',
@@ -7233,27 +9264,33 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
                           width: isSelected ? 1.5 : 1.0,
                         ),
                       ),
-                      child: ListTile(
-                        dense: true,
-                        title: Text(
-                          '${p.speciesName} Eggs',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: isSelected ? const Color(0xFFE8752A) : Colors.black87,
+                      child: Material(
+                        // Local material: the decorated Container above would
+                        // otherwise hide the ListTile's own background and
+                        // ink splash (framework assertion).
+                        color: Colors.transparent,
+                        child: ListTile(
+                          dense: true,
+                          title: Text(
+                            '${p.speciesName} Eggs',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: isSelected ? const Color(0xFFE8752A) : Colors.black87,
+                            ),
                           ),
+                          subtitle: Text(
+                            'Hatch: Day ${p.hatchDay} | Lockdown: Day ${p.lockdownStartDay}\nActive RH: ${p.activeHumidityLow.toInt()}-${p.activeHumidityHigh.toInt()}%',
+                            style: const TextStyle(fontSize: 11),
+                          ),
+                          trailing: isSelected
+                              ? const Icon(Icons.check_circle, color: Color(0xFFE8752A), size: 20)
+                              : const Icon(Icons.radio_button_unchecked, color: Colors.grey, size: 20),
+                          onTap: () {
+                            setDialogState(() {
+                              selectedProfile = p;
+                            });
+                          },
                         ),
-                        subtitle: Text(
-                          'Hatch: Day ${p.hatchDay} | Lockdown: Day ${p.lockdownStartDay}\nActive RH: ${p.activeHumidityLow.toInt()}-${p.activeHumidityHigh.toInt()}%',
-                          style: const TextStyle(fontSize: 11),
-                        ),
-                        trailing: isSelected
-                            ? const Icon(Icons.check_circle, color: Color(0xFFE8752A), size: 20)
-                            : const Icon(Icons.radio_button_unchecked, color: Colors.grey, size: 20),
-                        onTap: () {
-                          setDialogState(() {
-                            selectedProfile = p;
-                          });
-                        },
                       ),
                     );
                   }),
@@ -7281,9 +9318,13 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
-                          'Fertile Eggs:',
-                          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
+                        Flexible(
+                          child: Text(
+                            'Fertile Eggs:',
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
+                          ),
                         ),
                         Row(
                           children: [
@@ -7423,12 +9464,16 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
                           children: [
                             Icon(Icons.check_circle_rounded, size: 16, color: Colors.green.shade800),
                             const SizedBox(width: 6),
-                            Text(
-                              'Hatching Starts After Day 7 Candling',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.green.shade900,
+                            Flexible(
+                              child: Text(
+                                'Hatching Starts After Day 7 Candling',
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.green.shade900,
+                                ),
                               ),
                             ),
                           ],
@@ -7758,16 +9803,16 @@ class _EggTurningStatus extends StatelessWidget {
     final Color color;
     if (!controller.isConnected) {
       detail = 'Egg turning: offline';
-      color = Colors.grey.shade500;
+      color = AppColors.textSecondary;
     } else if (!controller.isLive) {
       detail = 'Egg turning: waiting for telemetry…';
-      color = const Color(0xFFFF9800);
+      color = AppColors.warning;
     } else if (!controller.turningActive) {
       detail = 'Egg turning: disabled — no auto turns';
-      color = Colors.grey.shade600;
+      color = AppColors.textSecondary;
     } else {
       detail = 'Egg turning: ${_eggTurningDetail(controller)}';
-      color = const Color(0xFF4CAF50);
+      color = AppColors.success;
     }
     return Row(
       children: [
@@ -7816,44 +9861,82 @@ class _LiveIncubatorStatusCard extends StatelessWidget {
             width: double.infinity,
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: Colors.grey.shade200),
+              // Soft peach marks "needs attention" without looking like an
+              // error - the hardware simply is not plugged in yet.
+              color: AppColors.peach,
+              borderRadius: BorderRadius.circular(AppRadius.card),
+              border: Border.all(
+                color: AppColors.primaryDark.withValues(alpha: 0.18),
+              ),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   children: [
-                    Icon(Icons.usb_off, size: 20, color: Colors.grey.shade500),
+                    const Icon(
+                      Icons.usb_off,
+                      size: 20,
+                      color: AppColors.primaryDark,
+                    ),
                     const SizedBox(width: 8),
                     const Expanded(
                       child: Text(
                         'Live Incubator Status',
                         style: TextStyle(
-                          fontSize: 15,
+                          fontSize: 16,
                           fontWeight: FontWeight.w600,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                    ),
+                    // The state in words as well as colour, so it is clear
+                    // to everyone.
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: AppColors.card,
+                        borderRadius: BorderRadius.circular(AppRadius.badge),
+                      ),
+                      child: const Text(
+                        'NOT CONNECTED',
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.primaryDark,
+                          letterSpacing: 0.3,
                         ),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 6),
-                Text(
+                const SizedBox(height: 8),
+                const Text(
                   'Connect the Arduino to see live temperature, humidity and egg-turning status here on the Home tab.',
-                  style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                  style: TextStyle(
+                    fontSize: 13,
+                    height: 1.4,
+                    color: AppColors.textSecondary,
+                  ),
                 ),
                 const SizedBox(height: 12),
                 SizedBox(
                   width: double.infinity,
-                  height: 40,
+                  height: 48,
                   child: OutlinedButton.icon(
                     onPressed: () => _openConsole(context),
                     icon: const Icon(Icons.developer_board, size: 18),
                     label: const Text('Open Hardware Console'),
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: const Color(0xFFE8752A),
-                      side: const BorderSide(color: Color(0xFFE8752A)),
+                      foregroundColor: AppColors.primaryDark,
+                      side: const BorderSide(color: AppColors.primaryDark),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(AppRadius.pill),
+                      ),
+                      textStyle: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ),
@@ -7867,10 +9950,10 @@ class _LiveIncubatorStatusCard extends StatelessWidget {
             width: double.infinity,
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(14),
+              color: AppColors.card,
+              borderRadius: BorderRadius.circular(AppRadius.card),
               border: Border.all(
-                color: const Color(0xFFFF9800).withValues(alpha: 0.35),
+                color: AppColors.warning.withValues(alpha: 0.35),
               ),
             ),
             child: Column(
@@ -7878,14 +9961,19 @@ class _LiveIncubatorStatusCard extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.usb, size: 20, color: const Color(0xFFFF9800)),
+                    const Icon(
+                      Icons.usb,
+                      size: 20,
+                      color: AppColors.warning,
+                    ),
                     const SizedBox(width: 8),
                     const Expanded(
                       child: Text(
                         'Live Incubator Status',
                         style: TextStyle(
-                          fontSize: 15,
+                          fontSize: 16,
                           fontWeight: FontWeight.w600,
+                          color: AppColors.textPrimary,
                         ),
                       ),
                     ),
@@ -7893,36 +9981,47 @@ class _LiveIncubatorStatusCard extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 8, vertical: 3),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFFF9800).withValues(alpha: 0.12),
-                        borderRadius: BorderRadius.circular(20),
+                        color: AppColors.warning.withValues(alpha: 0.10),
+                        borderRadius: BorderRadius.circular(AppRadius.badge),
                       ),
                       child: const Text(
                         'CONNECTING',
                         style: TextStyle(
                           fontSize: 10,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFFFF9800),
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.warning,
+                          letterSpacing: 0.3,
                         ),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: 8),
                 Text(
                   'Connected to ${controller.portName ?? 'Arduino'} — waiting for the first telemetry frame…',
-                  style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                  style: const TextStyle(
+                    fontSize: 13,
+                    height: 1.4,
+                    color: AppColors.textSecondary,
+                  ),
                 ),
                 const SizedBox(height: 12),
                 SizedBox(
                   width: double.infinity,
-                  height: 40,
+                  height: 48,
                   child: OutlinedButton.icon(
                     onPressed: () => _openConsole(context),
                     icon: const Icon(Icons.developer_board, size: 18),
                     label: const Text('Open Hardware Console'),
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: const Color(0xFFE8752A),
-                      side: const BorderSide(color: Color(0xFFE8752A)),
+                      foregroundColor: AppColors.primaryDark,
+                      side: const BorderSide(color: AppColors.primaryDark),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(AppRadius.pill),
+                      ),
+                      textStyle: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ),
@@ -7936,10 +10035,10 @@ class _LiveIncubatorStatusCard extends StatelessWidget {
           width: double.infinity,
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(14),
+            color: AppColors.card,
+            borderRadius: BorderRadius.circular(AppRadius.card),
             border: Border.all(
-              color: const Color(0xFF4CAF50).withValues(alpha: 0.35),
+              color: AppColors.success.withValues(alpha: 0.35),
             ),
           ),
           child: Column(
@@ -7948,14 +10047,15 @@ class _LiveIncubatorStatusCard extends StatelessWidget {
               Row(
                 children: [
                   const Icon(Icons.monitor_heart_outlined,
-                      color: Color(0xFF4CAF50), size: 20),
+                      color: AppColors.success, size: 20),
                   const SizedBox(width: 8),
                   const Expanded(
                     child: Text(
                       'Live Incubator Status',
                       style: TextStyle(
-                        fontSize: 15,
+                        fontSize: 16,
                         fontWeight: FontWeight.w600,
+                        color: AppColors.textPrimary,
                       ),
                     ),
                   ),
@@ -7963,15 +10063,16 @@ class _LiveIncubatorStatusCard extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 8, vertical: 3),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF4CAF50).withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(20),
+                      color: AppColors.success.withValues(alpha: 0.10),
+                      borderRadius: BorderRadius.circular(AppRadius.badge),
                     ),
                     child: const Text(
                       'LIVE',
                       style: TextStyle(
                         fontSize: 10,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF4CAF50),
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.success,
+                        letterSpacing: 0.3,
                       ),
                     ),
                   ),
@@ -8029,19 +10130,25 @@ class _LiveIncubatorStatusCard extends StatelessWidget {
                   ),
                 ],
               ),
-              const Divider(height: 24, color: Color(0xFFF0F0F0)),
+              const Divider(height: 24, color: Color(0x14000000)),
               _EggTurningStatus(controller: controller),
               const SizedBox(height: 12),
               SizedBox(
                 width: double.infinity,
-                height: 40,
+                height: 48,
                 child: OutlinedButton.icon(
                   onPressed: () => _openConsole(context),
                   icon: const Icon(Icons.developer_board, size: 18),
                   label: const Text('Open Hardware Console'),
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: const Color(0xFFE8752A),
-                    side: const BorderSide(color: Color(0xFFE8752A)),
+                    foregroundColor: AppColors.primaryDark,
+                    side: const BorderSide(color: AppColors.primaryDark),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(AppRadius.pill),
+                    ),
+                    textStyle: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ),
@@ -8071,22 +10178,27 @@ class _LiveMetricTile extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAFAFA),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: const Color(0xFFEEEEEE)),
+        color: AppColors.background,
+        borderRadius: BorderRadius.circular(AppRadius.control),
+        border: Border.all(color: const Color(0x0F000000)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(icon, size: 15, color: color),
+              Icon(icon, size: 16, color: color),
               const SizedBox(width: 5),
               Expanded(
                 child: Text(
                   label,
-                  style: TextStyle(fontSize: 10, color: Colors.grey.shade600),
+                  maxLines: 1,
                   overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.textSecondary,
+                  ),
                 ),
               ),
             ],
@@ -8094,7 +10206,12 @@ class _LiveMetricTile extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             value,
-            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+            style: const TextStyle(
+              fontSize: 17,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textPrimary,
+              height: 1.2,
+            ),
           ),
         ],
       ),

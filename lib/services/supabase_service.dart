@@ -133,18 +133,59 @@ class SupabaseService {
     final quantityError = eggQuantityError(eggQuantity);
     if (quantityError != null) throw EggQuantityException(quantityError);
 
-    final response = await _client
-        .from('incubator_sessions')
-        .insert({
-          'egg_type': eggType,
-          'start_date': startDate.toIso8601String(),
-          'egg_quantity': eggQuantity,
-          'temperature': temperature,
-          'status': 'Active',
-        })
-        .select('id')
-        .single();
-    return response['id'] as int;
+    // ── ONE active incubation at a time (P6.1) ──
+    // Friendly pre-check before anything is written: while another batch -
+    // of ANY species - is still incubating, no new session may be created.
+    final existing = await getActiveSession();
+    if (existing != null) {
+      throw ActiveBatchException(activeBatchMessage(existing));
+    }
+
+    int sessionId;
+    try {
+      final response = await _client
+          .from('incubator_sessions')
+          .insert({
+            'egg_type': eggType,
+            'start_date': startDate.toIso8601String(),
+            'egg_quantity': eggQuantity,
+            'temperature': temperature,
+            'status': 'Active',
+          })
+          .select('id')
+          .single();
+      sessionId = response['id'] as int;
+    } on PostgrestException catch (e) {
+      // 23505: the database one-active unique index rejected a second
+      // 'Active' row - another device or tab won the race after our
+      // pre-check passed. Surface it as the same farmer-friendly refusal.
+      if (e.code == '23505') {
+        throw ActiveBatchException(await _lostRaceMessage());
+      }
+      rethrow;
+    }
+    return sessionId;
+  }
+
+  /// Farmer-friendly sentence naming the batch that is still incubating.
+  static String activeBatchMessage(Map<String, dynamic> session) {
+    final id = session['id'];
+    final species = session['egg_type'] as String? ?? 'egg';
+    return 'Batch #$id ($species) is still incubating. '
+        'Finish it before starting a new batch.';
+  }
+
+  /// Wording for a lost one-active race where the winning batch could not be
+  /// read back (rare): still a clean refusal, never a crash.
+  Future<String> _lostRaceMessage() async {
+    try {
+      final winner = await getActiveSession();
+      if (winner != null) return activeBatchMessage(winner);
+    } catch (_) {
+      // Ignore: the generic sentence below is safe in every case.
+    }
+    return 'A new batch was just started on another screen. '
+        'Open the current incubation before starting another one.';
   }
 
   Future<List<Map<String, dynamic>>> getSessions() async {
@@ -155,16 +196,39 @@ class SupabaseService {
     return response;
   }
 
+  /// The batch that is currently incubating, or null when none is.
+  ///
+  /// With the one-active rule the table holds at most one 'Active' row (the
+  /// database unique index enforces it); limit(1) keeps this safe even for
+  /// stray duplicates created before the rule existed.
   Future<Map<String, dynamic>?> getActiveSession() async {
     final response = await _client
         .from('incubator_sessions')
         .select()
         .eq('status', 'Active')
-        .order('start_date', ascending: false)
-        .maybeSingle();
-    return response;
+        .order('id', ascending: false)
+        .limit(1);
+    if (response.isEmpty) return null;
+    return response.first;
   }
 
+  /// One stored batch by id, or null when it no longer exists.
+  ///
+  /// The Active Incubation screen uses this to always act on the REAL saved
+  /// session (status, quantity, start date) instead of screen parameters.
+  Future<Map<String, dynamic>?> getSessionById(int id) async {
+    final response = await _client
+        .from('incubator_sessions')
+        .select()
+        .eq('id', id)
+        .limit(1);
+    if (response.isEmpty) return null;
+    return response.first;
+  }
+
+  /// Completes the batch with the farmer-entered hatch count. The single
+  /// UPDATE is the only write: status, end timestamp and eggs_hatched are
+  /// saved together or not at all - nothing is ever fabricated.
   Future<void> completeSession({
     required int sessionId,
     DateTime? endDate,
@@ -237,6 +301,20 @@ class SupabaseService {
 /// [message] is written for farmers, so screens can show it as-is.
 class EggQuantityException implements Exception {
   EggQuantityException(this.message);
+
+  final String message;
+
+  @override
+  String toString() => message;
+}
+
+/// Thrown when a start is refused because another batch is still incubating.
+///
+/// SmartHatch runs ONE incubation at a time: the farmer finishes the current
+/// batch - whatever its species - before starting a new one. [message] is
+/// written for farmers and safe to show as-is.
+class ActiveBatchException implements Exception {
+  ActiveBatchException(this.message);
 
   final String message;
 
