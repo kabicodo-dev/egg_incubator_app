@@ -9,7 +9,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:egg_incubator_app/main.dart';
 
 /// A saved incubation session exactly as Supabase returns it: 8 eggs, none
-/// hatched yet, batch still active.
+/// hatched, batch finished. Since P6.2 (one active batch) only COMPLETED
+/// batches appear under "LAST COMPLETED BATCH", so the fixture is completed.
 const _savedSession = <String, dynamic>{
   'id': 7,
   'egg_type': 'Chicken',
@@ -18,7 +19,7 @@ const _savedSession = <String, dynamic>{
   'egg_quantity': 8,
   'eggs_hatched': 0,
   'temperature': 37.5,
-  'status': 'Active',
+  'status': 'Completed',
 };
 
 /// Stands in for the Supabase REST API so the Home screen can be pumped with
@@ -150,11 +151,12 @@ void main() {
       findsOneWidget,
     );
 
-    // The navigation affordance: "View Details" in the SmartHatch orange with
-    // a right-facing chevron, on one row.
+    // The navigation affordance: "View Details" in the readable SmartHatch
+    // orange (AA contrast on the cream card) with a right-facing chevron,
+    // on one row.
     expect(find.text('View Details'), findsOneWidget);
     final link = tester.widget<Text>(find.text('View Details'));
-    expect(link.style?.color, const Color(0xFFE8752A));
+    expect(link.style?.color, const Color(0xFFC24E00));
 
     final footerRow = find
         .ancestor(of: find.text('View Details'), matching: find.byType(Row))

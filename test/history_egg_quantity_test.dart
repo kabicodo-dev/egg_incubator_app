@@ -109,10 +109,14 @@ void main() {
     expect(api.requests, isNotEmpty);
 
     // The saved amount (egg_quantity = 8) is visible on the batch card.
+    // UI-01: this batch is still Active, so the card reads as an ongoing
+    // incubation - never as a finished 0% hatch result.
     expect(find.text('Incubation History'), findsOneWidget);
     expect(find.text('Batch #7'), findsOneWidget);
     expect(find.text('Chicken'), findsOneWidget);
-    expect(find.text('0 / 8 eggs hatched'), findsOneWidget);
+    expect(find.text('Incubation in progress \u00B7 8 eggs'), findsOneWidget);
+    expect(find.text('0 / 8 eggs hatched'), findsNothing);
+    expect(find.text('0%'), findsNothing);
     expect(find.text('No batches yet'), findsNothing);
 
     // The batch details screen belongs to the History flow and repeats the
