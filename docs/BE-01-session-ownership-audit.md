@@ -311,10 +311,10 @@ future `supabase db push` or `supabase db reset` will apply it (as a no-op on
 this database). Reviewer sign-off on M1 should still be recorded before those
 commands are used.
 
-**Not executed:** no `supabase db push`, no `db reset`, no SQL of any kind has
-been run against the project by this task. No session data was written,
-updated or deleted; the only statements run were the reviewer's read-only
-`SELECT`s above.
+**Not executed:** no `supabase db push`, no `db reset` and no SQL of any kind
+was run against the project **by this task**. No session data was written,
+updated or deleted; the statements run were the reviewer's read-only `SELECT`s
+above, plus the later D4-approved M1 no-op (§4.4a).
 
 ### 4.3 M2 — DRAFT ONLY, do not apply (conditional on decision B)
 
@@ -375,10 +375,10 @@ and #5/#7 are expected to be updated when SEC-04 closes those gaps.
 
 | # | Decision | Consequence |
 |---|---|---|
-| **D1** | **M1 — global**, for the current prototype: one physical incubator, so exactly one active batch across the entire project; any species; the farmer must finish it before starting another. M2 reconsidered only if multiple incubators are supported later. | M1 migration prepared (§4.2); M2 remains draft-only (§4.3) |
+| **D1** | **M1 — global**, for the current prototype: one physical incubator, so exactly one active batch across the entire project; any species; the farmer must finish it before starting another. M2 reconsidered only if multiple incubators are supported later. | M1 migration prepared (§4.2) and **applied as a no-op on 2026-10-12**, verified (§4.4a); M2 remains draft-only (§4.3) |
 | **D2** | The **physical incubator** owns the session conceptually — a session is the incubation running in the machine, not a browser or anonymous install. No machine ownership added yet. | No schema change; documented in §3.1 |
 | **D3** | **Yes**, multiple installations may access the project, but they must all refer to the *same* active incubation and must not create separate active batches. Review authorization and simultaneous hardware commands. | Review delivered as §3.4; findings routed to SEC-04 (`docs/SECURITY-TASKS.md`) |
-| **D4** | **Conditional approval of M1**: inspect the live index first; if the safeguard exists, do not duplicate it; prepare the file in `supabase/migrations/`; show SQL + effects before running; never delete or modify session data without approval. | File prepared, **not run**; inspection attempted and blocked (§4.4); SQL + effects shown in §4.2 and in the migration header |
+| **D4** | **Conditional approval of M1**: inspect the live index first; if the safeguard exists, do not duplicate it; prepare the file in `supabase/migrations/`; show SQL + effects before running; never delete or modify session data without approval. | File prepared **and applied (no-op) by the reviewer on 2026-10-12, verified (§4.4a)**; pre-check SQL + effects shown in §4.2/§4.4 and in the migration header |
 | **D5** | **Yes** — create separate security tasks for RLS review and `.env` untracking; address any exposed keys immediately; coordinate with the team. | `docs/SECURITY-TASKS.md` created, tracked as issues [#48](https://github.com/kabicodo-dev/egg_incubator_app/issues/48)–[#54](https://github.com/kabicodo-dev/egg_incubator_app/issues/54) (SEC-01/02/03 flagged URGENT). **No security change has been made.** |
 
 ### Still open
@@ -393,7 +393,7 @@ and #5/#7 are expected to be updated when SEC-04 closes those gaps.
 
 **STOPPED FOR MANUAL REVIEW.** This task ran **no SQL** and changed no schema, RLS, grant, auth,
 environment or application code. The reviewer ran the read-only pre-checks (§4.4) and the approved
-M1 no-op (§4.4a). Untracked additions awaiting commit approval: `docs/` (this audit +
+M1 no-op (§4.4a). Deliverables committed in `cd481f3` and submitted as PR #55: `docs/` (this audit +
 `SECURITY-TASKS.md`), `supabase/migrations/20261012090000_incubator_sessions_single_active.sql`
-(applied to the DB, not yet committed), `test/session_ownership_audit_test.dart`. Issues #48–#54
-created for assignment — no fix implemented.
+(applied to the DB as a no-op on 2026-10-12), `test/session_ownership_audit_test.dart`. Issues #48–#54
+created for assignment — SEC-07 (#54) closed; the remaining fixes not implemented.
