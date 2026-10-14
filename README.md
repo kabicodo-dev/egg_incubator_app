@@ -19,6 +19,39 @@ samples, guidance on mobile development, and a full API reference.
 # Egg Incubator App
 Connected with Supabase and Flutter.
 
+## Configuration (Supabase)
+
+The app reads its **public** Supabase configuration at build time with
+`--dart-define-from-file=.env`. The `.env` file is never bundled into the
+app.
+
+1. Copy the placeholder template and fill in your project's values from the
+   Supabase dashboard (Settings -> API):
+
+   ```powershell
+   Copy-Item .env.example .env
+   ```
+
+2. Run with the configuration file:
+
+   ```powershell
+   flutter run -d windows --dart-define-from-file=.env   # Windows desktop
+   flutter run -d chrome --dart-define-from-file=.env    # Chrome (web)
+   ```
+
+   The VS Code debug configurations under Run and Debug already pass this
+   flag.
+
+**About the anon key:** `SUPABASE_ANON_KEY` is *public client
+configuration*. It is designed to ship inside the app and can be seen by
+anyone using it; hiding it is impossible and unnecessary. Database security
+comes from Supabase **row-level security (RLS)**, which decides what the
+public key may read or write. Never put privileged keys (for example
+`service_role`) in `.env` - the app only needs the two public values.
+
+If the values are missing at startup, the app shows a configuration screen
+naming the missing variables instead of crashing.
+
 ## Arduino Uno USB Control
 
 SmartHatch can talk to a SmartHatch Uno firmware over the USB serial port.
@@ -83,7 +116,7 @@ Arduino -> App : {"type":"telemetry","incubator":{"temperature":37.6,"humidity":
    `flutter_libserialport`.
 2. Upload `arduino/SmartHatch_Uno/SmartHatch_Uno.ino` to the Uno with the
    Arduino IDE, then plug it in over USB.
-3. `flutter pub get && flutter run -d windows`
+3. `flutter pub get && flutter run -d windows --dart-define-from-file=.env`
 4. In the app, open the hardware console / incubation screen, pick the COM port
    (e.g. `COM3`), tap **Connect**.
 
