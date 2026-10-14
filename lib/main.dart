@@ -1,7 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'services/supabase_service.dart';
@@ -13,14 +12,49 @@ import 'theme/app_theme.dart';
 // App Entry Point
 // ──────────────────────────────────────────────
 
+/// Public Supabase client configuration, supplied at build time via
+/// `--dart-define-from-file=.env` (see README and .env.example).
+///
+/// These values are PUBLIC by design: the anon/publishable key ships inside
+/// the client bundle and can be seen by anyone using the app. Database
+/// protection comes from Supabase row-level security (RLS), never from key
+/// secrecy. Privileged keys (e.g. service_role) must never be configured.
+const String _supabaseUrl = String.fromEnvironment('SUPABASE_URL');
+const String _supabaseAnonKey = String.fromEnvironment('SUPABASE_ANON_KEY');
+
+/// Returns the NAMES of missing configuration values (never the values
+/// themselves). An empty list means the configuration is complete.
+List<String> missingSupabaseConfigKeys({
+  required String url,
+  required String anonKey,
+}) {
+  return <String>[
+    if (url.isEmpty) 'SUPABASE_URL',
+    if (anonKey.isEmpty) 'SUPABASE_ANON_KEY',
+  ];
+}
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await dotenv.load(fileName: ".env");
+  final missingKeys = missingSupabaseConfigKeys(
+    url: _supabaseUrl,
+    anonKey: _supabaseAnonKey,
+  );
+  if (missingKeys.isNotEmpty) {
+    // Never call Supabase.initialize with an incomplete configuration;
+    // show a clear developer-facing screen instead.
+    runApp(
+      MaterialApp(
+        home: MissingSupabaseConfigScreen(missingKeys: missingKeys),
+      ),
+    );
+    return;
+  }
 
   await Supabase.initialize(
-    url: dotenv.env['SUPABASE_URL']!,
-    publishableKey: dotenv.env['SUPABASE_ANON_KEY']!,
+    url: _supabaseUrl,
+    publishableKey: _supabaseAnonKey,
   );
 
   final session = Supabase.instance.client.auth.currentSession;
@@ -29,6 +63,59 @@ Future<void> main() async {
   }
 
   runApp(const SmartHatchApp());
+}
+
+// ──────────────────────────────────────────────
+// Missing-configuration fallback screen
+// ──────────────────────────────────────────────
+
+/// Shown instead of the app when the public Supabase configuration was not
+/// supplied at build time. Lists only the missing variable NAMES and the
+/// commands that supply them — it never receives or renders any values.
+class MissingSupabaseConfigScreen extends StatelessWidget {
+  const MissingSupabaseConfigScreen({super.key, required this.missingKeys});
+
+  final List<String> missingKeys;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Supabase configuration missing',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'This build was created without the required public '
+                  'configuration:\n\n'
+                  '  • ${missingKeys.join('\n  • ')}\n\n'
+                  'To fix it:\n'
+                  '1. Copy .env.example to .env in the project root and fill '
+                  "in your project's PUBLIC values (Supabase dashboard "
+                  '-> Settings -> API).\n'
+                  '2. Run or build with --dart-define-from-file=.env, for '
+                  'example:\n'
+                  '     flutter run -d windows --dart-define-from-file=.env\n'
+                  '     flutter run -d chrome --dart-define-from-file=.env\n\n'
+                  'Only SUPABASE_URL and SUPABASE_ANON_KEY belong in .env; '
+                  'both are public client configuration. Never put privileged '
+                  'keys (such as service_role) there.',
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 // ──────────────────────────────────────────────
