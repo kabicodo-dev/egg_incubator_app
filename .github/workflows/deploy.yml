@@ -42,6 +42,18 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         run: |
+          status=0
+          if [ -z "${SUPABASE_URL:-}" ]; then
+            echo "::error::Missing required configuration: SUPABASE_URL"
+            status=1
+          fi
+          if [ -z "${SUPABASE_ANON_KEY:-}" ]; then
+            echo "::error::Missing required configuration: SUPABASE_ANON_KEY"
+            status=1
+          fi
+          if [ "$status" -ne 0 ]; then
+            exit 1
+          fi
           printf 'SUPABASE_URL=%s\nSUPABASE_ANON_KEY=%s\n' "$SUPABASE_URL" "$SUPABASE_ANON_KEY" > .env
 
       - name: Validate environment file
