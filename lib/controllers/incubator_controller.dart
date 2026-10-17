@@ -124,6 +124,21 @@ class IncubationProfile {
 /// Incubator and Brooder controller logic translated from the Arduino sketch.
 /// This controller manages state, timer, stage calculation, relay evaluation,
 /// sensor readings, and alerts.
+
+/// Source of a set of sensor readings.
+///
+/// Physical readings come from the Arduino telemetry stream; simulated
+/// readings come from the local hardware-console slider preview. The two are
+/// never mixed, and only fresh physical readings may be labeled "live".
+enum SensorDataSource {
+  /// Readings received from the physical Arduino hardware over serial.
+  physical,
+  /// Readings from the local simulator sliders (hardware console preview).
+  simulated,
+  /// No valid reading available (e.g. connected but no fresh telemetry yet).
+  none,
+}
+
 class IncubatorController extends ChangeNotifier {
   /// Incubation and candling constants
   static const int defaultStartDay = 7; // Hatching starts after Day 7 candling (fertile eggs)
@@ -149,6 +164,22 @@ class IncubatorController extends ChangeNotifier {
   double? incubatorHumidity;
   double? brooderTemperature;
   double? brooderHumidity;
+
+  /// Source of the latest sensor readings: physical (Arduino telemetry),
+  /// simulated (local slider preview), or none (no valid reading available).
+  ///
+  /// Physical and simulated readings are never mixed: [updateSensors] records
+  /// which source provided the current values so the UI can label live
+  /// readings correctly and never present simulated data as live hardware.
+  SensorDataSource _sensorSource = SensorDataSource.none;
+
+  /// Receipt timestamp of the last physical (Arduino) sensor reading, used for
+  /// staleness checks. Null when no physical reading has ever been received.
+  DateTime? _lastPhysicalReceivedAt;
+
+  /// Staleness window for physical readings. Matches the ArduinoController
+  /// staleness window (HW-01) so a reading is "live" only while fresh.
+  static const Duration sensorStaleAfter = Duration(seconds: 6);
 
   // Actuator / Relay states
   bool incubatorBulbState = false;
@@ -184,11 +215,11 @@ class IncubatorController extends ChangeNotifier {
   double get brooderTargetHigh =>
       IncubationProfile.getBrooderTargetHigh(profile.speciesName, brooderDay);
 
-  IncubatorController({
-    this.profile = IncubationProfile.chicken,
-    int initialEggs = minEggCount,
-    int initialDay = defaultStartDay,
-  }) {
+IncubatorController({
+  this.profile = IncubationProfile.chicken,
+  int initialEggs = minEggCount,
+  int initialDay = defaultStartDay,
+}) {
     startNewBatch(profile, initialEggs, initialDay);
     _startTicker();
   }
@@ -347,16 +378,28 @@ class IncubatorController extends ChangeNotifier {
 
   /// Updates sensor values and evaluates relay states following the exact
   /// hysteresis rules from the Arduino sketch.
+  ///
+  /// [source] records where the readings came from so physical and simulated
+  /// values are never mixed and only fresh physical readings are labeled live.
+  /// When [source] is [SensorDataSource.physical], [receivedAt] is the
+  /// app-side receipt timestamp of the telemetry frame (used for staleness).
   void updateSensors({
     double? incTemp,
     double? incHumidity,
     double? broodTemp,
     double? broodHumidity,
+    SensorDataSource source = SensorDataSource.none,
+    DateTime? receivedAt,
   }) {
     incubatorTemperature = incTemp;
     incubatorHumidity = incHumidity;
     brooderTemperature = broodTemp;
     brooderHumidity = broodHumidity;
+
+    _sensorSource = source;
+    if (source == SensorDataSource.physical && receivedAt != null) {
+      _lastPhysicalReceivedAt = receivedAt;
+    }
 
     // While an Arduino owns the relays, keep the readings but do not override
     // its reported actuator states with local hysteresis.
@@ -369,6 +412,27 @@ class IncubatorController extends ChangeNotifier {
 
     notifyListeners();
   }
+
+  /// Source of the current sensor readings.
+  SensorDataSource get sensorSource => _sensorSource;
+
+  /// Receipt timestamp of the last physical (Arduino) sensor reading.
+  DateTime? get sensorLastReceivedAt => _lastPhysicalReceivedAt;
+
+  /// True only when the current readings are fresh physical (live) readings.
+  ///
+  /// Simulated readings are never live, and a physical reading older than
+  /// [sensorStaleAfter] is stale and not live. Individual chamber values may
+  /// still be `null` (sensor error) even while the frame is live; those are
+  /// reported separately via [hasIncubatorSensorError] /
+  /// [hasBrooderSensorError] and shown as 'ERROR' by the UI.
+  bool get sensorsAreLive =>
+      _sensorSource == SensorDataSource.physical &&
+      _lastPhysicalReceivedAt != null &&
+      DateTime.now().difference(_lastPhysicalReceivedAt!) <= sensorStaleAfter;
+
+  /// True when the current readings are simulated (never labeled live).
+  bool get sensorsAreSimulated => _sensorSource == SensorDataSource.simulated;
 
   /// Applies relay states reported by the connected Arduino.
   void applyActuatorStates(Map<String, bool> states) {

@@ -7387,6 +7387,7 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
       incHumidity: _simulatedIncHumidity,
       broodTemp: _simulatedBroodTemp,
       broodHumidity: _simulatedBroodHumidity,
+      source: SensorDataSource.simulated,
     );
   }
 
@@ -7422,11 +7423,14 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
     _controller.externalControl = connected;
     if (connected && _arduino.isLive) {
       // Live telemetry: mirror real readings and reported relay states.
+      final reading = _arduino.telemetry!;
       _controller.updateSensors(
         incTemp: _arduino.incubatorTemperature,
         incHumidity: _arduino.incubatorHumidity,
         broodTemp: _arduino.brooderTemperature,
         broodHumidity: _arduino.brooderHumidity,
+        source: SensorDataSource.physical,
+        receivedAt: reading.receivedAt,
       );
       _controller.applyActuatorStates({
         'incubatorBulb': _arduino.actuatorOn('incubatorBulb'),
@@ -7437,8 +7441,9 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
         'brooderHumidifier': _arduino.actuatorOn('brooderHumidifier'),
       });
     } else if (connected) {
-      // Connected but no fresh frame yet: never show simulated readings as live.
-      _controller.updateSensors();
+      // Connected but no fresh frame yet: never show simulated readings as
+      // live, and do not keep stale physical values labeled as live.
+      _controller.updateSensors(source: SensorDataSource.none);
     } else if (!connected) {
       // Simulator owns the readings while no Arduino is attached.
       _controller.updateSensors(
@@ -7446,6 +7451,7 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
         incHumidity: _simulatedIncHumidity,
         broodTemp: _simulatedBroodTemp,
         broodHumidity: _simulatedBroodHumidity,
+        source: SensorDataSource.simulated,
       );
     }
     if (mounted) setState(() {});
@@ -7461,6 +7467,7 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
       incHumidity: _simulatedIncHumidity,
       broodTemp: _simulatedBroodTemp,
       broodHumidity: _simulatedBroodHumidity,
+      source: SensorDataSource.simulated,
     );
   }
 
@@ -8305,7 +8312,7 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Row(
+          Row(
             children: [
               Icon(Icons.inventory_2_outlined, color: Color(0xFFE8752A), size: 22),
               SizedBox(width: 8),
@@ -8313,6 +8320,8 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
                 'Incubator Chamber',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
+              const SizedBox(width: 8),
+              _sourceChip(_controller.sensorSource),
             ],
           ),
           const SizedBox(height: 12),
@@ -8664,6 +8673,8 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
                         style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                     ),
+                    const SizedBox(width: 8),
+                    _sourceChip(_controller.sensorSource),
                   ],
                 ),
               ),
@@ -9032,6 +9043,33 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
             },
           ),
         ],
+      ),
+    );
+  }
+
+  /// Chip labeling whether the chamber readings are live physical data,
+  /// simulator preview data, or unavailable.
+  Widget _sourceChip(SensorDataSource source) {
+    final (String text, Color color, Color bg) = switch (source) {
+      SensorDataSource.physical => ('LIVE', Colors.green.shade700, Colors.green.withValues(alpha: 0.10)),
+      SensorDataSource.simulated => ('SIMULATED', Colors.orange.shade700, Colors.orange.withValues(alpha: 0.10)),
+      SensorDataSource.none => ('—', Colors.grey.shade500, Colors.grey.withValues(alpha: 0.08)),
+    };
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: color.withValues(alpha: 0.45), width: 1),
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: 9.5,
+          fontWeight: FontWeight.w800,
+          color: color,
+          letterSpacing: 0.4,
+        ),
       ),
     );
   }
