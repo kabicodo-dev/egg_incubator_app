@@ -8316,12 +8316,22 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
             children: [
               Icon(Icons.inventory_2_outlined, color: Color(0xFFE8752A), size: 22),
               SizedBox(width: 8),
-              Text(
-                'Incubator Chamber',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              Flexible(
+                child: Row(
+                  children: [
+                    Flexible(
+                      child: Text(
+                        'Incubator Chamber',
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    _sourceChip(_controller.sensorSource),
+                  ],
+                ),
               ),
-              const SizedBox(width: 8),
-              _sourceChip(_controller.sensorSource),
             ],
           ),
           const SizedBox(height: 12),
@@ -8666,15 +8676,21 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
                     const Icon(Icons.nest_cam_wired_stand, color: Colors.indigo, size: 22),
                     const SizedBox(width: 8),
                     Flexible(
-                      child: Text(
-                        'Brooder Chamber',
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      child: Row(
+                        children: [
+                          Flexible(
+                            child: Text(
+                              'Brooder Chamber',
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          _sourceChip(_controller.sensorSource),
+                        ],
                       ),
                     ),
-                    const SizedBox(width: 8),
-                    _sourceChip(_controller.sensorSource),
                   ],
                 ),
               ),
