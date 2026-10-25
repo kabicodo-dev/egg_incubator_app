@@ -1,476 +1,603 @@
-/*
- * SmartHatch Uno — USB serial controller for the SmartHatch Flutter app.
- *
- * Protocol: newline-delimited JSON (one object per line) at 9600 baud.
- *   Arduino -> app : {"type":"telemetry", ...}          (every TELEMETRY_INTERVAL_MS)
- *   app -> Arduino : {"type":"command","id":...,"actuator":...,"state":...}
- *   Arduino -> app : {"type":"ack","id":...,"success":...,...}
- *
- * Actuator names (shared with lib/services/arduino_protocol.dart):
- *   incubatorBulb, incubatorFan, exhaustFan, brooderBulb,
- *   incubatorHumidifier, brooderHumidifier, eggTurningServo
- *
- * RELAYS ARE ACTIVE-LOW:  LOW = relay ON,  HIGH = relay OFF.
- * All heating/humidification relays start OFF and stay OFF until a valid,
- * acknowledged command turns them on. Connecting USB never energizes anything.
- *
- * Required libraries (Library Manager):
- *   - "DHT sensor library" (Adafruit)
- *   - "Adafruit Unified Sensor" (dependency of the above)
- *   - Servo (bundled with the Arduino IDE)
- *   - "LiquidCrystal I2C" (Frank de Brabander) for 16×2 LCD
- *   - Wire (bundled with the Arduino IDE)
- *
- * See docs/arduino_integration.md for wiring, upload and test steps.
- */
-
-#include <Wire.h>
-#include <LiquidCrystal_I2C.h>
 #include <DHT.h>
 #include <Servo.h>
+#include <EEPROM.h>
+#include <ctype.h>
+#include <stdlib.h>
+#include <string.h>
 
-// ── Pin map (do not change without checking hardware wiring) ──
-#define PIN_DHT_INCUBATOR   2   // Incubator DHT11
-#define PIN_EGG_SERVO       3   // Incubator egg-turning servo
-#define PIN_DHT_BROODER     4   // Brooder DHT11
-#define PIN_RELAY_BROODER_HUMIDIFIER 5   // Brooder humidifier relay
-#define PIN_RELAY_INCUBATOR_HUMIDIFIER 6 // Incubator humidifier relay
-#define PIN_BUZZER_INCUBATOR 7  // Incubator buzzer
-#define PIN_BUZZER_BROODER   8  // Brooder buzzer
-#define PIN_RELAY_EXHAUST_FAN 9 // Exhaust / intake fan relay
-#define PIN_RELAY_INCUBATOR_BULB 10 // Incubator bulb relay
-#define PIN_RELAY_BROODER_BULB 11   // Brooder bulb relay
-#define PIN_RELAY_INCUBATOR_FAN 12  // Incubator fan relay
+// ============================================================
+// SMARTHATCH AUTOMATION
+// Keeps the original Arduino pin assignments and DHT11 sensors.
+// Both DHT11 sensors are sampled every 2 seconds. Actuator automation starts
+// only after the UI/UX sends a valid EGG:<type> command.
+// ============================================================
 
-#define DHTTYPE DHT11
+#define DHT_TYPE DHT11
 
-// ── Behaviour configuration ──
-static const unsigned long TELEMETRY_INTERVAL_MS = 2000;   // telemetry period
-static const unsigned long SENSOR_INTERVAL_MS = 2500;      // DHT11 needs >=2s
-static const unsigned long TURN_INTERVAL_MS = 4UL * 60UL * 60UL * 1000UL; // 4 h
-static const int SERVO_POS_A = 25;   // egg tray position A (degrees)
-static const int SERVO_POS_B = 155;  // egg tray position B (degrees)
-static const int SERVO_MOVE_MS = 900; // time allowed for the sweep
-static const unsigned long LCD_ALTERNATE_MS = 3000; // alternate LCD screens
+// Automatic control is enabled. Incubator automation starts only after
+// the UI sends EGG:CHICKEN, EGG:DUCK, or EGG:QUAIL.
+const bool ENABLE_INCUBATOR_CONTROL = true;
+const bool ENABLE_BROODER_CONTROL = true;
 
-struct RelayDef {
-  const char* name;
-  uint8_t pin;
-};
+// Incubator temperature control (forced-air incubator, starting values)
+const float INCUBATOR_HEAT_ON_BELOW_C  = 37.3;
+const float INCUBATOR_HEAT_OFF_ABOVE_C = 37.7;
+const float INCUBATOR_EXHAUST_ON_ABOVE_C = 37.7;
+const float INCUBATOR_EXHAUST_OFF_BELOW_C = 37.5;
 
-// Relay-backed actuators (active-LOW). eggTurningServo is handled separately.
-static const RelayDef RELAYS[] = {
-  {"incubatorBulb", PIN_RELAY_INCUBATOR_BULB},
-  {"incubatorFan", PIN_RELAY_INCUBATOR_FAN},
-  {"exhaustFan", PIN_RELAY_EXHAUST_FAN},
-  {"brooderBulb", PIN_RELAY_BROODER_BULB},
-  {"incubatorHumidifier", PIN_RELAY_INCUBATOR_HUMIDIFIER},
-  {"brooderHumidifier", PIN_RELAY_BROODER_HUMIDIFIER},
-};
-static const uint8_t RELAY_COUNT = sizeof(RELAYS) / sizeof(RELAYS[0]);
+// Intervals
+const unsigned long SENSOR_READ_INTERVAL_MS = 2000UL;
+const unsigned long ONE_DAY_MS = 86400000UL;
+const unsigned long SERVO_TURN_INTERVAL_MS = 2UL * 60UL * 60UL * 1000UL; // every 2 hours
 
-DHT incubatorDht(PIN_DHT_INCUBATOR, DHTTYPE);
-DHT brooderDht(PIN_DHT_BROODER, DHTTYPE);
-Servo eggServo;
-LiquidCrystal_I2C lcd(0x27, 16, 2);  // I2C address 0x27, 16 cols × 2 rows
+// Servo: keep home angle from the original code. Calibrate side angles
+// to your actual egg-tray mechanism before operating with eggs.
+const int INCUBATOR_SERVO_HOME_ANGLE = 90;
+const int INCUBATOR_SERVO_SIDE_A_ANGLE = 45;
+const int INCUBATOR_SERVO_SIDE_B_ANGLE = 135;
 
-// Cached sensor state (valid==false => report JSON null, never a fake value).
-bool incValid = false;
-bool brooderValid = false;
-float incTemp = 0.0f, incHum = 0.0f;
-float brooderTemp = 0.0f, brooderHum = 0.0f;
+// ============================================================
+// ORIGINAL PIN ASSIGNMENTS -- UNCHANGED
+// ============================================================
+const byte EXHAUST_INTAKE_RELAY_PIN = 9;   // 4-channel IN1
+const byte INCUBATOR_BULB_RELAY_PIN = 10;  // 4-channel IN2
+const byte BROODER_BULB_RELAY_PIN = 11;    // 4-channel IN3
+const byte INCUBATOR_FAN_RELAY_PIN = 12;   // 4-channel IN4
+const byte BROODER_HUMIDIFIER_RELAY_PIN = 5;    // 2-channel IN1
+const byte INCUBATOR_HUMIDIFIER_RELAY_PIN = 6;  // 2-channel IN2
+const byte INCUBATOR_DHT_PIN = 2;
+const byte INCUBATOR_BUZZER_PIN = 7;
+const byte BROODER_DHT_PIN = 4;
+const byte BROODER_BUZZER_PIN = 8;
+const byte INCUBATOR_SERVO_PIN = 3;
 
-// Turning state
-bool turningEnabled = true;       // auto turning on until a command disables it
-bool servoToggle = false;         // alternates between position A and B
-unsigned long lastTurnMillis = 0;
-unsigned long turnsToday = 0;
-unsigned long turnsDay = 0;
+const bool RELAY_ACTIVE_LOW = true;
 
-// LCD display state
-char lcdEggType[12] = "Not Set";
-int  lcdIncubationDay = 0;
-int  lcdIncubationDuration = 0;
-bool lcdShowEggScreen = true;         // alternates between egg-info and sensor screens
-unsigned long lastLcdAlternate = 0;
+DHT incubatorDht(INCUBATOR_DHT_PIN, DHT_TYPE);
+DHT brooderDht(BROODER_DHT_PIN, DHT_TYPE);
+Servo incubatorServo;
 
-// Timers
-unsigned long lastTelemetryMillis = 0;
-unsigned long lastSensorMillis = 0;
+// ============================================================
+// EGG SELECTION AND AUTOMATION STATE
+// ============================================================
+enum EggType : byte { EGG_NONE = 0, EGG_CHICKEN, EGG_DUCK, EGG_QUAIL };
+EggType selectedEgg = EGG_NONE;
 
-// Serial command buffer
-static const size_t CMD_BUFFER_SIZE = 192;
-char cmdBuffer[CMD_BUFFER_SIZE];
-size_t cmdLength = 0;
+// Initial day is Day 8, as requested. Current day is saved in EEPROM.
+const byte EEPROM_MAGIC_ADDRESS = 0;
+const byte EEPROM_DAY_ADDRESS = 1;
+const byte EEPROM_MAGIC_VALUE = 0x53;
+int incubationDay = 8;
+unsigned long lastIncubationDayTick = 0;
 
-// Snprintf-based float formatting (AVR printf has no float support by default).
-void fmtFloatOrNull(bool valid, float value, char* out, size_t outLen) {
-  if (valid) {
-    dtostrf(value, 0, 2, out);
+// Brooder counting begins only when the UI sends BROODER_START after
+// hatchlings have physically been moved into the brooder.
+bool brooderActive = false;
+int brooderDay = 0;
+unsigned long lastBrooderDayTick = 0;
+
+bool incubatorBulbOn = false;
+bool incubatorHumidifierOn = false;
+bool brooderBulbOn = false;
+bool brooderHumidifierOn = false;
+bool exhaustFanOn = false;
+
+unsigned long lastSensorRead = 0;
+unsigned long lastServoTurn = 0;
+bool servoAtSideB = false;
+bool servoHadBeenTurning = false;
+
+char serialLine[48];
+byte serialLineLength = 0;
+
+// ============================================================
+// BASIC OUTPUT HELPERS
+// ============================================================
+void setRelay(byte pin, bool on) {
+  bool outputHigh = RELAY_ACTIVE_LOW ? !on : on;
+  digitalWrite(pin, outputHigh ? HIGH : LOW);
+}
+
+void setBuzzer(byte pin, bool on) {
+  digitalWrite(pin, on ? HIGH : LOW);
+}
+
+void allOutputsOff() {
+  setRelay(EXHAUST_INTAKE_RELAY_PIN, false);
+  setRelay(INCUBATOR_BULB_RELAY_PIN, false);
+  setRelay(BROODER_BULB_RELAY_PIN, false);
+  setRelay(INCUBATOR_FAN_RELAY_PIN, false);
+  setRelay(BROODER_HUMIDIFIER_RELAY_PIN, false);
+  setRelay(INCUBATOR_HUMIDIFIER_RELAY_PIN, false);
+  setBuzzer(INCUBATOR_BUZZER_PIN, false);
+  setBuzzer(BROODER_BUZZER_PIN, false);
+}
+
+const char* eggName(EggType egg) {
+  switch (egg) {
+    case EGG_CHICKEN: return "CHICKEN";
+    case EGG_DUCK:    return "DUCK";
+    case EGG_QUAIL:   return "QUAIL";
+    default:          return "NONE";
+  }
+}
+
+int incubationDurationDays() {
+  switch (selectedEgg) {
+    case EGG_CHICKEN: return 21;
+    case EGG_DUCK:    return 28; // common domestic duck; breed may vary
+    case EGG_QUAIL:   return 18; // common Coturnix quail; species may vary
+    default:          return 28;
+  }
+}
+
+// Day on which turning must have stopped. The condition below stops
+// turning at the start of this day.
+int stopTurningDay() {
+  switch (selectedEgg) {
+    case EGG_CHICKEN: return 18;
+    case EGG_DUCK:    return 25;
+    case EGG_QUAIL:   return 14;
+    default:          return 1;
+  }
+}
+
+// Humidity lockdown begins one day after the chicken turn-stop day,
+// Day 26 for common domestic ducks, and Day 15 for common Coturnix quail.
+int lockdownHumidityStartDay() {
+  switch (selectedEgg) {
+    case EGG_CHICKEN: return 19;
+    case EGG_DUCK:    return 26;
+    case EGG_QUAIL:   return 15;
+    default:          return 99;
+  }
+}
+
+void saveIncubationDay() {
+  EEPROM.update(EEPROM_MAGIC_ADDRESS, EEPROM_MAGIC_VALUE);
+  EEPROM.update(EEPROM_DAY_ADDRESS, (byte)incubationDay);
+}
+
+void loadIncubationDay() {
+  byte magic = EEPROM.read(EEPROM_MAGIC_ADDRESS);
+  byte savedDay = EEPROM.read(EEPROM_DAY_ADDRESS);
+  if (magic == EEPROM_MAGIC_VALUE && savedDay >= 1 && savedDay <= 40) {
+    incubationDay = savedDay;
   } else {
-    strncpy(out, "null", outLen - 1);
-    out[outLen - 1] = '\0';
+    incubationDay = 8;
+    saveIncubationDay();
   }
 }
 
-// Relay helper: active-LOW, so ON writes LOW.
-void writeRelay(uint8_t pin, bool on) {
-  digitalWrite(pin, on ? LOW : HIGH);
+void setIncubationDayFromCommand(int day) {
+  if (day < 1) day = 1;
+  if (day > 40) day = 40;
+  incubationDay = day;
+  lastIncubationDayTick = millis();
+  saveIncubationDay();
 }
 
-// Safe startup: drive the pin HIGH (relay OFF) BEFORE enabling the output so a
-// reset/boot can never briefly energize a heating or humidification load.
-void initRelayPin(uint8_t pin) {
-  digitalWrite(pin, HIGH);
-  pinMode(pin, OUTPUT);
-  digitalWrite(pin, HIGH);
-}
+// ============================================================
+// SPECIES-SPECIFIC INCUBATOR HUMIDITY TARGETS
+// ============================================================
+void getIncubatorHumidityLimits(float &lowPercent, float &highPercent) {
+  bool lockdown = incubationDay >= lockdownHumidityStartDay();
 
-void initAllHardware() {
-  for (uint8_t i = 0; i < RELAY_COUNT; i++) {
-    initRelayPin(RELAYS[i].pin);
-  }
-  // Buzzers default silent (active-HIGH assumption); not part of the protocol.
-  pinMode(PIN_BUZZER_INCUBATOR, OUTPUT);
-  digitalWrite(PIN_BUZZER_INCUBATOR, LOW);
-  pinMode(PIN_BUZZER_BROODER, OUTPUT);
-  digitalWrite(PIN_BUZZER_BROODER, LOW);
-
-  // Servo stays detached until a turn is actually performed.
-  eggServo.detach();
-
-  // I2C LCD initialisation
-  lcd.init();
-  lcd.backlight();
-  lcd.setCursor(0, 0);
-  lcd.print("SmartHatch");
-  lcd.setCursor(0, 1);
-  lcd.print("Starting...");
-  delay(1500);
-  lcd.clear();
-}
-
-// ── Minimal JSON value extraction (no external JSON library) ──
-const char* jsonFindValue(const char* json, const char* key) {
-  char pattern[32];
-  snprintf(pattern, sizeof(pattern), "\"%s\"", key);
-  const char* p = strstr(json, pattern);
-  if (p == nullptr) return nullptr;
-  p += strlen(pattern);
-  while (*p == ' ' || *p == '\t') p++;
-  if (*p != ':') return nullptr;
-  p++;
-  while (*p == ' ' || *p == '\t') p++;
-  return p;
-}
-
-bool jsonGetString(const char* json, const char* key, char* out, size_t outLen) {
-  const char* p = jsonFindValue(json, key);
-  if (p == nullptr || *p != '"') return false;
-  p++;
-  size_t i = 0;
-  while (*p != '\0' && *p != '"' && i < outLen - 1) {
-    out[i++] = *p++;
-  }
-  out[i] = '\0';
-  return (*p == '"');
-}
-
-bool jsonGetBool(const char* json, const char* key, bool* out) {
-  const char* p = jsonFindValue(json, key);
-  if (p == nullptr) return false;
-  if (strncmp(p, "true", 4) == 0) {
-    *out = true;
-    return true;
-  }
-  if (strncmp(p, "false", 5) == 0) {
-    *out = false;
-    return true;
-  }
-  return false;
-}
-
-bool isRelayActuator(const char* name, uint8_t* pinOut) {
-  for (uint8_t i = 0; i < RELAY_COUNT; i++) {
-    if (strcmp(name, RELAYS[i].name) == 0) {
-      if (pinOut != nullptr) *pinOut = RELAYS[i].pin;
-      return true;
+  if (lockdown) {
+    switch (selectedEgg) {
+      case EGG_CHICKEN:
+        lowPercent = 65.0; highPercent = 70.0; return;
+      case EGG_DUCK:
+        lowPercent = 65.0; highPercent = 75.0; return;
+      case EGG_QUAIL:
+        lowPercent = 65.0; highPercent = 70.0; return;
+      default:
+        lowPercent = 55.0; highPercent = 65.0; return;
     }
   }
-  return false;
-}
 
-bool isKnownActuator(const char* name) {
-  return isRelayActuator(name, nullptr) || strcmp(name, "eggTurningServo") == 0;
-}
-
-// ── Turning ──
-void performTurn() {
-  int target = servoToggle ? SERVO_POS_A : SERVO_POS_B;
-  servoToggle = !servoToggle;
-  eggServo.attach(PIN_EGG_SERVO);
-  eggServo.write(target);
-  delay(SERVO_MOVE_MS);
-  eggServo.detach();
-  lastTurnMillis = millis();
-  turnsToday++;
-}
-
-// ── Outgoing messages ──
-void sendAck(const char* id, bool success, const char* actuator, bool stateOn,
-             const char* error) {
-  char buf[192];
-  if (success) {
-    snprintf(buf, sizeof(buf),
-             "{\"type\":\"ack\",\"id\":\"%s\",\"success\":true,"
-             "\"actuator\":\"%s\",\"state\":%s,\"hardwareVerified\":false}",
-             id, actuator, stateOn ? "true" : "false");
-  } else {
-    snprintf(buf, sizeof(buf),
-             "{\"type\":\"ack\",\"id\":\"%s\",\"success\":false,"
-             "\"error\":\"%s\"}",
-             id, error);
-  }
-  Serial.println(buf);
-}
-
-void sendTelemetry() {
-  char tInc[10], hInc[10], tBro[10], hBro[10];
-  fmtFloatOrNull(incValid, incTemp, tInc, sizeof(tInc));
-  fmtFloatOrNull(incValid, incHum, hInc, sizeof(hInc));
-  fmtFloatOrNull(brooderValid, brooderTemp, tBro, sizeof(tBro));
-  fmtFloatOrNull(brooderValid, brooderHum, hBro, sizeof(hBro));
-
-  // Actuator states: relays are active-LOW, so ON == (pin reads LOW).
-  bool bulb = (digitalRead(PIN_RELAY_INCUBATOR_BULB) == LOW);
-  bool incFan = (digitalRead(PIN_RELAY_INCUBATOR_FAN) == LOW);
-  bool exhaust = (digitalRead(PIN_RELAY_EXHAUST_FAN) == LOW);
-  bool broBulb = (digitalRead(PIN_RELAY_BROODER_BULB) == LOW);
-  bool incHum = (digitalRead(PIN_RELAY_INCUBATOR_HUMIDIFIER) == LOW);
-  bool broHum = (digitalRead(PIN_RELAY_BROODER_HUMIDIFIER) == LOW);
-
-  unsigned long secondsSinceTurn =
-      (millis() - lastTurnMillis) / 1000UL;
-
-  char buf[400];
-  snprintf(buf, sizeof(buf),
-           "{\"type\":\"telemetry\","
-           "\"incubator\":{\"temperature\":%s,\"humidity\":%s},"
-           "\"brooder\":{\"temperature\":%s,\"humidity\":%s},"
-           "\"actuators\":{\"incubatorBulb\":%s,\"incubatorFan\":%s,"
-           "\"exhaustFan\":%s,\"brooderBulb\":%s,\"incubatorHumidifier\":%s,"
-           "\"brooderHumidifier\":%s,\"eggTurningServo\":%s},"
-           "\"turning\":{\"intervalMinutes\":%lu,\"turnsToday\":%lu,"
-           "\"secondsSinceLastTurn\":%lu,\"active\":%s}}",
-           tInc, hInc, tBro, hBro,
-           bulb ? "true" : "false", incFan ? "true" : "false",
-           exhaust ? "true" : "false", broBulb ? "true" : "false",
-           incHum ? "true" : "false", broHum ? "true" : "false",
-           turningEnabled ? "true" : "false",
-           TURN_INTERVAL_MS / 60000UL, turnsToday, secondsSinceTurn,
-           turningEnabled ? "true" : "false");
-  Serial.println(buf);
-}
-
-// ── LCD display ──
-
-void updateLcd() {
-  lcd.clear();
-
-  if (lcdShowEggScreen) {
-    // Line 1: Egg type
-    lcd.setCursor(0, 0);
-    lcd.print("Egg: ");
-    lcd.print(lcdEggType);
-
-    // Line 2: Incubation day or prompt
-    lcd.setCursor(0, 1);
-    if (lcdIncubationDuration > 0) {
-      lcd.print("Day: ");
-      if (lcdIncubationDay < 10) lcd.print('0');
-      lcd.print(lcdIncubationDay);
-      lcd.print('/');
-      lcd.print(lcdIncubationDuration);
-    } else {
-      lcd.print("Select in app");
-    }
-  } else {
-    // Line 1: Temperature
-    lcd.setCursor(0, 0);
-    if (incValid) {
-      lcd.print("Temp: ");
-      lcd.print(incTemp, 1);
-      lcd.print((char)223);   // degree symbol
-      lcd.print('C');
-    } else {
-      lcd.print("Temp: Sensor Err");
-    }
-
-    // Line 2: Humidity
-    lcd.setCursor(0, 1);
-    if (incValid) {
-      lcd.print("Humidity: ");
-      lcd.print(incHum, 0);
-      lcd.print('%');
-    } else {
-      lcd.print("Humidity: Error");
-    }
+  switch (selectedEgg) {
+    case EGG_CHICKEN:
+    case EGG_QUAIL:
+      lowPercent = 45.0; highPercent = 55.0; return;
+    case EGG_DUCK:
+      lowPercent = 55.0; highPercent = 60.0; return;
+    default:
+      lowPercent = 50.0; highPercent = 60.0; return;
   }
 }
 
-// ── Incoming commands ──
-void handleCommand(const char* line) {
-  char type[16];
-  if (!jsonGetString(line, "type", type, sizeof(type))) {
-    return; // no type -> ignore malformed input, never actuate
+// ============================================================
+// BROODER STAGE TEMPERATURE
+// Based on the uploaded SmartHatch Brooder Stages reference guide.
+// Chicken/quail ranges are represented by their midpoints. Duck values
+// are interpolated between the guide's approximate age milestones.
+// ============================================================
+float getBrooderTargetC(int day) {
+  if (day < 1) day = 1;
+
+  if (selectedEgg == EGG_DUCK) {
+    const int days[6] = {1, 7, 14, 21, 28, 35};
+    const float temps[6] = {30.0, 27.0, 23.0, 19.0, 15.0, 13.0};
+    if (day <= days[0]) return temps[0];
+    for (byte i = 0; i < 5; i++) {
+      if (day <= days[i + 1]) {
+        float fraction = (float)(day - days[i]) / (float)(days[i + 1] - days[i]);
+        return temps[i] + fraction * (temps[i + 1] - temps[i]);
+      }
+    }
+    return 13.0;
   }
 
-  // ── LCD update command ──
-  // {"type":"lcdUpdate","eggType":"Chicken","day":5,"duration":21}
-  if (strcmp(type, "lcdUpdate") == 0) {
-    handleLcdUpdate(line);
+  // Chicken and quail weekly ranges converted to midpoint targets.
+  if (day <= 7)  return 33.5; // 32-35 C
+  if (day <= 14) return 30.5; // 29-32 C
+  if (day <= 21) return 28.0; // 27-29 C
+  if (day <= 28) return 25.5; // 24-27 C
+  if (day <= 35) return 22.5; // 21-24 C
+  return 21.0;                // ambient conditions may be sufficient
+}
+
+// ============================================================
+// INCUBATOR AUTOMATION
+// ============================================================
+void controlIncubator(float temperatureC, float humidityPercent) {
+  // Heating uses hysteresis to reduce relay chatter.
+  if (temperatureC <= INCUBATOR_HEAT_ON_BELOW_C) incubatorBulbOn = true;
+  if (temperatureC >= INCUBATOR_HEAT_OFF_ABOVE_C) incubatorBulbOn = false;
+  setRelay(INCUBATOR_BULB_RELAY_PIN, incubatorBulbOn);
+
+  float humidityLow, humidityHigh;
+  getIncubatorHumidityLimits(humidityLow, humidityHigh);
+  if (humidityPercent <= humidityLow) incubatorHumidifierOn = true;
+  if (humidityPercent >= humidityHigh) incubatorHumidifierOn = false;
+  setRelay(INCUBATOR_HUMIDIFIER_RELAY_PIN, incubatorHumidifierOn);
+
+  // D12 is treated as the incubator air-circulation fan and runs while
+  // an egg type is selected. D9 is an additional high-temperature vent.
+  setRelay(INCUBATOR_FAN_RELAY_PIN, true);
+  if (temperatureC >= INCUBATOR_EXHAUST_ON_ABOVE_C) exhaustFanOn = true;
+  if (temperatureC <= INCUBATOR_EXHAUST_OFF_BELOW_C) exhaustFanOn = false;
+  setRelay(EXHAUST_INTAKE_RELAY_PIN, exhaustFanOn);
+}
+
+bool eggTurningAllowed() {
+  if (selectedEgg == EGG_NONE) return false;
+  if (incubationDay >= stopTurningDay()) return false;
+  if (incubationDay >= lockdownHumidityStartDay()) return false;
+  return true;
+}
+
+void updateServoTurning() {
+  if (!eggTurningAllowed()) {
+    if (servoHadBeenTurning) {
+      incubatorServo.write(INCUBATOR_SERVO_HOME_ANGLE);
+      servoHadBeenTurning = false;
+    }
     return;
   }
 
-  if (strcmp(type, "command") != 0) {
-    return; // unknown message types are ignored safely
+  if (millis() - lastServoTurn >= SERVO_TURN_INTERVAL_MS) {
+    servoAtSideB = !servoAtSideB;
+    incubatorServo.write(servoAtSideB ? INCUBATOR_SERVO_SIDE_B_ANGLE
+                                      : INCUBATOR_SERVO_SIDE_A_ANGLE);
+    lastServoTurn = millis();
+    servoHadBeenTurning = true;
   }
-
-  char id[24] = "";
-  char actuator[24] = "";
-  bool state = false;
-  jsonGetString(line, "id", id, sizeof(id));
-
-  if (!jsonGetString(line, "actuator", actuator, sizeof(actuator))) {
-    sendAck(id, false, "", false, "Missing actuator");
-    return;
-  }
-  if (!jsonGetBool(line, "state", &state)) {
-    sendAck(id, false, actuator, false, "Missing or invalid state");
-    return;
-  }
-  if (!isKnownActuator(actuator)) {
-    sendAck(id, false, actuator, false, "Invalid actuator");
-    return;
-  }
-
-  if (strcmp(actuator, "eggTurningServo") == 0) {
-    // Enable/disable the automatic 4-hour turning schedule (not a manual sweep).
-    turningEnabled = state;
-  } else {
-    uint8_t pin = 0;
-    isRelayActuator(actuator, &pin);
-    writeRelay(pin, state);
-  }
-
-  sendAck(id, true, actuator, state, "");
 }
 
-/// Handle an lcdUpdate message from the Flutter app.
-void handleLcdUpdate(const char* line) {
-  jsonGetString(line, "eggType", lcdEggType, sizeof(lcdEggType));
+// ============================================================
+// BROODER AUTOMATION
+// Humidity target is intentionally not automated from the reference guide:
+// it does not prescribe one universal brooder RH target. Keep bedding dry.
+// ============================================================
+void controlBrooder(float temperatureC) {
+  float targetC = getBrooderTargetC(brooderDay);
+  if (temperatureC <= targetC - 0.5) brooderBulbOn = true;
+  if (temperatureC >= targetC + 0.5) brooderBulbOn = false;
+  setRelay(BROODER_BULB_RELAY_PIN, brooderBulbOn);
 
-  // Parse day and duration integers from the JSON value pointers.
-  const char* dayVal = jsonFindValue(line, "day");
-  if (dayVal != nullptr) lcdIncubationDay = atoi(dayVal);
-
-  const char* durVal = jsonFindValue(line, "duration");
-  if (durVal != nullptr) lcdIncubationDuration = atoi(durVal);
-
-  // Show the egg screen immediately after receiving an update.
-  lcdShowEggScreen = true;
-  lastLcdAlternate = millis();
-  updateLcd();
-
-  // Send acknowledgement back to the app.
-  Serial.println("{\"type\":\"lcdAck\",\"success\":true}");
+  // No universal brooder humidity setpoint is specified in the supplied guide.
+  brooderHumidifierOn = false;
+  setRelay(BROODER_HUMIDIFIER_RELAY_PIN, false);
 }
 
-void pollSerial() {
-  while (Serial.available() > 0) {
-    char c = (char)Serial.read();
-    if (c == '\n') {
-      cmdBuffer[cmdLength] = '\0';
-      if (cmdLength > 0) handleCommand(cmdBuffer);
-      cmdLength = 0;
-    } else if (c != '\r') {
-      if (cmdLength < CMD_BUFFER_SIZE - 1) {
-        cmdBuffer[cmdLength++] = c;
-      } else {
-        cmdLength = 0; // overflow: drop the line rather than mis-parse it
+void updateDayCounters() {
+  unsigned long now = millis();
+
+  // Count incubation days up to the normal incubation duration. The UI can
+  // resync this with INCUBATION_DAY:n if the Arduino was powered off.
+  if (selectedEgg != EGG_NONE) {
+    while (now - lastIncubationDayTick >= ONE_DAY_MS) {
+      lastIncubationDayTick += ONE_DAY_MS;
+      if (incubationDay < incubationDurationDays()) {
+        incubationDay++;
+        saveIncubationDay();
       }
     }
   }
-}
 
-void readSensors() {
-  float t = incubatorDht.readTemperature();
-  float h = incubatorDht.readHumidity();
-  if (!isnan(t) && !isnan(h)) {
-    incTemp = t;
-    incHum = h;
-    incValid = true;
-  } else {
-    incValid = false; // never report stale readings as current
-  }
-
-  t = brooderDht.readTemperature();
-  h = brooderDht.readHumidity();
-  if (!isnan(t) && !isnan(h)) {
-    brooderTemp = t;
-    brooderHum = h;
-    brooderValid = true;
-  } else {
-    brooderValid = false;
+  if (brooderActive) {
+    while (now - lastBrooderDayTick >= ONE_DAY_MS) {
+      lastBrooderDayTick += ONE_DAY_MS;
+      if (brooderDay < 60) brooderDay++;
+    }
   }
 }
 
-void checkTurningSchedule() {
-  unsigned long currentDay = millis() / 86400000UL;
-  if (currentDay != turnsDay) {
-    turnsDay = currentDay;
-    turnsToday = 0;
+// ============================================================
+// SERIAL COMMANDS FROM UI/UX (end each command with newline)
+// PING / HEARTBEAT -> PONG,SMARTHATCH (connection/heartbeat check)
+// EGG:CHICKEN | EGG:DUCK | EGG:QUAIL
+// INCUBATION_DAY:8  (can resync current day after restart)
+// BROODER_START     (send once when hatchlings enter the brooder)
+// BROODER_DAY:1     (resyncs brooder day and activates brooder control)
+// BROODER_STOP
+// ============================================================
+void sendAck(const char *message) {
+  Serial.print(F("ACK,"));
+  Serial.println(message);
+}
+
+void handleCommand(char *command) {
+  for (byte i = 0; command[i] != '\0'; i++) {
+    command[i] = (char)toupper((unsigned char)command[i]);
   }
 
-  if (!turningEnabled) return;
-  if (millis() - lastTurnMillis >= TURN_INTERVAL_MS) {
-    performTurn();
+  // Connection handshake: the Flutter app sends PING\n after opening a port.
+  // Only this firmware responds with the exact SmartHatch identifier.
+  if (strcmp(command, "PING") == 0 || strcmp(command, "HEARTBEAT") == 0) {
+    Serial.println(F("PONG,SMARTHATCH"));
+    return;
+  }
+
+  if (strncmp(command, "EGG:", 4) == 0) {
+    if (strcmp(command + 4, "NONE") == 0) {
+      // Deselecting the egg type stops actuator automation, but both DHT11
+      // sensors continue to be sampled and reported in STATUS messages.
+      selectedEgg = EGG_NONE;
+      brooderActive = false;
+      incubatorBulbOn = false;
+      incubatorHumidifierOn = false;
+      brooderBulbOn = false;
+      brooderHumidifierOn = false;
+      exhaustFanOn = false;
+      allOutputsOff();
+      incubatorServo.write(INCUBATOR_SERVO_HOME_ANGLE);
+      servoHadBeenTurning = false;
+      sendAck("EGG_CLEARED");
+      return;
+    }
+
+    EggType newEgg = EGG_NONE;
+    if (strcmp(command + 4, "CHICKEN") == 0) newEgg = EGG_CHICKEN;
+    else if (strcmp(command + 4, "DUCK") == 0) newEgg = EGG_DUCK;
+    else if (strcmp(command + 4, "QUAIL") == 0) newEgg = EGG_QUAIL;
+    else {
+      sendAck("ERROR,UNKNOWN_EGG_TYPE");
+      return;
+    }
+
+    selectedEgg = newEgg;
+    // Do not count time from before the user selected an egg. The UI should
+    // send INCUBATION_DAY:<current day> immediately after this command when
+    // synchronizing a batch already in progress (e.g. Day 8).
+    lastIncubationDayTick = millis();
+    lastServoTurn = millis();
+    servoAtSideB = false;
+    servoHadBeenTurning = false;
+    incubatorServo.write(INCUBATOR_SERVO_HOME_ANGLE);
+    sendAck(eggName(selectedEgg));
+    return;
+  }
+
+  if (strncmp(command, "INCUBATION_DAY:", 15) == 0) {
+    if (selectedEgg == EGG_NONE) {
+      sendAck("ERROR,SELECT_EGG_FIRST");
+      return;
+    }
+    int day = atoi(command + 15);
+    if (day >= 1 && day <= 40) {
+      setIncubationDayFromCommand(day);
+      sendAck("INCUBATION_DAY_SET");
+    } else {
+      sendAck("ERROR,INVALID_INCUBATION_DAY");
+    }
+    return;
+  }
+
+  if (strcmp(command, "BROODER_START") == 0) {
+    if (selectedEgg == EGG_NONE) {
+      sendAck("ERROR,SELECT_EGG_FIRST");
+      return;
+    }
+    brooderActive = true;
+    brooderDay = 1;
+    lastBrooderDayTick = millis();
+    brooderBulbOn = false;
+    brooderHumidifierOn = false;
+    sendAck("BROODER_DAY_1");
+    return;
+  }
+
+  if (strncmp(command, "BROODER_DAY:", 12) == 0) {
+    if (selectedEgg == EGG_NONE) {
+      sendAck("ERROR,SELECT_EGG_FIRST");
+      return;
+    }
+    int day = atoi(command + 12);
+    if (day >= 1 && day <= 60) {
+      brooderActive = true;
+      brooderDay = day;
+      lastBrooderDayTick = millis();
+      sendAck("BROODER_DAY_SET");
+    } else {
+      sendAck("ERROR,INVALID_BROODER_DAY");
+    }
+    return;
+  }
+
+  if (strcmp(command, "BROODER_STOP") == 0) {
+    brooderActive = false;
+    brooderBulbOn = false;
+    brooderHumidifierOn = false;
+    setRelay(BROODER_BULB_RELAY_PIN, false);
+    setRelay(BROODER_HUMIDIFIER_RELAY_PIN, false);
+    sendAck("BROODER_STOPPED");
+    return;
+  }
+
+  sendAck("ERROR,UNKNOWN_COMMAND");
+}
+
+void readSerialCommands() {
+  while (Serial.available() > 0) {
+    char c = (char)Serial.read();
+    if (c == '\r') continue;
+
+    if (c == '\n') {
+      serialLine[serialLineLength] = '\0';
+      if (serialLineLength > 0) handleCommand(serialLine);
+      serialLineLength = 0;
+    } else if (serialLineLength < sizeof(serialLine) - 1) {
+      serialLine[serialLineLength++] = c;
+    } else {
+      serialLineLength = 0; // discard an overlong command
+    }
   }
 }
 
+void printValueOrNA(float value, byte decimals) {
+  if (isnan(value)) Serial.print(F("NA"));
+  else Serial.print(value, decimals);
+}
+
+const char* currentIncubationStage() {
+  if (selectedEgg == EGG_NONE) return "WAIT_SELECTION";
+  if (incubationDay >= incubationDurationDays()) return "INCUBATION_COMPLETE";
+  if (incubationDay >= lockdownHumidityStartDay()) return "LOCKDOWN";
+  return "INCUBATION";
+}
+
+void printStatus(float incubatorT, float incubatorH, float brooderT, float brooderH,
+                 bool incubatorReadingOK, bool brooderReadingOK) {
+  Serial.print(F("STATUS,EGG=")); Serial.print(eggName(selectedEgg));
+  Serial.print(F(",STAGE=")); Serial.print(currentIncubationStage());
+  Serial.print(F(",INC_SENSOR_OK=")); Serial.print(incubatorReadingOK ? 1 : 0);
+  Serial.print(F(",BROODER_SENSOR_OK=")); Serial.print(brooderReadingOK ? 1 : 0);
+  Serial.print(F(",INCUBATION_DAY=")); Serial.print(incubationDay);
+  Serial.print(F(",INCUBATION_TOTAL=")); Serial.print(incubationDurationDays());
+  Serial.print(F(",LOCKDOWN="));
+  Serial.print((selectedEgg != EGG_NONE && incubationDay >= lockdownHumidityStartDay()) ? 1 : 0);
+  Serial.print(F(",TURNING=")); Serial.print(eggTurningAllowed() ? 1 : 0);
+  Serial.print(F(",BROODER_ACTIVE=")); Serial.print(brooderActive ? 1 : 0);
+  Serial.print(F(",BROODER_DAY=")); Serial.print(brooderDay);
+  Serial.print(F(",BROODER_TARGET_C="));
+  if (brooderActive && selectedEgg != EGG_NONE) Serial.print(getBrooderTargetC(brooderDay), 1);
+  else Serial.print(F("NA"));
+  Serial.print(F(",INC_T=")); printValueOrNA(incubatorT, 1);
+  Serial.print(F(",INC_H=")); printValueOrNA(incubatorH, 1);
+  Serial.print(F(",BROODER_T=")); printValueOrNA(brooderT, 1);
+  Serial.print(F(",BROODER_H=")); printValueOrNA(brooderH, 1);
+  Serial.print(F(",IBULB=")); Serial.print(incubatorBulbOn ? 1 : 0);
+  Serial.print(F(",IHUM=")); Serial.print(incubatorHumidifierOn ? 1 : 0);
+  Serial.print(F(",IFAN=")); Serial.print(selectedEgg != EGG_NONE ? 1 : 0);
+  Serial.print(F(",VENT=")); Serial.print(exhaustFanOn ? 1 : 0);
+  Serial.print(F(",BBULB=")); Serial.print(brooderBulbOn ? 1 : 0);
+  Serial.print(F(",BHUM=")); Serial.println(brooderHumidifierOn ? 1 : 0);
+}
+
+// ============================================================
+// SETUP AND LOOP
+// ============================================================
 void setup() {
-  Serial.begin(9600);
-  initAllHardware();
+  pinMode(EXHAUST_INTAKE_RELAY_PIN, OUTPUT);
+  pinMode(INCUBATOR_BULB_RELAY_PIN, OUTPUT);
+  pinMode(BROODER_BULB_RELAY_PIN, OUTPUT);
+  pinMode(INCUBATOR_FAN_RELAY_PIN, OUTPUT);
+  pinMode(BROODER_HUMIDIFIER_RELAY_PIN, OUTPUT);
+  pinMode(INCUBATOR_HUMIDIFIER_RELAY_PIN, OUTPUT);
+  pinMode(INCUBATOR_BUZZER_PIN, OUTPUT);
+  pinMode(BROODER_BUZZER_PIN, OUTPUT);
+  allOutputsOff();
 
   incubatorDht.begin();
   brooderDht.begin();
 
-  // First automatic turn happens one full interval from now, so a reset never
-  // immediately moves the trays.
-  lastTurnMillis = millis();
-  turnsDay = millis() / 86400000UL;
-  turnsToday = 0;
+  incubatorServo.attach(INCUBATOR_SERVO_PIN);
+  incubatorServo.write(INCUBATOR_SERVO_HOME_ANGLE);
+
+  loadIncubationDay();
+  lastIncubationDayTick = millis();
+  lastServoTurn = millis();
+  lastSensorRead = millis();
+
+  Serial.begin(9600);
+  Serial.println(F("READY,SMARTHATCH,9600"));
+  Serial.println(F("INFO,SEND_PING_FOR_CONNECTION_CHECK"));
 }
 
 void loop() {
-  pollSerial();
+  readSerialCommands();
+  updateDayCounters();
+  updateServoTurning();
 
-  unsigned long now = millis();
-  if (now - lastSensorMillis >= SENSOR_INTERVAL_MS) {
-    lastSensorMillis = now;
-    readSensors();
-  }
-  if (now - lastTelemetryMillis >= TELEMETRY_INTERVAL_MS) {
-    lastTelemetryMillis = now;
-    sendTelemetry();
+  if (millis() - lastSensorRead < SENSOR_READ_INTERVAL_MS) return;
+  lastSensorRead = millis();
+
+  float incubatorT = incubatorDht.readTemperature();
+  float incubatorH = incubatorDht.readHumidity();
+  float brooderT = brooderDht.readTemperature();
+  float brooderH = brooderDht.readHumidity();
+
+  bool incubatorReadingOK = !isnan(incubatorT) && !isnan(incubatorH);
+  bool brooderReadingOK = !isnan(brooderT) && !isnan(brooderH);
+
+  if (ENABLE_INCUBATOR_CONTROL && selectedEgg != EGG_NONE) {
+    if (incubatorReadingOK) {
+      controlIncubator(incubatorT, incubatorH);
+      setBuzzer(INCUBATOR_BUZZER_PIN, false);
+    } else {
+      // Sensor failure: heater and humidifier OFF; circulation fan stays ON.
+      incubatorBulbOn = false;
+      incubatorHumidifierOn = false;
+      exhaustFanOn = false;
+      setRelay(INCUBATOR_BULB_RELAY_PIN, false);
+      setRelay(INCUBATOR_HUMIDIFIER_RELAY_PIN, false);
+      setRelay(EXHAUST_INTAKE_RELAY_PIN, false);
+      setRelay(INCUBATOR_FAN_RELAY_PIN, true);
+      setBuzzer(INCUBATOR_BUZZER_PIN, true);
+    }
+  } else {
+    incubatorBulbOn = false;
+    incubatorHumidifierOn = false;
+    exhaustFanOn = false;
+    setRelay(INCUBATOR_BULB_RELAY_PIN, false);
+    setRelay(INCUBATOR_HUMIDIFIER_RELAY_PIN, false);
+    setRelay(EXHAUST_INTAKE_RELAY_PIN, false);
+    setRelay(INCUBATOR_FAN_RELAY_PIN, false);
+    setBuzzer(INCUBATOR_BUZZER_PIN, false);
   }
 
-  // Alternate LCD between egg-info and sensor screens every 3 s
-  if (now - lastLcdAlternate >= LCD_ALTERNATE_MS) {
-    lastLcdAlternate = now;
-    lcdShowEggScreen = !lcdShowEggScreen;
-    updateLcd();
+  if (ENABLE_BROODER_CONTROL && brooderActive && selectedEgg != EGG_NONE) {
+    if (brooderReadingOK) {
+      controlBrooder(brooderT);
+      setBuzzer(BROODER_BUZZER_PIN, false);
+    } else {
+      brooderBulbOn = false;
+      brooderHumidifierOn = false;
+      setRelay(BROODER_BULB_RELAY_PIN, false);
+      setRelay(BROODER_HUMIDIFIER_RELAY_PIN, false);
+      setBuzzer(BROODER_BUZZER_PIN, true);
+    }
+  } else {
+    brooderBulbOn = false;
+    brooderHumidifierOn = false;
+    setRelay(BROODER_BULB_RELAY_PIN, false);
+    setRelay(BROODER_HUMIDIFIER_RELAY_PIN, false);
+    setBuzzer(BROODER_BUZZER_PIN, false);
   }
 
-  checkTurningSchedule();
+  printStatus(incubatorT, incubatorH, brooderT, brooderH,
+              incubatorReadingOK, brooderReadingOK);
 }
