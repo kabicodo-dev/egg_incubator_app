@@ -159,6 +159,20 @@ class LibSerialPortArduinoService implements ArduinoSerialService {
     }
   }
 
+  @override
+  Future<void> sendLcdUpdate(LcdUpdateCommand lcdCommand) async {
+    final port = _port;
+    if (!_connected || port == null) {
+      throw const ArduinoCommandException('Not connected to an Arduino');
+    }
+    try {
+      final bytes = Uint8List.fromList(utf8.encode(lcdCommand.toJsonLine()));
+      port.write(bytes, timeout: 1000);
+    } catch (e) {
+      _emitError('Failed to send LCD update: $e');
+    }
+  }
+
   // ── Internals ──
 
   void _onData(Uint8List chunk) {
@@ -192,6 +206,9 @@ class LibSerialPortArduinoService implements ArduinoSerialService {
         if (completer != null && !completer.isCompleted) {
           completer.complete(ack);
         }
+      case ArduinoLcdAckMessage():
+        // LCD acknowledgements are informational; nothing to await.
+        break;
       case ArduinoMalformedMessage():
         _emitError('Ignored malformed serial line');
       case ArduinoUnknownMessage(:final type):
