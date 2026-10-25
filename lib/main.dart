@@ -7094,6 +7094,9 @@ class _DetailRow extends StatelessWidget {
         color: Colors.black87,
       ),
     );
+    // The value is flexible so a long label/value pair wraps inside the
+    // available width instead of overflowing the row (narrow phones and the
+    // wide test font both push this past its natural size).
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -7102,15 +7105,17 @@ class _DetailRow extends StatelessWidget {
           style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
         ),
         if (leading == null)
-          valueText
+          Flexible(child: valueText)
         else
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              leading!,
-              const SizedBox(width: 6),
-              valueText,
-            ],
+          Flexible(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                leading!,
+                const SizedBox(width: 6),
+                Flexible(child: valueText),
+              ],
+            ),
           ),
       ],
     );
