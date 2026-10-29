@@ -1,0 +1,17 @@
+16f1cd92a5b1cf29f7f5d97069b85740ebd2b309b86669e66139985ebb267d11 *docs/evidence/a08/2026-10-29/a02_capture.ndjson
+b96c76165e8bda45c1f01ea8066ac1a628d8b843cd0b26f2960fe6fddb88d45e *docs/evidence/a08/2026-10-29/a02_capture.stderr.txt
+c0fb69b5d6f2b5a3cbee54054a12581d6bc14f8c9706b32b631a7233b551a3a3 *docs/evidence/a08/2026-10-29/a02_check.txt
+eea705b644254aa621b97b017b7e5165e01f960cb8f69fc60a20e1e8ad70924b *docs/evidence/a08/2026-10-29/a03_capture.ndjson
+29f1c38236923abacb47223583f5758ff6c916ea49e5c498bff1e0e798de3d05 *docs/evidence/a08/2026-10-29/a03_check.txt
+c38cae551f1cdd2d686c8a89430d25f4a5b2412947e2eba1f43c30c0871787dc *docs/evidence/a08/2026-10-29/a03_checks.txt
+796ffd184736ed62568b8b97425d0e08b64057d7192f2e19fd50bef15c8fb7c4 *docs/evidence/a08/2026-10-29/a06_capture.ndjson
+0d40cbaae3ecfaa5bfb8e6362521e9535b7173361ce58d197451c8fd0285dde8 *docs/evidence/a08/2026-10-29/a06_check.txt
+c6b6895bf491ce8c724ea33ef7620fc65b45adf8cec6ddeefa18ef3c0401e098 *docs/evidence/a08/2026-10-29/a06_checks.txt
+a7f2ef64f9b6cc03b7d90eb509ecba03629125bf75b1606cebbd2328a1c2d9fc *docs/evidence/a08/2026-10-29/build_a02_host.txt
+0c7b6a72c572dc95c7ba0adecb6244f3643a9cbedf79ffafc324513c0ea9bd7a *docs/evidence/a08/2026-10-29/build_a03_host.txt
+8f42ff6ffbe2c2a8b8ccc22f7e1c8df5efcb0ec82f98b32fbf09d89389a2c368 *docs/evidence/a08/2026-10-29/build_a06_host.txt
+36fe31da86b8f6b472744c6120fb10718d3147604d170b4d38960369c7990ecd *docs/evidence/a08/2026-10-29/compile_a08.txt
+f1570cf7200bf71c1819c8b4424eac376a39f9159f3d07004de6b2869c9f6bfd *docs/evidence/a08/2026-10-29/flutter_analyze.txt
+5ae67b6ad6a359792c7735ba68564c6046ea0082b8fe80073d65b20731213088 *docs/evidence/a08/2026-10-29/flutter_test.txt
+73e2757e5c02c7d1a7e9afce6c98472ba1946f95d1ad288ecec9cda9e2cafa44 *docs/evidence/a08/2026-10-29/README.md
+ce65f1b62f50ce56f16242795f677dc82b67b6dbe98f0fac3934363187412e57 *docs/evidence/a08/2026-10-29/toolchain.txt

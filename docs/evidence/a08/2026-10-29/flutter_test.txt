@@ -1,0 +1,214 @@
+00:00 +0: loading C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart
+00:00 +0: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/arduino_controller_test.dart: ArduinoController.readiness (HW-01) starts disconnected and is not ready
+00:00 +1: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: (setUpAll)
+00:00 +2: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: (setUpAll)
+00:00 +3: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: (setUpAll)
+00:00 +4: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: (setUpAll)
+00:00 +5: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: (setUpAll)
+00:00 +6: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: (setUpAll)
+00:00 +7: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: (setUpAll)
+00:00 +7: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: the incubation day is calculated from the saved start date, never a default
+00:01 +8: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: the incubation day is calculated from the saved start date, never a default
+00:01 +9: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: the incubation day is calculated from the saved start date, never a default
+00:01 +10: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: the incubation day is calculated from the saved start date, never a default
+00:01 +11: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: the incubation day is calculated from the saved start date, never a default
+00:01 +12: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: the incubation day is calculated from the saved start date, never a default
+00:01 +13: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: the incubation day is calculated from the saved start date, never a default
+00:01 +14: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: the incubation day is calculated from the saved start date, never a default
+00:01 +15: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: the incubation day is calculated from the saved start date, never a default
+00:01 +16: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: the incubation day is calculated from the saved start date, never a default
+00:01 +17: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: the incubation day is calculated from the saved start date, never a default
+00:01 +18: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: the incubation day is calculated from the saved start date, never a default
+00:01 +19: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: the incubation day is calculated from the saved start date, never a default
+00:01 +20: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: the incubation day is calculated from the saved start date, never a default
+00:01 +21: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: the incubation day is calculated from the saved start date, never a default
+00:01 +22: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: the incubation day is calculated from the saved start date, never a default
+00:02 +23: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: the incubation day is calculated from the saved start date, never a default
+00:02 +24: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: the incubation day is calculated from the saved start date, never a default
+00:02 +25: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: the incubation day is calculated from the saved start date, never a default
+00:02 +26: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: the incubation day is calculated from the saved start date, never a default
+00:02 +27: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: the incubation day is calculated from the saved start date, never a default
+00:02 +28: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: the incubation day is calculated from the saved start date, never a default
+00:02 +29: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: the incubation day is calculated from the saved start date, never a default
+00:02 +30: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: the incubation day is calculated from the saved start date, never a default
+00:02 +31: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: the incubation day is calculated from the saved start date, never a default
+00:02 +32: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: the incubation day is calculated from the saved start date, never a default
+00:02 +33: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: the incubation day is calculated from the saved start date, never a default
+00:02 +34: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: the incubation day is calculated from the saved start date, never a default
+00:02 +35: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: the incubation day is calculated from the saved start date, never a default
+00:02 +36: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: the incubation day is calculated from the saved start date, never a default
+00:02 +37: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: the incubation day is calculated from the saved start date, never a default
+00:02 +38: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: the incubation day is calculated from the saved start date, never a default
+00:02 +39: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: the incubation day is calculated from the saved start date, never a default
+00:02 +40: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: the incubation day is calculated from the saved start date, never a default
+00:02 +41: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: the incubation day is calculated from the saved start date, never a default
+00:02 +42: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: the incubation day is calculated from the saved start date, never a default
+00:04 +43: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/back_navigation_test.dart: History opened from another screen has a back arrow
+00:08 +44: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/back_navigation_test.dart: History opened from another screen has a back arrow
+00:09 +45: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/back_navigation_test.dart: History opened from another screen has a back arrow
+00:09 +46: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: finishing saves the exact hatched count and completes the batch
+00:10 +47: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: finishing saves the exact hatched count and completes the batch
+00:10 +48: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/bottom_navigation_test.dart: History opened from Home has the bottom navigation
+00:11 +49: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/bottom_navigation_test.dart: History opened from Home has the bottom navigation
+00:12 +50: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/bottom_navigation_test.dart: History opened from Home has the bottom navigation
+00:12 +51: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/bottom_navigation_test.dart: History opened from Home has the bottom navigation
+00:12 +52: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/bottom_navigation_test.dart: History opened from Home has the bottom navigation
+00:13 +53: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/egg_quantity_session_test.dart: the chosen quantity travels from the quantity screen to the database
+00:14 +54: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/egg_quantity_session_test.dart: the chosen quantity travels from the quantity screen to the database
+00:14 +55: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/egg_quantity_session_test.dart: the chosen quantity travels from the quantity screen to the database
+00:14 +56: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/egg_quantity_session_test.dart: the chosen quantity travels from the quantity screen to the database
+00:14 +57: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/egg_quantity_session_test.dart: the chosen quantity travels from the quantity screen to the database
+00:14 +58: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/egg_quantity_session_test.dart: the chosen quantity travels from the quantity screen to the database
+00:14 +59: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/egg_quantity_session_test.dart: the chosen quantity travels from the quantity screen to the database
+00:14 +60: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/egg_quantity_session_test.dart: the chosen quantity travels from the quantity screen to the database
+00:14 +61: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/egg_quantity_session_test.dart: the chosen quantity travels from the quantity screen to the database
+00:14 +62: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/egg_quantity_session_test.dart: the chosen quantity travels from the quantity screen to the database
+00:14 +63: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/egg_quantity_session_test.dart: the chosen quantity travels from the quantity screen to the database
+00:14 +64: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/egg_quantity_session_test.dart: the chosen quantity travels from the quantity screen to the database
+00:14 +65: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/egg_quantity_session_test.dart: the chosen quantity travels from the quantity screen to the database
+00:14 +66: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/egg_quantity_session_test.dart: the chosen quantity travels from the quantity screen to the database
+00:14 +67: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/egg_quantity_session_test.dart: the chosen quantity travels from the quantity screen to the database
+00:14 +68: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/egg_quantity_session_test.dart: the chosen quantity travels from the quantity screen to the database
+00:15 +69: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/egg_quantity_session_test.dart: the chosen quantity travels from the quantity screen to the database
+00:15 +70: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/egg_quantity_session_test.dart: the chosen quantity travels from the quantity screen to the database
+00:16 +71: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/egg_quantity_session_test.dart: the chosen quantity travels from the quantity screen to the database
+00:16 +72: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/egg_quantity_session_test.dart: the chosen quantity travels from the quantity screen to the database
+00:16 +73: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/egg_quantity_validation_test.dart: quick choices quick choice 6 eggs works
+00:17 +74: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: after a successful finish a new incubation can start
+00:17 +75: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: after a successful finish a new incubation can start
+00:17 +76: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: after a successful finish a new incubation can start
+00:17 +77: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: after a successful finish a new incubation can start
+00:17 +78: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: after a successful finish a new incubation can start
+00:17 +79: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: after a successful finish a new incubation can start
+00:17 +80: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: after a successful finish a new incubation can start
+00:17 +81: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/active_batch_finish_test.dart: after a successful finish a new incubation can start
+00:18 +82: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/egg_quantity_validation_test.dart: quick choices the +/− counter cannot leave 6 to 12
+00:19 +83: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/egg_quantity_validation_test.dart: quick choices the +/− counter cannot leave 6 to 12
+00:19 +84: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/egg_quantity_validation_test.dart: quick choices the +/− counter cannot leave 6 to 12
+00:19 +85: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/egg_quantity_validation_test.dart: quick choices the +/− counter cannot leave 6 to 12
+00:19 +86: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/egg_quantity_validation_test.dart: quick choices the +/− counter cannot leave 6 to 12
+00:19 +87: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/egg_quantity_validation_test.dart: quick choices the +/− counter cannot leave 6 to 12
+00:19 +88: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/egg_quantity_validation_test.dart: quick choices the +/− counter cannot leave 6 to 12
+00:19 +89: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/egg_quantity_validation_test.dart: quick choices the +/− counter cannot leave 6 to 12
+00:19 +90: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/egg_quantity_validation_test.dart: quick choices the +/− counter cannot leave 6 to 12
+00:19 +91: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/egg_quantity_validation_test.dart: quick choices the +/− counter cannot leave 6 to 12
+00:19 +92: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/egg_quantity_validation_test.dart: quick choices the +/− counter cannot leave 6 to 12
+00:19 +93: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/egg_quantity_validation_test.dart: quick choices the +/− counter cannot leave 6 to 12
+00:19 +94: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/egg_quantity_validation_test.dart: quick choices the +/− counter cannot leave 6 to 12
+00:19 +95: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/egg_quantity_validation_test.dart: quick choices the +/− counter cannot leave 6 to 12
+00:19 +96: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/egg_quantity_validation_test.dart: quick choices the +/− counter cannot leave 6 to 12
+00:19 +97: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/egg_quantity_validation_test.dart: quick choices the +/− counter cannot leave 6 to 12
+00:20 +98: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/egg_quantity_validation_test.dart: quick choices a valid quantity reaches the checklist
+00:21 +99: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/hardware_console_sim_test.dart: (setUpAll)
+00:21 +99: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/egg_quantity_validation_test.dart: custom quantity custom 6 eggs works
+00:22 +100: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/hardware_console_sim_test.dart: the console names the real batch and labels the simulator as simulation
+00:23 +101: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/hardware_console_sim_test.dart: the console names the real batch and labels the simulator as simulation
+00:24 +102: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/hardware_console_sim_test.dart: the console names the real batch and labels the simulator as simulation
+00:24 +103: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/hardware_console_sim_test.dart: the console names the real batch and labels the simulator as simulation
+00:25 +104: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/hardware_console_sim_test.dart: the console names the real batch and labels the simulator as simulation
+00:25 +105: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/hardware_console_sim_test.dart: the console names the real batch and labels the simulator as simulation
+00:26 +106: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/hardware_console_sim_test.dart: the console names the real batch and labels the simulator as simulation
+00:27 +107: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/hardware_console_sim_test.dart: the console names the real batch and labels the simulator as simulation
+00:27 +108: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/history_egg_quantity_test.dart: the History screen shows the saved egg quantity of a batch
+00:28 +109: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/history_egg_quantity_test.dart: the History screen shows the saved egg quantity of a batch
+00:28 +110: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/history_filter_test.dart: status and species filters combine with the search text
+00:28 +111: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/history_filter_test.dart: status and species filters combine with the search text
+00:29 +112: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/history_filter_test.dart: status and species filters combine with the search text
+00:31 +113: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/history_filter_test.dart: status and species filters combine with the search text
+00:32 +114: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/history_result_labels_test.dart: an active batch reads as incubation in progress, never a 0% result
+00:33 +115: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/history_result_labels_test.dart: an active batch reads as incubation in progress, never a 0% result
+00:33 +116: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/history_result_labels_test.dart: an active batch reads as incubation in progress, never a 0% result
+00:34 +117: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/home_current_incubation_card_test.dart: an active batch shows a Current Incubation card with real data and no Start button
+00:34 +118: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/home_current_incubation_card_test.dart: an active batch shows a Current Incubation card with real data and no Start button
+00:34 +119: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/hardware_console_sim_test.dart: the profile dialog is clearly a simulator control
+00:34 +120: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/hardware_console_sim_test.dart: the profile dialog is clearly a simulator control
+00:35 +121: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/hardware_console_sim_test.dart: the profile dialog is clearly a simulator control
+00:35 +122: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/hardware_console_sim_test.dart: the profile dialog is clearly a simulator control
+00:35 +123: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/home_current_incubation_card_test.dart: the Current Incubation card opens the running batch
+00:36 +124: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/hardware_console_sim_test.dart: a batch finished from History details uses the same validated completion flow
+00:37 +125: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/hardware_console_sim_test.dart: a batch finished from History details uses the same validated completion flow
+00:37 +126: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/hardware_console_sim_test.dart: a batch finished from History details uses the same validated completion flow
+00:37 +127: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/hardware_console_sim_test.dart: a batch finished from History details uses the same validated completion flow
+00:37 +128: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/home_last_batch_card_test.dart: the last-batch card keeps its batch info and shows a link
+00:38 +129: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/home_last_batch_card_test.dart: the last-batch card keeps its batch info and shows a link
+00:38 +130: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/home_last_batch_card_test.dart: the last-batch card keeps its batch info and shows a link
+00:38 +131: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/home_last_batch_card_test.dart: the last-batch card keeps its batch info and shows a link
+00:38 +132: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/home_last_batch_card_test.dart: the last-batch card keeps its batch info and shows a link
+00:38 +133: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/home_last_batch_card_test.dart: the last-batch card keeps its batch info and shows a link
+00:38 +134: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/home_last_batch_card_test.dart: the last-batch card keeps its batch info and shows a link
+00:39 +135: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/hardware_console_sim_test.dart: Hardware Console across phone and desktop widths real batch band and simulator labels@320.0
+00:39 +136: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/one_active_batch_test.dart: setup is blocked while a batch runs and guides the farmer to it
+00:40 +137: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/one_active_batch_test.dart: setup is blocked while a batch runs and guides the farmer to it
+00:40 +138: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/home_last_batch_card_test.dart: tapping View Details opens the batch details screen
+00:40 +139: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/profile_display_name_test.dart: Profile screen shows the saved display name
+00:41 +140: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/profile_display_name_test.dart: Profile screen shows the saved display name
+00:41 +141: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/profile_display_name_test.dart: Profile screen shows the saved display name
+00:41 +142: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/one_active_batch_test.dart: double-tapping Start creates exactly one session
+00:41 +143: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/one_active_batch_test.dart: double-tapping Start creates exactly one session
+00:41 +144: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/hardware_console_sim_test.dart: Hardware Console across phone and desktop widths real batch band and simulator labels@1024.0
+00:41 +145: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/profile_display_name_test.dart: Saving a name shows it on the profile screen afterwards
+00:42 +146: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/profile_display_name_test.dart: Saving a name shows it on the profile screen afterwards
+00:43 +147: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/profile_display_name_test.dart: Saving a name shows it on the profile screen afterwards
+00:43 +148: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/profile_display_name_test.dart: Saving a name shows it on the profile screen afterwards
+00:43 +149: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/profile_display_name_test.dart: Saving a name shows it on the profile screen afterwards
+00:43 +150: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/profile_display_name_test.dart: Saving a name shows it on the profile screen afterwards
+00:43 +151: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/profile_display_name_test.dart: Saving a name shows it on the profile screen afterwards
+00:43 +152: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/profile_display_name_test.dart: Saving a name shows it on the profile screen afterwards
+00:43 +153: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/profile_display_name_test.dart: Saving a name shows it on the profile screen afterwards
+00:43 +154: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/profile_display_name_test.dart: Saving a name shows it on the profile screen afterwards
+00:44 +155: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/responsive_smoke_test.dart: Onboarding renders cleanly at 320.0 px
+00:44 +156: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/responsive_smoke_test.dart: Onboarding renders cleanly at 320.0 px
+00:45 +157: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/responsive_smoke_test.dart: Onboarding renders cleanly at 320.0 px
+00:45 +158: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/widget_test.dart: App starts and shows landing page
+00:45 +159: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/widget_test.dart: App starts and shows landing page
+00:45 +160: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/widget_test.dart: App starts and shows landing page
+00:45 +161: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/widget_test.dart: App starts and shows landing page
+00:46 +162: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/widget_test.dart: App starts and shows landing page
+00:46 +163: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/widget_test.dart: App starts and shows landing page
+00:46 +164: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/widget_test.dart: App starts and shows landing page
+00:46 +165: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/widget_test.dart: App starts and shows landing page
+00:46 +166: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/widget_test.dart: App starts and shows landing page
+00:46 +167: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/responsive_smoke_test.dart: Onboarding no overflow at 1.3x accessibility text scale
+00:46 +168: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/widget_test.dart: SmartHatch Incubator Dashboard smoke test with Day 7 start and 6-12 egg capacity
+00:47 +169: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/widget_test.dart: SmartHatch Incubator Dashboard smoke test with Day 7 start and 6-12 egg capacity
+00:47 +170: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/widget_test.dart: SmartHatch Incubator Dashboard smoke test with Day 7 start and 6-12 egg capacity
+00:47 +171: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/responsive_smoke_test.dart: Screens at phone widths Incubation Setup@320.0
+00:47 +172: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/widget_test.dart: Egg count validation: starts at 6, enforces 6-12 range, strictly disallows 0 eggs
+00:47 +173: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/responsive_smoke_test.dart: Screens at phone widths Active Incubation@320.0
+00:47 +174: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/responsive_smoke_test.dart: Screens at phone widths Active Incubation@320.0
+00:47 +175: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/responsive_smoke_test.dart: Screens at phone widths Active Incubation@320.0
+00:47 +176: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/responsive_smoke_test.dart: Screens at phone widths Active Incubation@320.0
+00:47 +177: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/responsive_smoke_test.dart: Screens at phone widths Active Incubation@320.0
+00:48 +178: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/widget_test.dart: Incubator LCD 16x2 Screen Display renders temperature, humidity, and egg days
+00:48 +179: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/responsive_smoke_test.dart: Screens at phone widths History@320.0
+00:48 +180: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/responsive_smoke_test.dart: Screens at phone widths Batch Details@320.0
+00:48 +181: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/responsive_smoke_test.dart: Screens at phone widths Profile@320.0
+00:49 +182: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/responsive_smoke_test.dart: Screens at phone widths Navigation shell@320.0
+00:49 +183: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/responsive_smoke_test.dart: Screens at phone widths Home@360.0
+00:49 +184: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/responsive_smoke_test.dart: Screens at phone widths Species@360.0
+00:49 +185: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/responsive_smoke_test.dart: Screens at phone widths Incubation Setup@360.0
+00:49 +186: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/responsive_smoke_test.dart: Screens at phone widths Active Incubation@360.0
+00:50 +187: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/responsive_smoke_test.dart: Screens at phone widths History@360.0
+00:50 +188: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/responsive_smoke_test.dart: Screens at phone widths Batch Details@360.0
+00:50 +189: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/responsive_smoke_test.dart: Screens at phone widths Profile@360.0
+00:50 +190: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/responsive_smoke_test.dart: Screens at phone widths Navigation shell@360.0
+00:50 +191: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/responsive_smoke_test.dart: Screens at phone widths Home@412.0
+00:50 +192: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/responsive_smoke_test.dart: Screens at phone widths Species@412.0
+00:50 +193: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/responsive_smoke_test.dart: Screens at phone widths Incubation Setup@412.0
+00:51 +194: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/responsive_smoke_test.dart: Screens at phone widths Active Incubation@412.0
+00:51 +195: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/responsive_smoke_test.dart: Screens at phone widths History@412.0
+00:51 +196: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/responsive_smoke_test.dart: Screens at phone widths Batch Details@412.0
+00:51 +197: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/responsive_smoke_test.dart: Screens at phone widths Profile@412.0
+00:51 +198: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/responsive_smoke_test.dart: Screens at phone widths Navigation shell@412.0
+00:51 +199: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/responsive_smoke_test.dart: Screens at desktop widths Home@1024.0
+00:51 +200: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/responsive_smoke_test.dart: Screens at desktop widths History@1024.0
+00:52 +201: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/responsive_smoke_test.dart: Screens at desktop widths Profile@1024.0
+00:52 +202: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/responsive_smoke_test.dart: Screens at desktop widths Home@1280.0
+00:52 +203: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/responsive_smoke_test.dart: Screens at desktop widths History@1280.0
+00:52 +204: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/responsive_smoke_test.dart: Screens at desktop widths Profile@1280.0
+00:52 +205: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/responsive_smoke_test.dart: Screens at desktop widths Home@1440.0
+00:52 +206: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/responsive_smoke_test.dart: Screens at desktop widths History@1440.0
+00:52 +207: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/responsive_smoke_test.dart: Screens at desktop widths Profile@1440.0
+00:52 +208: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/responsive_smoke_test.dart: Touch targets the History filter button is at least 48x48
+00:53 +209: C:/Users/celine/Documents/Sandy/SCHOOL/REPORTS/SmartHatch/egg_incubator_app/test/responsive_smoke_test.dart: (tearDownAll)
+00:53 +209: All tests passed!

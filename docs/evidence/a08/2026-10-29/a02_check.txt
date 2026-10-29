@@ -1,0 +1,1 @@
+PASS: 19 frames, 6 acked ids, 1 running frame(s), 3 structured rejection(s), LF-only framing

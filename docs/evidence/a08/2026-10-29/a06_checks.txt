@@ -1,0 +1,49 @@
+A-06 PASS A1-ack                                         START ack start_received with ids
+A-06 PASS A1-no-running-yet                              no RUNNING in the receipt pass
+A-06 PASS A1-pending                                     start is pending after ACK
+A-06 PASS A1-not-confirmed                               startConfirmed is still false
+A-06 PASS A1-batch-unbound                               activeBatchId is still 0
+A-06 PASS A2-confirmed                                   activeBatchId bound
+A-06 PASS A2-confirmed-flag                              startConfirmed true
+A-06 PASS A2-pending-cleared                             startPending false
+A-06 PASS A2-running                                     START running status with ids
+A-06 PASS A2-order                                       ACK precedes RUNNING
+A-06 PASS A2-elapsed-start                               original Start begins at RUNNING
+A-06 PASS D1-ack-replay                                  START ack start_received with ids
+A-06 PASS D1-running-replay                              START running status with ids
+A-06 PASS D1-no-reset                                    elapsed did not reset
+A-06 PASS D1-no-batch-started                            no second batch_started event
+A-06 PASS D2-ack                                         START ack start_already_running with ids
+A-06 PASS D2-running                                     START running status with ids
+A-06 PASS D2-no-reset                                    elapsed still not reset
+A-06 PASS D3-rejected                                    different batch rejected
+A-06 PASS D3-no-running                                  no RUNNING for rejected batch
+A-06 PASS D3-bound-stable                                activeBatchId unchanged
+A-06 PASS D4-invalid                                     missing batch_id rejected
+A-06 PASS D4-no-running                                  no RUNNING for invalid batch
+A-06 PASS S0-reset                                       NEW_BATCH clears active batch
+A-06 PASS S0b-invalid                                    incubator sensor invalid before START
+A-06 PASS S1-ack                                         START ack start_received with ids
+A-06 PASS S1-no-running                                  no RUNNING while incubator sensor invalid
+A-06 PASS S2-no-running                                  still no RUNNING after another invalid pass
+A-06 PASS S2-still-pending                               still pending after another invalid pass
+A-06 PASS S3-confirmed                                   RUNNING after both sensors recover
+A-06 PASS S3-batch                                       batch 7003 bound
+A-06 PASS L1-ack                                         START ack start_received with ids
+A-06 PASS L1-no-running                                  no RUNNING on relay readback mismatch
+A-06 PASS L2-still-pending                               still pending on mismatch
+A-06 PASS L3-confirmed                                   RUNNING after latch matches
+A-06 PASS L3-batch                                       batch 7004 bound
+A-06 PASS R1-restored                                    start identity restored from EEPROM
+A-06 PASS R1-sensors-invalid                             sensor state starts invalid after reboot
+A-06 PASS R2-elapsed-restored                            elapsed restored
+A-06 PASS R3-ack                                         START ack start_already_running with ids
+A-06 PASS R3-valid                                       reload sensors valid after first loop
+A-06 PASS R3-actuators                                   reload actuators match
+A-06 PASS R3-running                                     START running status with ids
+A-06 PASS R3-no-reset                                    reload duplicate did not reset elapsed
+A-06 PASS N1-cleared                                     NEW_BATCH clears activeBatchId
+A-06 PASS N2-confirmed                                   new batch 7005 confirmed
+A-06 PASS C1-rejected                                    completed batch rejected
+A-06 PASS C1-no-running                                  no RUNNING for completed batch
+A-06 start_host_sim: checks=48 failures=0 bytes=6836 lines=39 simulated_ms=4000

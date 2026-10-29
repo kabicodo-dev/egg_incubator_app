@@ -1,0 +1,1 @@
+PASS: A-03 control/fail-safe invariants; 59 telemetry frame(s); valid=56 invalid=3 overheat=6 brooder_invalid=1; invalid=>all incubator outputs off, overheat=>heater+humidifier off/fan on, recovery observed

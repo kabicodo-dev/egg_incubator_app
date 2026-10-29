@@ -1,0 +1,39 @@
+{"type":"event","v":1,"event":"batch_started","egg_type":"chicken","day":1}
+{"type":"event","v":1,"event":"controller_ready","protocol":"smarthatch-ndjson-v1","baud":9600}
+{"type":"event","v":1,"event":"batch_state_restored","egg_type":"chicken","day":1,"elapsed_seconds":0}
+{"type":"ack","v":1,"id":301,"command_id":301,"batch_id":7001,"cmd":"START","status":"accepted","message":"start_received"}
+{"type":"event","v":1,"event":"batch_started","egg_type":"chicken","day":1}
+{"type":"running","v":1,"id":301,"cmd":"START","command_id":301,"batch_id":7001,"status":"running"}
+{"type":"telemetry","v":1,"uptime_ms":5000,"egg_type":"chicken","day":1,"hatch_day":21,"elapsed_seconds":0,"stage":"active","batch_complete":false,"incubator":{"valid":true,"temperature_c":37.6,"humidity_percent":51.4,"bulb_on":true,"humidifier_on":false,"fan_on":true,"exhaust_fan_on":false},"brooder":{"valid":true,"temperature_c":31.2,"humidity_percent":49.0,"bulb_on":false,"humidifier_on":false}}
+{"type":"telemetry","v":1,"uptime_ms":10000,"egg_type":"chicken","day":1,"hatch_day":21,"elapsed_seconds":5,"stage":"active","batch_complete":false,"incubator":{"valid":true,"temperature_c":37.6,"humidity_percent":51.4,"bulb_on":true,"humidifier_on":false,"fan_on":true,"exhaust_fan_on":false},"brooder":{"valid":true,"temperature_c":31.2,"humidity_percent":49.0,"bulb_on":false,"humidifier_on":false}}
+{"type":"ack","v":1,"id":301,"command_id":301,"batch_id":7001,"cmd":"START","status":"accepted","message":"start_received"}
+{"type":"running","v":1,"id":301,"cmd":"START","command_id":301,"batch_id":7001,"status":"running"}
+{"type":"ack","v":1,"id":302,"command_id":302,"batch_id":7001,"cmd":"START","status":"accepted","message":"start_already_running"}
+{"type":"running","v":1,"id":302,"cmd":"START","command_id":302,"batch_id":7001,"status":"running"}
+{"type":"ack","v":1,"id":303,"command_id":303,"batch_id":7002,"cmd":"START","status":"rejected","error":{"code":"batch_already_running","message":"another batch is already running"}}
+{"type":"ack","v":1,"id":304,"command_id":304,"batch_id":0,"cmd":"START","status":"rejected","error":{"code":"invalid_batch_id","message":"batch_id missing or invalid"}}
+{"type":"event","v":1,"event":"batch_started","egg_type":"chicken","day":1}
+{"type":"ack","v":1,"id":305,"cmd":"NEW_BATCH","status":"accepted","message":"command_applied"}
+{"type":"telemetry","v":1,"uptime_ms":15000,"egg_type":"chicken","day":1,"hatch_day":21,"elapsed_seconds":4,"stage":"active","batch_complete":false,"incubator":{"valid":true,"temperature_c":37.6,"humidity_percent":51.4,"bulb_on":true,"humidifier_on":false,"fan_on":true,"exhaust_fan_on":false},"brooder":{"valid":true,"temperature_c":31.2,"humidity_percent":49.0,"bulb_on":false,"humidifier_on":false}}
+{"type":"telemetry","v":1,"uptime_ms":20000,"egg_type":"chicken","day":1,"hatch_day":21,"elapsed_seconds":9,"stage":"active","batch_complete":false,"incubator":{"valid":true,"temperature_c":37.6,"humidity_percent":51.4,"bulb_on":true,"humidifier_on":false,"fan_on":true,"exhaust_fan_on":false},"brooder":{"valid":true,"temperature_c":31.2,"humidity_percent":49.0,"bulb_on":false,"humidifier_on":false}}
+{"type":"ack","v":1,"id":306,"command_id":306,"batch_id":7003,"cmd":"START","status":"accepted","message":"start_received"}
+{"type":"telemetry","v":1,"uptime_ms":25000,"egg_type":"chicken","day":1,"hatch_day":21,"elapsed_seconds":14,"stage":"active","batch_complete":false,"incubator":{"valid":false,"temperature_c":null,"humidity_percent":null,"bulb_on":false,"humidifier_on":false,"fan_on":false,"exhaust_fan_on":false},"brooder":{"valid":true,"temperature_c":31.2,"humidity_percent":49.0,"bulb_on":false,"humidifier_on":false}}
+{"type":"event","v":1,"event":"batch_started","egg_type":"chicken","day":1}
+{"type":"running","v":1,"id":306,"cmd":"START","command_id":306,"batch_id":7003,"status":"running"}
+{"type":"telemetry","v":1,"uptime_ms":30000,"egg_type":"chicken","day":1,"hatch_day":21,"elapsed_seconds":0,"stage":"active","batch_complete":false,"incubator":{"valid":true,"temperature_c":37.6,"humidity_percent":51.4,"bulb_on":true,"humidifier_on":false,"fan_on":true,"exhaust_fan_on":false},"brooder":{"valid":true,"temperature_c":31.2,"humidity_percent":49.0,"bulb_on":false,"humidifier_on":false}}
+{"type":"event","v":1,"event":"batch_started","egg_type":"chicken","day":1}
+{"type":"ack","v":1,"id":307,"cmd":"NEW_BATCH","status":"accepted","message":"command_applied"}
+{"type":"ack","v":1,"id":308,"command_id":308,"batch_id":7004,"cmd":"START","status":"accepted","message":"start_received"}
+{"type":"telemetry","v":1,"uptime_ms":35000,"egg_type":"chicken","day":1,"hatch_day":21,"elapsed_seconds":4,"stage":"active","batch_complete":false,"incubator":{"valid":true,"temperature_c":37.6,"humidity_percent":51.4,"bulb_on":true,"humidifier_on":false,"fan_on":true,"exhaust_fan_on":false},"brooder":{"valid":true,"temperature_c":31.2,"humidity_percent":49.0,"bulb_on":false,"humidifier_on":false}}
+{"type":"event","v":1,"event":"batch_started","egg_type":"chicken","day":1}
+{"type":"running","v":1,"id":308,"cmd":"START","command_id":308,"batch_id":7004,"status":"running"}
+{"type":"telemetry","v":1,"uptime_ms":40000,"egg_type":"chicken","day":1,"hatch_day":21,"elapsed_seconds":3,"stage":"active","batch_complete":false,"incubator":{"valid":true,"temperature_c":37.6,"humidity_percent":51.4,"bulb_on":true,"humidifier_on":false,"fan_on":true,"exhaust_fan_on":false},"brooder":{"valid":true,"temperature_c":31.2,"humidity_percent":49.0,"bulb_on":false,"humidifier_on":false}}
+{"type":"ack","v":1,"id":309,"command_id":309,"batch_id":7004,"cmd":"START","status":"accepted","message":"start_already_running"}
+{"type":"running","v":1,"id":309,"cmd":"START","command_id":309,"batch_id":7004,"status":"running"}
+{"type":"telemetry","v":1,"uptime_ms":1000,"egg_type":"chicken","day":1,"hatch_day":21,"elapsed_seconds":5,"stage":"active","batch_complete":false,"incubator":{"valid":true,"temperature_c":37.6,"humidity_percent":51.4,"bulb_on":true,"humidifier_on":false,"fan_on":true,"exhaust_fan_on":false},"brooder":{"valid":true,"temperature_c":31.2,"humidity_percent":49.0,"bulb_on":false,"humidifier_on":false}}
+{"type":"event","v":1,"event":"batch_started","egg_type":"chicken","day":1}
+{"type":"ack","v":1,"id":310,"cmd":"NEW_BATCH","status":"accepted","message":"command_applied"}
+{"type":"ack","v":1,"id":311,"command_id":311,"batch_id":7005,"cmd":"START","status":"accepted","message":"start_received"}
+{"type":"event","v":1,"event":"batch_started","egg_type":"chicken","day":1}
+{"type":"running","v":1,"id":311,"cmd":"START","command_id":311,"batch_id":7005,"status":"running"}
+{"type":"ack","v":1,"id":312,"command_id":312,"batch_id":7005,"cmd":"START","status":"rejected","error":{"code":"batch_already_complete","message":"batch is already complete"}}

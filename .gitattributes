@@ -1,0 +1,4 @@
+# Evidence captures and fixtures are hashed byte-for-byte. Keep their exact
+# LF line endings on every platform so sha256sums.txt stays reproducible.
+docs/evidence/** -text
+test/fixtures/firmware/** -text

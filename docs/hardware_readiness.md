@@ -108,6 +108,11 @@ JSON Lines protocol (`telemetry`, `command`, `ack`, `lcdUpdate`, `lcdAck`) and
 canonical actuator names. This branch adds no new message types and changes no
 serial bytes on the wire.
 
+> A-02 (see `docs/a02_ndjson_serial_protocol.md`) versions and extends the
+> **separate** `SmartHatch_Combined` controller variant only. It does not change
+> the app-facing `SmartHatch_Uno` frames or the parser above; that alignment is
+> HW-IMP-01.
+
 ## Tests
 
 - `flutter test test/arduino_readiness_test.dart` — pure state machine

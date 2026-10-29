@@ -1,0 +1,110 @@
+A-03 PASS F0-valid                                       actual=true expected=true
+A-03 PASS F0-heat-on                                     actual=true expected=true
+A-03 PASS F0-heat-pin                                    D10 relay ON (level=0)
+A-03 PASS F0-humid-off                                   actual=false expected=false
+A-03 PASS F0-humid-pin                                   D6 relay OFF (level=1)
+A-03 PASS F0-fan-on                                      actual=true expected=true
+A-03 PASS F0-fan-pin                                     D12 relay ON (level=0)
+A-03 PASS F0-exhaust-off                                 D9 relay OFF (level=1)
+A-03 PASS F0-consistent                                  bulb flag/pin consistent
+A-03 PASS F0-consistent                                  humidifier flag/pin consistent
+A-03 PASS F0-consistent                                  fan flag/pin consistent
+A-03 PASS F0-consistent                                  exhaust flag/pin consistent
+A-03 PASS F0-brooder-valid                               actual=true expected=true
+A-03 PASS F0-brooder-heat                                actual=false expected=false
+A-03 PASS F0-brooder-humid                               actual=false expected=false
+A-03 PASS T1-37.4-on                                     actual=true expected=true
+A-03 PASS T1-37.4-pin                                    D10 relay ON (level=0)
+A-03 PASS T2-37.6-hold-on                                actual=true expected=true
+A-03 PASS T3-37.9-hold-on                                actual=true expected=true
+A-03 PASS T4-38.0-off                                    actual=false expected=false
+A-03 PASS T4-38.0-pin                                    D10 relay OFF (level=1)
+A-03 PASS T5-38.3-off                                    actual=false expected=false
+A-03 PASS T6-37.6-hysteresis-off                         actual=false expected=false
+A-03 PASS T7-37.5-on                                     actual=true expected=true
+A-03 PASS T7-37.5-pin                                    D10 relay ON (level=0)
+A-03 PASS H1-44.9-on                                     actual=true expected=true
+A-03 PASS H1-44.9-pin                                    D6 relay ON (level=0)
+A-03 PASS H2-45.0-hold-on                                actual=true expected=true
+A-03 PASS H3-54.9-hold-on                                actual=true expected=true
+A-03 PASS H4-55.0-off                                    actual=false expected=false
+A-03 PASS H4-55.0-pin                                    D6 relay OFF (level=1)
+A-03 PASS H5-50.0-hold-off                               actual=false expected=false
+A-03 PASS H6-44.9-on-again                               actual=true expected=true
+A-03 PASS O1-39.0-heat-off                               actual=false expected=false
+A-03 PASS O1-39.0-heat-pin                               D10 relay OFF (level=1)
+A-03 PASS O1-39.0-humid-off                              actual=false expected=false
+A-03 PASS O1-39.0-humid-pin                              D6 relay OFF (level=1)
+A-03 PASS O1-39.0-fan-on                                 actual=true expected=true
+A-03 PASS O1-39.0-fan-pin                                D12 relay ON (level=0)
+A-03 PASS O1-consistent                                  bulb flag/pin consistent
+A-03 PASS O1-consistent                                  humidifier flag/pin consistent
+A-03 PASS O1-consistent                                  fan flag/pin consistent
+A-03 PASS O1-consistent                                  exhaust flag/pin consistent
+A-03 PASS O2-39.5-heat-off                               actual=false expected=false
+A-03 PASS O2-39.5-humid-off                              actual=false expected=false
+A-03 PASS O2-39.5-humid-pin                              D6 relay OFF (level=1)
+A-03 PASS O2-39.5-fan-on                                 actual=true expected=true
+A-03 PASS O3-38.5-heat-off                               actual=false expected=false
+A-03 PASS O3-38.5-humid-resumes                          actual=true expected=true
+A-03 PASS O4-37.5-heat-recovers                          actual=true expected=true
+A-03 PASS O4-37.5-humid-on                               actual=true expected=true
+A-03 PASS S1-incubator-invalid                           actual=false expected=false
+A-03 PASS S1-all-off                                     actual=false expected=false
+A-03 PASS S1-all-off                                     actual=false expected=false
+A-03 PASS S1-all-off                                     actual=false expected=false
+A-03 PASS S1-all-off                                     actual=false expected=false
+A-03 PASS S1-all-off                                     D10 relay OFF (level=1)
+A-03 PASS S1-all-off                                     D6 relay OFF (level=1)
+A-03 PASS S1-all-off                                     D12 relay OFF (level=1)
+A-03 PASS S1-all-off                                     D9 relay OFF (level=1)
+A-03 PASS S1-all-off                                     bulb flag/pin consistent
+A-03 PASS S1-all-off                                     humidifier flag/pin consistent
+A-03 PASS S1-all-off                                     fan flag/pin consistent
+A-03 PASS S1-all-off                                     exhaust flag/pin consistent
+A-03 PASS S2-overheat-heat-off                           actual=false expected=false
+A-03 PASS S2-invalid                                     actual=false expected=false
+A-03 PASS S2-all-off                                     actual=false expected=false
+A-03 PASS S2-all-off                                     actual=false expected=false
+A-03 PASS S2-all-off                                     actual=false expected=false
+A-03 PASS S2-all-off                                     actual=false expected=false
+A-03 PASS S2-all-off                                     D10 relay OFF (level=1)
+A-03 PASS S2-all-off                                     D6 relay OFF (level=1)
+A-03 PASS S2-all-off                                     D12 relay OFF (level=1)
+A-03 PASS S2-all-off                                     D9 relay OFF (level=1)
+A-03 PASS S2-all-off                                     bulb flag/pin consistent
+A-03 PASS S2-all-off                                     humidifier flag/pin consistent
+A-03 PASS S2-all-off                                     fan flag/pin consistent
+A-03 PASS S2-all-off                                     exhaust flag/pin consistent
+A-03 PASS S3-recovered-valid                             actual=true expected=true
+A-03 PASS S3-heat-on                                     actual=true expected=true
+A-03 PASS S3-humid-on                                    actual=true expected=true
+A-03 PASS S3-fan-on                                      actual=true expected=true
+A-03 PASS S3-fan-pin                                     D12 relay ON (level=0)
+A-03 PASS B1-brooder-invalid                             actual=false expected=false
+A-03 PASS B1-all-off                                     actual=false expected=false
+A-03 PASS B1-all-off                                     actual=false expected=false
+A-03 PASS B1-all-off                                     D11 relay OFF (level=1)
+A-03 PASS B1-all-off                                     D5 relay OFF (level=1)
+A-03 PASS B1-incubator-still-valid                       actual=true expected=true
+A-03 PASS B1-incubator-fan-on                            actual=true expected=true
+A-03 PASS B2-brooder-recovered                           actual=true expected=true
+A-03 PASS B2-brooder-heat-off                            actual=false expected=false
+A-03 PASS B2-brooder-humid-off                           actual=false expected=false
+A-03 PASS B3-29.5-heat-on                                actual=true expected=true
+A-03 PASS B3-29.5-heat-pin                               D11 relay ON (level=0)
+A-03 PASS B4-31.0-hold-on                                actual=true expected=true
+A-03 PASS B5-32.0-heat-off                               actual=false expected=false
+A-03 PASS B5-32.0-heat-pin                               D11 relay OFF (level=1)
+A-03 PASS B6-44.9-humid-on                               actual=true expected=true
+A-03 PASS B6-44.9-humid-pin                              D5 relay ON (level=0)
+A-03 PASS B7-60.0-humid-off                              actual=false expected=false
+A-03 PASS B7-60.0-humid-pin                              D5 relay OFF (level=1)
+A-03 PASS A1-no-pending-input                            actual=true expected=true
+A-03 PASS A1-autonomous-heat-on                          actual=true expected=true
+A-03 PASS A1-autonomous-fan-on                           actual=true expected=true
+A-03 PASS A2-still-no-input                              actual=true expected=true
+A-03 PASS A2-autonomous-heat-off                         actual=false expected=false
+A-03 PASS A2-autonomous-fan-on                           actual=true expected=true
+A-03 PASS A2-still-no-input-2                            actual=true expected=true
+A-03 control_host_sim: checks=109 failures=0 bytes=26876 lines=91 simulated_ms=151000

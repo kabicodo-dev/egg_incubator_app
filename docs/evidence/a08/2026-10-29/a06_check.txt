@@ -1,0 +1,1 @@
+PASS: A-06 START handshake; 10 START ack(s), 7 RUNNING frame(s), 3 rejection(s); ACK receipt precedes hardware-confirmed RUNNING; duplicate START idempotent; sensor and actuator waits observed
