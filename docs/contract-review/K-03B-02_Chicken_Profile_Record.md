@@ -172,3 +172,36 @@ Record retained at this path and kept **PENDING**. The species document stays re
 - Confirm that P4 display wording applies only where the original confirmed Start is trustworthy, with "unknown day" otherwise.
 - Keep the "HATCHED" completion label out of any Flutter change until P4 wording is implemented under the normal change process.
 
+## 10. K-04 dependency position (Cha / Mary, 2026-10-30)
+
+**K-04 scope** (Kath; P1; depends K-03; scoped approval): correct the fabricated Day 7/21 console LCD line; label the schedule as app-derived, not Arduino telemetry; evidence is before/after screenshots and passing tests, with no hardware claim.
+
+### 10.1 What K-04 does and does not need
+
+| K-04 outcome | Requires approved profile or live mapping? |
+|---|---|
+| Remove hardcoded Day 7/21 and "ACTIVE"-like LCD text | **No** — an app-derived schedule label with honest no-data states satisfies the stated outcome |
+| Show app batch schedule, clearly labelled as app-derived | **No** — must not be presented as telemetry |
+| Show "verified current measurements" | **Yes** — requires a fresh physical frame under HW-01 readiness and, for cloud, DB-02 §2.5 provenance (draft only) |
+| Show "approved targets" | **Yes** — requires P1–P3 plus profile approval (blocked) |
+
+### 10.2 Cha's source / batch / freshness mapping — candidate, not approved
+
+| Aspect | Candidate mapping | Current status |
+|---|---|---|
+| Source identity | `device_id` from `private.controllers`, `wire_alias` `[0-9A-F]{16}`, pinned `catalog_revision`, `contract_enabled` false by default | Not approvable until the selected source revision is reconciled; registry is candidate-only |
+| Batch binding | `offline_batch_id` / session mapping on `started`/`status_observed`; readings carry `session_id` | Telemetry frames contain **no** device, batch, sequence, or measurement-time field; `sensor_readings` has no `session_id`; DB-02 §2.5 additions are unimplemented |
+| Freshness | Age from source measurement time plus `timestamp_valid`; receipt/server time never establishes freshness; numeric stale threshold and future-skew bound to be approved | Threshold **unapproved** (v1.2 lists it as blocking). Firmware declares 5 s telemetry cadence while HW-01/HW-02 documents say 2 s; the app's 6 s window leaves about one missed frame of margin |
+
+### 10.3 Truthful interim display
+
+Until the mapping is approved, K-04 may show: app-derived day/schedule labelled as such; last-known reading with its age, or an explicit unknown/no-data state; never a target rendered as a measurement, and never a "live" claim without a fresh physical frame.
+
+### 10.4 Backend position on resuming K-04
+
+1. K-04's stated outcome can resume after scoped approval **without** an approved profile, provided targets and telemetry are not implied.
+2. "Verified current measurements" and "approved targets" are separate, later scope. They remain blocked on: reconciled source identity; Ally's telemetry/profile evidence; P1–P3; DB-02 §2.5 authorization; D04 auth; D05 freshness.
+3. Cha/Mary can only approve an adapter mapping after those inputs exist. Backend approval cannot substitute for Ally's firmware evidence or the profile reviewer's numerical sign-off.
+4. No schema, adapter, function, or policy change is made by this position; ingestion stays fail-closed.
+
+
