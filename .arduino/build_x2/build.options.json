@@ -1,0 +1,9 @@
+{
+  "additionalFiles": "",
+  "compiler.optimization_flags": "",
+  "customBuildProperties": "build.extra_flags=-DARDUINO_AVR_UNO",
+  "fqbn": "arduino:avr:uno",
+  "hardwareFolders": "C:\\Users\\celine\\AppData\\Local\\Arduino15\\packages\\arduino\\hardware\\avr\\1.8.8,C:\\Users\\celine\\AppData\\Local\\Arduino15\\packages\\arduino\\hardware\\avr\\1.8.8",
+  "otherLibrariesFolders": "C:\\Users\\celine\\Documents\\Arduino\\libraries",
+  "sketchLocation": "C:\\Users\\celine\\Documents\\Sandy\\SCHOOL\\REPORTS\\SmartHatch\\egg_incubator_app\\arduino\\SmartHatch_Uno"
+}

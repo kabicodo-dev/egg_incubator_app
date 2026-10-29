@@ -1,0 +1,11 @@
+board_manager:
+  additional_urls: []
+allow_comments: false
+programs:
+  avrdude: null
+runtime:
+  ide:
+    version: "10608"
+  versions:
+    arduino: "10608"
+  sketch: true
