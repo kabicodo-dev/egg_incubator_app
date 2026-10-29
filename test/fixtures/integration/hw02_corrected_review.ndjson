@@ -1,0 +1,6 @@
+{"type":"command","id":"AAAAAAAAAAAAAAAAAAAAAAA","actuator":"eggTurningServo","state":true}
+{"type":"telemetry","device":"UNO_R3","u":18446744073709551615,"sensors":{"i":{"valid":true,"temperature":37.4,"humidity":51.2},"b":{"valid":true,"temperature":31.1,"humidity":49.0}}}
+{"type":"ack","id":"BBBBBBBBBBBBBBBBBBBBBBB","status":"400","error":"UNKNOWN_KEY:invalid-actuator-na","hardwareVerified":false}
+{"type":"hello","payload":{"hardware":"SmartHatch Uno","board":"UNO_R3","firmwareVersion":"1.0.0","protocolVersion":"0.2.3","baudRate":9600,"deviceToken":"0123456789abcdef0123456789abcdef"}}
+{"type":"hello_ack","message":"accepted"}
+{"type":"event","code":"SENSOR_INVALID","payload":{"sensor":"i","time":18446744073709551615}}

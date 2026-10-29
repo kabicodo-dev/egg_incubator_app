@@ -1,0 +1,249 @@
+{
+  "task": "ORIGINAL:C-02",
+  "document_revision": "ORIGINAL:C-02/candidate-1",
+  "notice": "DOCUMENTATION FIXTURES ONLY — observed host-output references and SYNTHETIC TARGET PROPOSALS. Not physical evidence, approved profiles, authority credentials or messages for upload.",
+  "validation_status": "NOT_RUN",
+  "approval_status": "PENDING",
+  "source_commit": "80971f902d5634f7fed78ff073fcb78fa31be460",
+  "source_sha256": "3721bce0eb48e654f2116a7ae2faa34d5d6af0bb57a7b1d11224f0ed68fa8dcb",
+  "reference_limitation": "Requested index_combined_FINAL_team_details(6).html unavailable; available unnumbered portal plus user-established K06 requirements used, not silently substituted as revision (6).",
+  "example_size_rule": "Counts, where supplied, cover the exact compact serialized text plus one LF; they are not maximum supported or permitted frame sizes. serialized preserves a captured numeric spelling where needed.",
+  "examples": [
+    {
+      "id": "observed-command-status", "profile": "observed", "schema_ref": "observedCommand",
+      "classification": "IMPLEMENTED_SOURCE_SUPPORTED", "provenance": "FW:722-723,816-826; source-shaped input, not a physical transmission",
+      "message": {"id": 101, "cmd": "STATUS"}, "expected_bytes": {"content": 25, "with_lf": 26}
+    },
+    {
+      "id": "observed-command-start", "profile": "observed", "schema_ref": "observedCommand",
+      "classification": "IMPLEMENTED_SOFTWARE_EVIDENCE", "provenance": "docs/a06_start_ack_running.md:82-86; host/start_host_sim.cpp:128-135",
+      "message": {"id": 301, "cmd": "START", "batch_id": 7001}, "expected_bytes": {"content": 40, "with_lf": 41}
+    },
+    {
+      "id": "observed-command-start-width-specimen", "profile": "observed", "schema_ref": "observedCommand",
+      "classification": "SOURCE_SHAPED_SYNTHETIC_NOT_RUNTIME_VERIFIED", "provenance": "Nominal signed-long width specimen only; does not prove allocation policy, parser overflow rejection or UART service capacity",
+      "message": {"id": 2147483647, "cmd": "START", "batch_id": 2147483647}, "expected_bytes": {"content": 53, "with_lf": 54}
+    },
+    {
+      "id": "observed-command-new-batch", "profile": "observed", "schema_ref": "observedCommand",
+      "classification": "IMPLEMENTED_SOURCE_SUPPORTED_NONCONFORMING_MUTATION", "provenance": "FW:724-726; not an approved START/STOP alias",
+      "message": {"id": 305, "cmd": "NEW_BATCH"}
+    },
+    {
+      "id": "observed-command-reset", "profile": "observed", "schema_ref": "observedCommand",
+      "classification": "IMPLEMENTED_SOURCE_SUPPORTED_NONCONFORMING_MUTATION", "provenance": "FW:724-726; resets batch, not physical STOP",
+      "message": {"id": 401, "cmd": "RESET"}
+    },
+    {
+      "id": "observed-command-select-chicken", "profile": "observed", "schema_ref": "observedCommand",
+      "classification": "IMPLEMENTED_SOURCE_SUPPORTED_NONCONFORMING_SELECTION", "provenance": "FW:727-729; documenting this does not approve selection-triggered batch creation",
+      "message": {"id": 402, "cmd": "SELECT_CHICKEN"}
+    },
+    {
+      "id": "observed-command-select-duck", "profile": "observed", "schema_ref": "observedCommand",
+      "classification": "IMPLEMENTED_SOURCE_SUPPORTED_NONCONFORMING_SELECTION", "provenance": "FW:730-732; no physical Duck approval implied",
+      "message": {"id": 403, "cmd": "SELECT_DUCK"}
+    },
+    {
+      "id": "observed-command-select-quail", "profile": "observed", "schema_ref": "observedCommand",
+      "classification": "IMPLEMENTED_SOURCE_SUPPORTED_NONCONFORMING_SELECTION", "provenance": "FW:733-735; no physical Quail approval implied",
+      "message": {"id": 404, "cmd": "SELECT_QUAIL"}
+    },
+    {
+      "id": "observed-command-turn", "profile": "observed", "schema_ref": "observedCommand",
+      "classification": "IMPLEMENTED_SOFTWARE_EVIDENCE", "provenance": "FW:763-770; A-02 host input specimen",
+      "message": {"id": 102, "cmd": "TURN_NOW"}, "expected_bytes": {"content": 27, "with_lf": 28}
+    },
+    {
+      "id": "observed-start-ack", "profile": "observed", "schema_ref": "observedAck",
+      "classification": "IMPLEMENTED_SOFTWARE_EVIDENCE", "provenance": "docs/evidence/a08/2026-10-29/a06_capture.ndjson:4 at source_commit; host output only",
+      "message": {"type": "ack", "v": 1, "id": 301, "command_id": 301, "batch_id": 7001, "cmd": "START", "status": "accepted", "message": "start_received"},
+      "expected_bytes": {"content": 123, "with_lf": 124}
+    },
+    {
+      "id": "observed-start-already-ack", "profile": "observed", "schema_ref": "observedAck",
+      "classification": "IMPLEMENTED_SOFTWARE_EVIDENCE", "provenance": "a06_capture.ndjson:11; same batch/new request scenario, not arbitrary durable idempotency proof",
+      "message": {"type": "ack", "v": 1, "id": 302, "command_id": 302, "batch_id": 7001, "cmd": "START", "status": "accepted", "message": "start_already_running"}
+    },
+    {
+      "id": "observed-start-invalid-ack", "profile": "observed", "schema_ref": "observedAck",
+      "classification": "IMPLEMENTED_SOFTWARE_EVIDENCE", "provenance": "a06_capture.ndjson:14; missing input batch represented as zero on rejected ACK",
+      "message": {"type": "ack", "v": 1, "id": 304, "command_id": 304, "batch_id": 0, "cmd": "START", "status": "rejected", "error": {"code": "invalid_batch_id", "message": "batch_id missing or invalid"}},
+      "expected_bytes": {"content": 169, "with_lf": 170}
+    },
+    {
+      "id": "observed-start-busy-ack", "profile": "observed", "schema_ref": "observedAck",
+      "classification": "IMPLEMENTED_SOFTWARE_EVIDENCE", "provenance": "a06_capture.ndjson:13",
+      "message": {"type": "ack", "v": 1, "id": 303, "command_id": 303, "batch_id": 7002, "cmd": "START", "status": "rejected", "error": {"code": "batch_already_running", "message": "another batch is already running"}},
+      "expected_bytes": {"content": 182, "with_lf": 183}
+    },
+    {
+      "id": "observed-start-complete-ack", "profile": "observed", "schema_ref": "observedAck",
+      "classification": "IMPLEMENTED_SOFTWARE_EVIDENCE", "provenance": "a06_capture.ndjson:39",
+      "message": {"type": "ack", "v": 1, "id": 312, "command_id": 312, "batch_id": 7005, "cmd": "START", "status": "rejected", "error": {"code": "batch_already_complete", "message": "batch is already complete"}},
+      "expected_bytes": {"content": 176, "with_lf": 177}
+    },
+    {
+      "id": "observed-start-running", "profile": "observed", "schema_ref": "observedRunning",
+      "classification": "IMPLEMENTED_SOFTWARE_EVIDENCE_NOT_PHYSICAL", "provenance": "a06_capture.ndjson:6; MCU latch and sensor validity, not relay contacts or heat",
+      "message": {"type": "running", "v": 1, "id": 301, "cmd": "START", "command_id": 301, "batch_id": 7001, "status": "running"},
+      "expected_bytes": {"content": 99, "with_lf": 100}
+    },
+    {
+      "id": "observed-turn-running", "profile": "observed", "schema_ref": "observedRunning",
+      "classification": "IMPLEMENTED_SOFTWARE_EVIDENCE", "provenance": "a02_capture.ndjson:6; in-flight turn, NOT a batch Running report",
+      "message": {"type": "running", "v": 1, "id": 102, "cmd": "TURN_NOW"}
+    },
+    {
+      "id": "observed-turn-ack", "profile": "observed", "schema_ref": "observedAck",
+      "classification": "IMPLEMENTED_SOFTWARE_EVIDENCE", "provenance": "a02_capture.ndjson:8; follows turn progress/event",
+      "message": {"type": "ack", "v": 1, "id": 102, "cmd": "TURN_NOW", "status": "accepted", "message": "turn_completed"}
+    },
+    {
+      "id": "observed-unknown-command-rejection", "profile": "observed", "schema_ref": "observedAck",
+      "classification": "IMPLEMENTED_SOFTWARE_EVIDENCE", "provenance": "a02_capture.ndjson:9; NOPE is not a supported command",
+      "message": {"type": "ack", "v": 1, "id": 103, "cmd": "NOPE", "status": "rejected", "error": {"code": "unknown_command", "message": "unknown command"}}
+    },
+    {
+      "id": "observed-line-rejection", "profile": "observed", "schema_ref": "observedAck",
+      "classification": "IMPLEMENTED_SOFTWARE_EVIDENCE", "provenance": "a02_capture.ndjson:14; proves selected rejection, not safe suffix draining",
+      "message": {"type": "ack", "v": 1, "id": -1, "cmd": "LINE", "status": "rejected", "error": {"code": "line_too_long", "message": "serial line exceeds buffer"}}
+    },
+    {
+      "id": "observed-telemetry-valid", "profile": "observed", "schema_ref": "observedTelemetry",
+      "classification": "IMPLEMENTED_SOFTWARE_EVIDENCE", "provenance": "a06_capture.ndjson:7; host shim readings, not physical observations or approved profiles",
+      "message": {"type": "telemetry", "v": 1, "uptime_ms": 5000, "egg_type": "chicken", "day": 1, "hatch_day": 21, "elapsed_seconds": 0, "stage": "active", "batch_complete": false, "incubator": {"valid": true, "temperature_c": 37.6, "humidity_percent": 51.4, "bulb_on": true, "humidifier_on": false, "fan_on": true, "exhaust_fan_on": false}, "brooder": {"valid": true, "temperature_c": 31.2, "humidity_percent": 49.0, "bulb_on": false, "humidifier_on": false}},
+      "serialized": "{\"type\":\"telemetry\",\"v\":1,\"uptime_ms\":5000,\"egg_type\":\"chicken\",\"day\":1,\"hatch_day\":21,\"elapsed_seconds\":0,\"stage\":\"active\",\"batch_complete\":false,\"incubator\":{\"valid\":true,\"temperature_c\":37.6,\"humidity_percent\":51.4,\"bulb_on\":true,\"humidifier_on\":false,\"fan_on\":true,\"exhaust_fan_on\":false},\"brooder\":{\"valid\":true,\"temperature_c\":31.2,\"humidity_percent\":49.0,\"bulb_on\":false,\"humidifier_on\":false}}",
+      "expected_bytes": {"content": 401, "with_lf": 402}
+    },
+    {
+      "id": "observed-telemetry-invalid", "profile": "observed", "schema_ref": "observedTelemetry",
+      "classification": "IMPLEMENTED_SOFTWARE_EVIDENCE", "provenance": "a06_capture.ndjson:20; invalid incubator pair is null; other chamber still valid",
+      "message": {"type": "telemetry", "v": 1, "uptime_ms": 25000, "egg_type": "chicken", "day": 1, "hatch_day": 21, "elapsed_seconds": 14, "stage": "active", "batch_complete": false, "incubator": {"valid": false, "temperature_c": null, "humidity_percent": null, "bulb_on": false, "humidifier_on": false, "fan_on": false, "exhaust_fan_on": false}, "brooder": {"valid": true, "temperature_c": 31.2, "humidity_percent": 49.0, "bulb_on": false, "humidifier_on": false}}
+    },
+    {
+      "id": "observed-event-batch", "profile": "observed", "schema_ref": "observedEvent",
+      "classification": "IMPLEMENTED_SOFTWARE_EVIDENCE_NOT_ORIGINAL_START_PROOF", "provenance": "a06_capture.ndjson:1; boot can emit it without deliberate START",
+      "message": {"type": "event", "v": 1, "event": "batch_started", "egg_type": "chicken", "day": 1}
+    },
+    {
+      "id": "observed-event-ready", "profile": "observed", "schema_ref": "observedEvent",
+      "classification": "IMPLEMENTED_SOFTWARE_EVIDENCE", "provenance": "a06_capture.ndjson:2; identity/protocol label is not physical capability/authentication proof",
+      "message": {"type": "event", "v": 1, "event": "controller_ready", "protocol": "smarthatch-ndjson-v1", "baud": 9600}
+    },
+    {
+      "id": "observed-event-restored", "profile": "observed", "schema_ref": "observedEvent",
+      "classification": "IMPLEMENTED_SOFTWARE_EVIDENCE_LABEL_LIMITED", "provenance": "a06_capture.ndjson:3; label alone does not substantiate a valid restored original batch",
+      "message": {"type": "event", "v": 1, "event": "batch_state_restored", "egg_type": "chicken", "day": 1, "elapsed_seconds": 0}
+    },
+    {
+      "id": "observed-event-turn", "profile": "observed", "schema_ref": "observedEvent",
+      "classification": "IMPLEMENTED_SOFTWARE_EVIDENCE", "provenance": "a02_capture.ndjson:7; no physical servo observation",
+      "message": {"type": "event", "v": 1, "event": "egg_turn_completed"}
+    },
+    {
+      "id": "target-telemetry-known-time", "profile": "target", "schema_ref": "targetRecord",
+      "classification": "PROPOSED_AWAITING_APPROVAL_NOT_IMPLEMENTED", "provenance": "SYNTHETIC target semantic record; time/identity/values not observations or approved settings",
+      "message": {"contract_profile": "K06-target-semantic-proposal", "family": "TELEMETRY", "body": {"protocol_revision": "ORIGINAL:C-02/candidate-1", "device_id": "TEST-DEVICE", "chamber": "incubator", "batch_id": "TEST-BATCH-A", "command_id": null, "boot_id": "TEST-BOOT-A", "sample_id": "TEST-SAMPLE-1", "seq": 1, "measured_at": "2026-10-29T00:00:00Z", "timestamp_valid": true, "payload": {"temperature_c": {"value": 25, "valid": true}, "humidity_pct": {"value": 40, "valid": true}}}}
+    },
+    {
+      "id": "target-telemetry-mixed-unknown-time", "profile": "target", "schema_ref": "targetRecord",
+      "classification": "PROPOSED_AWAITING_APPROVAL_NOT_IMPLEMENTED", "provenance": "SYNTHETIC proposed independent metric validity; must not be fabricated from observed pair-validity",
+      "message": {"contract_profile": "K06-target-semantic-proposal", "family": "TELEMETRY", "body": {"protocol_revision": "ORIGINAL:C-02/candidate-1", "device_id": "TEST-DEVICE", "chamber": "incubator", "batch_id": "TEST-BATCH-A", "command_id": null, "boot_id": "TEST-BOOT-A", "sample_id": "TEST-SAMPLE-2", "seq": 2, "measured_at": null, "timestamp_valid": false, "payload": {"temperature_c": {"value": null, "valid": false}, "humidity_pct": {"value": 40, "valid": true}}}}
+    },
+    {
+      "id": "target-start", "profile": "target", "schema_ref": "targetRecord",
+      "classification": "PROPOSED_AWAITING_APPROVAL_NOT_IMPLEMENTED", "provenance": "SYNTHETIC offline intent; profile and quantity are parser inputs, not approved capacity/settings or authority",
+      "message": {"contract_profile": "K06-target-semantic-proposal", "family": "START", "body": {"protocol_revision": "ORIGINAL:C-02/candidate-1", "device_id": "TEST-DEVICE", "chamber": "incubator", "batch_id": "TEST-BATCH-A", "command_id": "TEST-START-A", "boot_id": null, "sample_id": null, "seq": null, "measured_at": null, "timestamp_valid": false, "payload": {"profile_id": "TEST_ONLY_NOT_APPROVED", "profile_version": "TEST-REV", "egg_quantity": 1}}}
+    },
+    {
+      "id": "target-stop", "profile": "target", "schema_ref": "targetRecord",
+      "classification": "SPECIFIED_PROPOSED_UNSUPPORTED_BY_COMMITTED_FIRMWARE", "provenance": "SYNTHETIC review shape only; safe output transition remains candidate D02, not implementation",
+      "message": {"contract_profile": "K06-target-semantic-proposal", "family": "STOP", "body": {"protocol_revision": "ORIGINAL:C-02/candidate-1", "device_id": "TEST-DEVICE", "chamber": "incubator", "batch_id": "TEST-BATCH-A", "command_id": "TEST-STOP-A", "boot_id": null, "sample_id": null, "seq": null, "measured_at": null, "timestamp_valid": false, "payload": {"reason": "farmer_requested"}}}
+    },
+    {
+      "id": "target-status", "profile": "target", "schema_ref": "targetRecord",
+      "classification": "PROPOSED_AWAITING_APPROVAL_NOT_IMPLEMENTED", "provenance": "SYNTHETIC read-only query; unlike observed STATUS, target response is explicitly correlated",
+      "message": {"contract_profile": "K06-target-semantic-proposal", "family": "STATUS", "body": {"protocol_revision": "ORIGINAL:C-02/candidate-1", "device_id": "TEST-DEVICE", "chamber": "incubator", "batch_id": null, "command_id": "TEST-QUERY-A", "boot_id": null, "sample_id": null, "seq": null, "measured_at": null, "timestamp_valid": false, "payload": {}}}
+    },
+    {
+      "id": "target-ack-receipt", "profile": "target", "schema_ref": "targetRecord",
+      "classification": "PROPOSED_AWAITING_APPROVAL_NOT_IMPLEMENTED", "provenance": "SYNTHETIC receipt only; not occurrence, RUNNING or persisted cloud result",
+      "message": {"contract_profile": "K06-target-semantic-proposal", "family": "ACK", "body": {"protocol_revision": "ORIGINAL:C-02/candidate-1", "device_id": "TEST-DEVICE", "chamber": "incubator", "batch_id": "TEST-BATCH-A", "command_id": "TEST-START-A", "boot_id": "TEST-BOOT-A", "sample_id": null, "seq": 3, "measured_at": null, "timestamp_valid": false, "payload": {"accepted": true, "code": "RECEIVED"}}}
+    },
+    {
+      "id": "target-ack-rejected", "profile": "target", "schema_ref": "targetRecord",
+      "classification": "PROPOSED_AWAITING_APPROVAL_NOT_IMPLEMENTED", "provenance": "SYNTHETIC rejection vocabulary; not security enforcement",
+      "message": {"contract_profile": "K06-target-semantic-proposal", "family": "ACK", "body": {"protocol_revision": "ORIGINAL:C-02/candidate-1", "device_id": "TEST-DEVICE", "chamber": "incubator", "batch_id": "TEST-BATCH-A", "command_id": "TEST-START-A", "boot_id": "TEST-BOOT-A", "sample_id": null, "seq": 3, "measured_at": null, "timestamp_valid": false, "payload": {"accepted": false, "code": "REJECTED"}}}
+    },
+    {
+      "id": "target-state-unknown", "profile": "target", "schema_ref": "targetRecord",
+      "classification": "PROPOSED_AWAITING_APPROVAL_NOT_IMPLEMENTED", "provenance": "SYNTHETIC explicit unknown and evidence gap; no replacement Start is authorized",
+      "message": {"contract_profile": "K06-target-semantic-proposal", "family": "STATE", "body": {"protocol_revision": "ORIGINAL:C-02/candidate-1", "device_id": "TEST-DEVICE", "chamber": "incubator", "batch_id": null, "command_id": "TEST-QUERY-A", "boot_id": "TEST-BOOT-B", "sample_id": null, "seq": 0, "measured_at": null, "timestamp_valid": false, "payload": {"query_id": "TEST-QUERY-A", "state": "UNKNOWN", "original_start_at": null, "original_start_valid": false, "evidence_scope": "controller_report_only", "evidence_gap": true}}}
+    },
+    {
+      "id": "target-state-running-report", "profile": "target", "schema_ref": "targetRecord",
+      "classification": "PROPOSED_AWAITING_APPROVAL_NOT_PHYSICAL_EVIDENCE", "provenance": "SYNTHETIC current controller report; original source time and current observation are separate",
+      "message": {"contract_profile": "K06-target-semantic-proposal", "family": "STATE", "body": {"protocol_revision": "ORIGINAL:C-02/candidate-1", "device_id": "TEST-DEVICE", "chamber": "incubator", "batch_id": "TEST-BATCH-A", "command_id": "TEST-QUERY-A", "boot_id": "TEST-BOOT-A", "sample_id": null, "seq": 5, "measured_at": "2026-10-29T00:01:00Z", "timestamp_valid": true, "payload": {"query_id": "TEST-QUERY-A", "state": "RUNNING", "original_start_at": "2026-10-29T00:00:00Z", "original_start_valid": true, "evidence_scope": "controller_report_only", "evidence_gap": false}}}
+    },
+    {
+      "id": "target-event-started", "profile": "target", "schema_ref": "targetRecord",
+      "classification": "PROPOSED_AWAITING_APPROVAL_NOT_IMPLEMENTED", "provenance": "SYNTHETIC immutable original event; not a phone-generated substitute for missing firmware evidence",
+      "message": {"contract_profile": "K06-target-semantic-proposal", "family": "EVENT", "body": {"protocol_revision": "ORIGINAL:C-02/candidate-1", "device_id": "TEST-DEVICE", "chamber": "incubator", "batch_id": "TEST-BATCH-A", "command_id": "TEST-START-A", "boot_id": "TEST-BOOT-A", "sample_id": null, "seq": 4, "measured_at": "2026-10-29T00:00:00Z", "timestamp_valid": true, "payload": {"event_id": "TEST-EVENT-START-A", "kind": "started"}}}
+    },
+    {
+      "id": "target-event-stopped-unknown-time", "profile": "target", "schema_ref": "targetRecord",
+      "classification": "SPECIFIED_PROPOSED_UNSUPPORTED_BY_COMMITTED_FIRMWARE", "provenance": "SYNTHETIC stopped occurrence with explicitly unknown source time, not an observed Stop",
+      "message": {"contract_profile": "K06-target-semantic-proposal", "family": "EVENT", "body": {"protocol_revision": "ORIGINAL:C-02/candidate-1", "device_id": "TEST-DEVICE", "chamber": "incubator", "batch_id": "TEST-BATCH-A", "command_id": "TEST-STOP-A", "boot_id": "TEST-BOOT-A", "sample_id": null, "seq": 6, "measured_at": null, "timestamp_valid": false, "payload": {"event_id": "TEST-EVENT-STOP-A", "kind": "stopped"}}}
+    },
+    {
+      "id": "target-error", "profile": "target", "schema_ref": "targetRecord",
+      "classification": "PROPOSED_AWAITING_APPROVAL_NOT_IMPLEMENTED", "provenance": "SYNTHETIC typed diagnostic, not a deployed exception or source-authentication result",
+      "message": {"contract_profile": "K06-target-semantic-proposal", "family": "ERROR", "body": {"protocol_revision": "ORIGINAL:C-02/candidate-1", "device_id": "TEST-DEVICE", "chamber": "incubator", "batch_id": null, "command_id": "TEST-QUERY-A", "boot_id": "TEST-BOOT-A", "sample_id": null, "seq": 7, "measured_at": null, "timestamp_valid": false, "payload": {"code": "EVIDENCE_UNAVAILABLE", "detail": "Synthetic example: retained original evidence is unavailable."}}}
+    }
+  ],
+  "negative_examples": [
+    {"id": "unsupported-observed-stop", "base": "observed-command-status", "changes": [{"op": "set", "path": "/cmd", "value": "STOP"}], "reason": "STOP is not implemented; no alias inferred"},
+    {"id": "unsupported-observed-resume", "base": "observed-command-status", "changes": [{"op": "set", "path": "/cmd", "value": "RESUME_BATCH"}], "reason": "Withdrawn implementation claim must not reappear"},
+    {"id": "start-missing-batch", "base": "observed-command-start", "changes": [{"op": "delete", "path": "/batch_id"}], "reason": "Well-formed START requires a positive batch id"},
+    {"id": "start-zero-batch", "base": "observed-command-start", "changes": [{"op": "set", "path": "/batch_id", "value": 0}], "reason": "Zero is rejection sentinel, not valid input batch"},
+    {"id": "start-string-id", "base": "observed-command-start", "changes": [{"op": "set", "path": "/id", "value": "301"}], "reason": "Current well-formed numeric-id profile is not generic Flutter string id"},
+    {"id": "unimplemented-confirm", "base": "observed-command-start", "changes": [{"op": "set", "path": "/confirm", "value": "CONFIRM"}], "reason": "Closed reference shape does not approve a nonexistent confirmation mechanism; real parser may ignore extra fields"},
+    {"id": "ack-wrong-version", "base": "observed-start-ack", "changes": [{"op": "set", "path": "/v", "value": 2}], "reason": "Reference output profile is exact v1, not a runtime version-enforcement proof"},
+    {"id": "ack-mismatched-alias", "base": "observed-start-ack", "changes": [{"op": "set", "path": "/command_id", "value": 999}], "reason": "Relational check: command_id must equal id"},
+    {"id": "accepted-ack-with-error", "base": "observed-start-ack", "changes": [{"op": "set", "path": "/error", "value": {"code": "unknown_command", "message": "unknown command"}}], "reason": "Accepted and rejected variants must not mix"},
+    {"id": "rejection-with-message", "base": "observed-start-invalid-ack", "changes": [{"op": "set", "path": "/message", "value": "start_received"}], "reason": "Rejected ACK has nested error, not top-level accepted message"},
+    {"id": "turn-running-false-confirmation", "base": "observed-turn-running", "changes": [{"op": "set", "path": "/status", "value": "running"}], "reason": "TURN_NOW in-flight is not START confirmation"},
+    {"id": "telemetry-invalid-number", "base": "observed-telemetry-invalid", "changes": [{"op": "set", "path": "/incubator/temperature_c", "value": 25}], "reason": "Current invalid pair serializes null"},
+    {"id": "telemetry-bad-day", "base": "observed-telemetry-valid", "changes": [{"op": "set", "path": "/day", "value": 7}], "reason": "Relational elapsed-day formula"},
+    {"id": "target-false-time-with-timestamp", "base": "target-telemetry-known-time", "changes": [{"op": "set", "path": "/body/timestamp_valid", "value": false}], "reason": "Unknown source time must be null"},
+    {"id": "target-invalid-metric-number", "base": "target-telemetry-mixed-unknown-time", "changes": [{"op": "set", "path": "/body/payload/temperature_c/value", "value": 25}], "reason": "Proposed per-metric invalid value is null"},
+    {"id": "target-stop-missing-batch", "base": "target-stop", "changes": [{"op": "set", "path": "/body/batch_id", "value": null}], "reason": "Proposed deliberate STOP targets original batch"},
+    {"id": "target-start-zero-count", "base": "target-start", "changes": [{"op": "set", "path": "/body/payload/egg_quantity", "value": 0}], "reason": "Positive original count; upper physical capacity still unapproved"},
+    {"id": "target-state-query-mismatch", "base": "target-state-unknown", "changes": [{"op": "set", "path": "/body/payload/query_id", "value": "OTHER-QUERY"}], "reason": "Relational response/query identity match"},
+    {"id": "target-state-false-original-time", "base": "target-state-unknown", "changes": [{"op": "set", "path": "/body/payload/original_start_at", "value": "2026-10-29T00:00:00Z"}], "reason": "Unknown original Start must not receive a fabricated time"},
+    {"id": "target-state-physical-overclaim", "base": "target-state-running-report", "changes": [{"op": "set", "path": "/body/payload/evidence_scope", "value": "physically_verified"}], "reason": "Software fixture cannot establish physical evidence"},
+    {"id": "target-ack-code-contradiction", "base": "target-ack-rejected", "changes": [{"op": "set", "path": "/body/payload/code", "value": "RECEIVED"}], "reason": "Proposed relational accepted/code rule"},
+    {"id": "observed-as-target", "base": "observed-start-ack", "schema_ref": "targetRecord", "changes": [], "reason": "Observed output cannot masquerade as provenance-complete target record"},
+    {"id": "target-as-observed", "base": "target-stop", "schema_ref": "observedCommand", "changes": [], "reason": "Review-only target wrapper is not an implemented serial command"}
+  ],
+  "framing_examples": [
+    {"id": "lf-command", "schema_ref": "observedCommand", "text": "{\"id\":101,\"cmd\":\"STATUS\"}\n", "expected_valid": true, "scope": "Candidate fixture policy, not a new live transport implementation"},
+    {"id": "missing-lf", "schema_ref": "observedCommand", "text": "{\"id\":101,\"cmd\":\"STATUS\"}", "expected_valid": false},
+    {"id": "crlf-target-policy-not-firmware-rx", "schema_ref": "observedCommand", "text": "{\"id\":101,\"cmd\":\"STATUS\"}\r\n", "expected_valid": false, "scope": "Fixture checker is LF-only; observed firmware RX ignores CR, so this is not a claim of current RX rejection"},
+    {"id": "duplicate-id", "schema_ref": "observedCommand", "text": "{\"id\":101,\"id\":102,\"cmd\":\"STATUS\"}\n", "expected_valid": false},
+    {"id": "escaped-duplicate-id", "schema_ref": "observedCommand", "text": "{\"id\":101,\"\\u0069d\":102,\"cmd\":\"STATUS\"}\n", "expected_valid": false},
+    {"id": "multiple-objects", "schema_ref": "observedCommand", "text": "{\"id\":101,\"cmd\":\"STATUS\"}\n{\"id\":102,\"cmd\":\"STATUS\"}\n", "expected_valid": false},
+    {"id": "array-not-frame", "schema_ref": "observedCommand", "text": "[]\n", "expected_valid": false},
+    {"id": "nul-in-frame", "schema_ref": "observedCommand", "text": "{\"id\":101,\"cmd\":\"STATUS\"}\u0000\n", "expected_valid": false},
+    {"id": "nonfinite-exponent", "schema_ref": "observedCommand", "text": "{\"id\":1e999,\"cmd\":\"STATUS\"}\n", "expected_valid": false},
+    {"id": "malformed-utf8", "schema_ref": "observedCommand", "hex": "ff0a", "expected_valid": false}
+  ],
+  "ordering_examples": [
+    {"id": "start-receipt-then-report", "steps": ["observed-start-ack", "observed-start-running"], "expected_valid": true, "scope": "Narrow synthetic sequence of observed specimens; no physical claim"},
+    {"id": "start-report-before-receipt", "steps": ["observed-start-running", "observed-start-ack"], "expected_valid": false},
+    {"id": "rejected-start-cannot-report-running", "steps": ["observed-start-invalid-ack", "observed-start-running"], "expected_valid": false},
+    {"id": "turn-progress-before-terminal-ack", "steps": ["observed-turn-running", "observed-event-turn", "observed-turn-ack"], "expected_valid": true},
+    {"id": "turn-ack-before-progress", "steps": ["observed-turn-ack", "observed-turn-running"], "expected_valid": false}
+  ]
+}

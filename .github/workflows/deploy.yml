@@ -28,6 +28,15 @@ jobs:
       - name: Enable Flutter web
         run: flutter config --enable-web
 
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Quality gate - flutter analyze
+        run: flutter analyze
+
+      - name: Quality gate - flutter test
+        run: flutter test
+
       - name: Create environment file
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -41,21 +50,20 @@ jobs:
           grep -q '^SUPABASE_URL=' .env
           grep -q '^SUPABASE_ANON_KEY=' .env
 
-      - name: Get dependencies
-        run: flutter pub get
-
       - name: Build Flutter web
-        run: flutter build web --release --base-href /egg_incubator_app/
+        run: flutter build web --release --base-href /egg_incubator_app/ --dart-define-from-file=.env
 
       - name: Setup Pages
+        if: ${{ success() }}
         uses: actions/configure-pages@v5
 
       - name: Upload artifact
+        if: ${{ success() }}
         uses: actions/upload-pages-artifact@v3
         with:
           path: build/web
 
       - name: Deploy to GitHub Pages
+        if: ${{ success() }}
         id: deployment
         uses: actions/deploy-pages@v4
-
