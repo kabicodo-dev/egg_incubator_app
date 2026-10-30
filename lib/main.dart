@@ -8,6 +8,25 @@ import 'services/supabase_service.dart';
 import 'controllers/incubator_controller.dart';
 import 'controllers/arduino_controller.dart';
 import 'theme/app_theme.dart';
+import 'widgets/incubator_readings.dart';
+import 'models/confirmed_incubation_time.dart';
+import 'widgets/confirmed_start_progress.dart';
+import 'controllers/interruption_inspection_controller.dart';
+import 'widgets/interruption_inspection_warning.dart';
+import 'models/species_descriptions.dart';
+
+ActualReadingSnapshot _actualReadings(ArduinoController controller) {
+  final telemetry = controller.telemetry;
+  return ActualReadingSnapshot.fromReceipt(
+    connected: controller.isConnected,
+    temperature: telemetry?.incubatorTemperature,
+    humidity: telemetry?.incubatorHumidity,
+    receivedAt: telemetry?.receivedAt,
+    now: DateTime.now(),
+    // Existing receipt window, not a new approved acquisition-age threshold.
+    staleAfter: ArduinoController.staleAfter,
+  );
+}
 
 // ──────────────────────────────────────────────
 // App Entry Point
@@ -77,6 +96,7 @@ class SpeciesData {
   final String temperature;
   final int targetHumidity;
   final String description;
+  final String shortDescription;
 
   const SpeciesData({
     this.id,
@@ -86,6 +106,7 @@ class SpeciesData {
     required this.temperature,
     required this.targetHumidity,
     required this.description,
+    this.shortDescription = '',
   });
 
   factory SpeciesData.fromPreset(Map<String, dynamic> preset) {
@@ -96,12 +117,14 @@ class SpeciesData {
       'Quail': '\uD83E\uDD5A',
     };
     final descMap = {
-      'Chicken':
-          'Chicken eggs typically require 21 days of incubation. Maintain a steady temperature of 37.5\u00B0C and humidity around 50\u201355%. Turn the eggs regularly for best results.',
-      'Duck':
-          'Duck eggs need about 28 days to hatch. Keep the temperature at 37.5\u00B0C with higher humidity (60\u201365%) compared to chicken eggs. Increase humidity in the last 3 days.',
-      'Quail':
-          'Quail eggs hatch in about 17\u201318 days. Maintain 37.5\u00B0C with 55\u201360% humidity. Quail eggs are small and require careful handling during incubation.',
+      'Chicken': chickenDetailedDescription,
+      'Duck': duckDetailedDescription,
+      'Quail': quailDetailedDescription,
+    };
+    final shortDescMap = {
+      'Chicken': chickenShortDescription,
+      'Duck': duckShortDescription,
+      'Quail': quailShortDescription,
     };
     final temp = preset['target_temperature'];
     final tempStr = temp != null ? '$temp\u00B0C' : '37.5\u00B0C';
@@ -113,6 +136,7 @@ class SpeciesData {
       temperature: tempStr,
       targetHumidity: (preset['target_humidity'] as num?)?.round() ?? 55,
       description: descMap[type] ?? 'Incubate eggs carefully.',
+      shortDescription: shortDescMap[type] ?? '',
     );
   }
 }
@@ -124,8 +148,8 @@ const List<SpeciesData> defaultSpeciesList = [
     incubationDays: 21,
     temperature: '37.5\u00B0C',
     targetHumidity: 55,
-    description:
-        'Chicken eggs typically require 21 days of incubation. Maintain a steady temperature of 37.5\u00B0C and humidity around 50\u201355%. Turn the eggs regularly for best results.',
+    description: chickenDetailedDescription,
+    shortDescription: chickenShortDescription,
   ),
   SpeciesData(
     name: 'Duck',
@@ -133,8 +157,8 @@ const List<SpeciesData> defaultSpeciesList = [
     incubationDays: 28,
     temperature: '37.5\u00B0C',
     targetHumidity: 65,
-    description:
-        'Duck eggs need about 28 days to hatch. Keep the temperature at 37.5\u00B0C with higher humidity (60\u201365%) compared to chicken eggs. Increase humidity in the last 3 days.',
+    description: duckDetailedDescription,
+    shortDescription: duckShortDescription,
   ),
   SpeciesData(
     name: 'Quail',
@@ -142,8 +166,8 @@ const List<SpeciesData> defaultSpeciesList = [
     incubationDays: 17,
     temperature: '37.5\u00B0C',
     targetHumidity: 58,
-    description:
-        'Quail eggs hatch in about 17\u201318 days. Maintain 37.5\u00B0C with 55\u201360% humidity. Quail eggs are small and require careful handling during incubation.',
+    description: quailDetailedDescription,
+    shortDescription: quailShortDescription,
   ),
 ];
 
@@ -155,6 +179,7 @@ class BatchData {
   final String endDate;
   final int eggsTotal;
   final int eggsHatched;
+  final bool hasRecordedHatchCount;
   final String temperature;
   final String status;
   final bool isSuccess;
@@ -167,6 +192,7 @@ class BatchData {
     required this.endDate,
     required this.eggsTotal,
     required this.eggsHatched,
+    this.hasRecordedHatchCount = true,
     required this.temperature,
     required this.status,
     required this.isSuccess,
@@ -177,8 +203,10 @@ class BatchData {
     final species = session['egg_type'] as String? ?? '';
     final startDate = session['start_date'] as String? ?? '';
     final endDate = session['end_date'] as String? ?? '';
-    final eggQty = session['egg_quantity'] as int? ?? 0;
-    final hatched = session['eggs_hatched'] as int? ?? 0;
+    final rawQuantity = session['egg_quantity'];
+    final eggQty = rawQuantity is int ? rawQuantity : 0;
+    final rawHatched = session['eggs_hatched'];
+    final hatched = rawHatched is int ? rawHatched : 0;
     final temp = session['temperature'];
     final tempStr = temp != null ? '$temp\u00B0C' : '37.5\u00B0C';
     final status = session['status'] as String? ?? 'Active';
@@ -193,6 +221,7 @@ class BatchData {
       endDate: formattedEnd,
       eggsTotal: eggQty,
       eggsHatched: hatched,
+      hasRecordedHatchCount: rawHatched is int,
       temperature: tempStr,
       status: status,
       isSuccess: isCompleted && hatched > 0,
@@ -219,8 +248,8 @@ SpeciesData speciesDataForName(String name) {
 }
 
 /// The farmer-facing Active Incubation screen for a raw Supabase session
-/// row. The incubation day is always derived from the SAVED start date -
-/// never a default or a simulation.
+/// row. Its legacy start_date is not confirmed original-Start evidence.
+/// Progress stays gated until the approved time adapter is supplied.
 ActiveIncubationScreen activeIncubationScreenFor(Map<String, dynamic> row) {
   final species = speciesDataForName((row['egg_type'] as String?) ?? '');
   final startDate =
@@ -266,9 +295,9 @@ Future<bool> showFinishBatchDialog(
 
 /// The farmer's Finish Batch dialog: shows the batch details, requires a
 /// manually entered hatched-egg count (0..egg_quantity, whole numbers only),
-/// previews the hatch success percentage live, explains that finishing ends
-/// the incubation, and saves exactly one UPDATE. The batch is only marked
-/// Completed when the database confirms the write.
+/// previews hatchability live and shows a confirmation summary. Completion is
+/// a saved-record action, not physical Stop. One UPDATE is followed by readback;
+/// success is reported only when the stored result matches the manual entry.
 class _FinishBatchDialog extends StatefulWidget {
   const _FinishBatchDialog({required this.session});
 
@@ -284,23 +313,29 @@ class _FinishBatchDialogState extends State<_FinishBatchDialog> {
   bool _saving = false;
   String? _error;
 
-  int get _quantity => (widget.session['egg_quantity'] as int?) ?? 0;
+  // Existing schema's egg_quantity is the original eggs-set denominator.
+  int get _quantity {
+    final value = widget.session['egg_quantity'];
+    return value is int ? value : 0;
+  }
   String get _batchNumber => 'Batch #${widget.session['id']}';
   String get _species => (widget.session['egg_type'] as String?) ?? 'Eggs';
 
-  int? get _entered => int.tryParse(_controller.text.trim());
+  int? get _entered {
+    final input = _controller.text.trim();
+    return RegExp(r'^[0-9]+$').hasMatch(input) ? int.tryParse(input) : null;
+  }
 
   /// A count is valid only as a whole number from 0 through the original
   /// egg quantity, inclusive.
   bool get _valid {
     final v = _entered;
-    return v != null && v >= 0 && v <= _quantity;
+    return _quantity > 0 && v != null && v >= 0 && v <= _quantity;
   }
 
   /// Live hatch-success preview for the entered count (null while invalid).
   double? get _hatchRate {
     if (!_valid) return null;
-    if (_quantity == 0) return 0.0;
     return _entered! / _quantity;
   }
 
@@ -318,19 +353,37 @@ class _FinishBatchDialogState extends State<_FinishBatchDialog> {
       _error = null;
     });
     try {
+      final id = widget.session['id'] as int;
+      final original = await SupabaseService().getSessionById(id);
+      if (original == null ||
+          original['egg_quantity'] != _quantity ||
+          original['status'] != 'Active') {
+        throw StateError('Original batch no longer matches the form');
+      }
       await SupabaseService().completeSession(
-        sessionId: widget.session['id'] as int,
+        sessionId: id,
         endDate: DateTime.now(),
         eggsHatched: count,
       );
+      // A successful HTTP response alone may have updated zero visible rows.
+      final saved = await SupabaseService().getSessionById(id);
+      if (saved == null ||
+          saved['id'] != id ||
+          saved['status'] != 'Completed' ||
+          saved['eggs_hatched'] != count ||
+          saved['egg_quantity'] != _quantity ||
+          DateTime.tryParse('${saved['end_date']}') == null) {
+        throw StateError('Completion save has not been confirmed');
+      }
       if (mounted) Navigator.of(context).pop(true);
     } catch (_) {
-      // The batch stays Active: explain why and let the farmer retry.
+      // A failed response/readback does not establish the saved or physical state.
       if (mounted) {
         setState(() {
           _saving = false;
-          _error = 'Could not save the results. $_batchNumber is still '
-              'incubating - check the connection and try again.';
+          _error = 'Could not save the results with confirmation. '
+              'Check $_batchNumber in History before retrying. '
+              'Physical incubation state is not verified.';
         });
       }
     }
@@ -345,19 +398,26 @@ class _FinishBatchDialogState extends State<_FinishBatchDialog> {
     final rate = _hatchRate;
 
     return AlertDialog(
-      title: Text('Finish $_batchNumber'),
+      title: const Text('Complete Incubation'),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '$_species \u00B7 $_quantity eggs$startLabel',
+              '$_batchNumber · $_species · $_quantity eggs$startLabel',
               style: const TextStyle(
                 fontSize: 13,
                 color: AppColors.textSecondary,
               ),
             ),
+            Text('Eggs set: $_quantity'),
+            if (_quantity <= 0)
+              const Text(
+                'Original eggs set is missing or invalid. '
+                'Completion is blocked; verify the saved batch.',
+                style: TextStyle(color: AppColors.danger),
+              ),
             const SizedBox(height: 16),
             const Text(
               'Eggs hatched',
@@ -371,7 +431,7 @@ class _FinishBatchDialogState extends State<_FinishBatchDialog> {
             TextField(
               controller: _controller,
               autofocus: true,
-              enabled: !_saving,
+              enabled: !_saving && _quantity > 0,
               keyboardType: TextInputType.number,
               onChanged: (_) => setState(() {}),
               decoration: InputDecoration(
@@ -392,8 +452,8 @@ class _FinishBatchDialogState extends State<_FinishBatchDialog> {
               ),
               child: Text(
                 rate == null
-                    ? 'Enter the hatched count to preview the hatch success.'
-                    : 'Hatch success: ${(rate * 100).round()}%',
+                    ? 'Enter the hatched count to preview hatchability.'
+                    : 'Hatchability: ${(rate * 100).toStringAsFixed(1)}%',
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w700,
@@ -403,11 +463,25 @@ class _FinishBatchDialogState extends State<_FinishBatchDialog> {
                 ),
               ),
             ),
+            if (_valid) ...[
+              const SizedBox(height: 12),
+              const Text(
+                'Confirmation summary',
+                style: TextStyle(fontWeight: FontWeight.w700),
+              ),
+              Text('$_batchNumber · $_species'),
+              Text('Eggs set: $_quantity; manually hatched: $_entered'),
+              Text(
+                'Hatchability: ($_entered / $_quantity) × 100 = '
+                '${(rate! * 100).toStringAsFixed(1)}%',
+              ),
+              const Text('Review this summary, then select Finish Batch to save.'),
+            ],
             const SizedBox(height: 12),
             const Text(
-              'Finishing ends this incubation. The batch moves to History '
-              'as Completed with the count you enter - it cannot go back '
-              'to incubating.',
+              'Finishing ends this incubation record only after the backend '
+              'save is confirmed. This does not send or confirm a physical '
+              'Stop. Counts are entered manually, never auto-counted.',
               style: TextStyle(
                 fontSize: 12.5,
                 height: 1.4,
@@ -950,13 +1024,16 @@ class _TabShell extends InheritedWidget {
 // ══════════════════════════════════════════════
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({super.key, this.inspectionController});
+
+  final InterruptionInspectionController? inspectionController;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  late final InterruptionInspectionController _inspectionController;
   List<BatchData> _batches = [];
   bool _loading = true;
   final ArduinoController _arduino = ArduinoController.instance;
@@ -964,6 +1041,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    _inspectionController = widget.inspectionController ??
+        InterruptionInspectionController();
+    _inspectionController.refresh();
     _arduino.addListener(_onArduinoChanged);
     _loadData();
   }
@@ -975,6 +1055,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void dispose() {
     _arduino.removeListener(_onArduinoChanged);
+    if (widget.inspectionController == null) _inspectionController.dispose();
     super.dispose();
   }
 
@@ -1152,6 +1233,8 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             const SizedBox(height: 24),
 
+            InterruptionInspectionWarning(controller: _inspectionController),
+            const SizedBox(height: 16),
             // Live incubator status (visible on the dashboard, no navigation needed)
             _LiveIncubatorStatusCard(controller: _arduino),
             const SizedBox(height: 24),
@@ -1238,8 +1321,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
 /// The farmer's single source of truth for the batch incubating right now
 /// (P6.2): real batch number, species, egg quantity, actual start date, the
-/// incubation day calculated FROM THE SAVED START DATE, and progress over
-/// the species' real duration - never simulated data. The whole card opens
+/// saved date retained as metadata, not confirmed elapsed-time evidence.
+/// The whole card opens
 /// the Active Incubation screen.
 class _CurrentIncubationCard extends StatelessWidget {
   const _CurrentIncubationCard({required this.batch, required this.onTap});
@@ -1257,13 +1340,7 @@ class _CurrentIncubationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final species = speciesDataForName(batch.species);
-    final totalDays = species.incubationDays;
     final start = DateTime.tryParse(batch.startDate) ?? DateTime.now();
-    final elapsed = DateTime.now().difference(start).inDays;
-    final day = (elapsed + 1).clamp(1, totalDays).toInt();
-    final daysLeft = totalDays - day;
-    final progress = (day / totalDays).clamp(0.0, 1.0);
 
     return Container(
       decoration: BoxDecoration(
@@ -1322,37 +1399,8 @@ class _CurrentIncubationCard extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: AppSpacing.md),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Day $day of $totalDays',
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.primaryDark,
-                        ),
-                      ),
-                      Text(
-                        daysLeft <= 0 ? 'Hatch day' : '$daysLeft days left',
-                        style: const TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.textSecondary,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: LinearProgressIndicator(
-                      value: progress,
-                      minHeight: 10,
-                      backgroundColor: AppColors.peach,
-                      color: AppColors.primary,
-                    ),
-                  ),
+                  // No approved original-Start mapping exists for BatchData.
+                  const ConfirmedStartProgress(),
                 ],
               ),
             ),
@@ -1454,7 +1502,9 @@ class _SpeciesScreenState extends State<SpeciesScreen> {
                     padding: const EdgeInsets.only(bottom: AppSpacing.md),
                     child: _SpeciesCard(
                       name: species.name,
-                      description: species.description,
+                      description: species.shortDescription.isEmpty
+                          ? species.description
+                          : species.shortDescription,
                       emoji: species.emoji,
                       incubationDays: species.incubationDays,
                       temperature: species.temperature,
@@ -1481,9 +1531,25 @@ class _SpeciesScreenState extends State<SpeciesScreen> {
 // SPECIES DETAILS SCREEN
 // ══════════════════════════════════════════════
 
-class SpeciesDetailsScreen extends StatelessWidget {
+class SpeciesDetailsScreen extends StatefulWidget {
   final SpeciesData species;
   const SpeciesDetailsScreen({super.key, required this.species});
+
+  @override
+  State<SpeciesDetailsScreen> createState() => _SpeciesDetailsScreenState();
+}
+
+String _historicalHatchability(int eggsSet, int hatched, bool recorded) {
+  if (!recorded || eggsSet <= 0 || hatched < 0 || hatched > eggsSet) {
+    return 'Unavailable';
+  }
+  return '${(hatched / eggsSet * 100).toStringAsFixed(1)}%';
+}
+
+class _SpeciesDetailsScreenState extends State<SpeciesDetailsScreen> {
+  bool _detailsExpanded = false;
+
+  SpeciesData get species => widget.species;
 
   @override
   Widget build(BuildContext context) {
@@ -1525,14 +1591,30 @@ class SpeciesDetailsScreen extends StatelessWidget {
             const SizedBox(height: 20),
             const _SectionLabel(text: 'ABOUT THIS SPECIES'),
             const SizedBox(height: 8),
-            Text(
-              species.description,
-              style: const TextStyle(
-                fontSize: 14,
-                color: Colors.black54,
-                height: 1.6,
+            Semantics(
+              expanded: _detailsExpanded,
+              child: TextButton.icon(
+                onPressed: () {
+                  setState(() => _detailsExpanded = !_detailsExpanded);
+                },
+                style: TextButton.styleFrom(
+                  minimumSize: const Size(48, 48),
+                ),
+                icon: Icon(_detailsExpanded
+                    ? Icons.expand_less
+                    : Icons.expand_more),
+                label: Text(_detailsExpanded ? 'Hide Details' : 'View Details'),
               ),
             ),
+            if (_detailsExpanded)
+              Text(
+                species.description,
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Colors.black54,
+                  height: 1.6,
+                ),
+              ),
             const SizedBox(height: 32),
             SizedBox(
               width: double.infinity,
@@ -1777,7 +1859,7 @@ class _IncubationSetupScreenState extends State<IncubationSetupScreen> {
         ? 'recently'
         : '${start.day}/${start.month}/${start.year}';
 
-    return Padding(
+    return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -1852,7 +1934,7 @@ class _IncubationSetupScreenState extends State<IncubationSetupScreen> {
   // ── Step 1: What are you hatching? ──
 
   Widget _buildStep1() {
-    return Padding(
+    return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1932,13 +2014,14 @@ class _IncubationSetupScreenState extends State<IncubationSetupScreen> {
                                 ),
                               ),
                               const SizedBox(height: 5),
-                              Row(
+                              Wrap(
+                                spacing: 8,
+                                runSpacing: 8,
                                 children: [
                                   _InfoChip(
                                     icon: Icons.calendar_today_rounded,
                                     label: '${species.incubationDays} days',
                                   ),
-                                  const SizedBox(width: 8),
                                   _InfoChip(
                                     icon: Icons.thermostat,
                                     label: species.temperature,
@@ -1947,9 +2030,9 @@ class _IncubationSetupScreenState extends State<IncubationSetupScreen> {
                               ),
                               const SizedBox(height: 6),
                               Text(
-                                species.description,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
+                                species.shortDescription.isEmpty
+                                    ? species.description
+                                    : species.shortDescription,
                                 style: const TextStyle(
                                   fontSize: 13,
                                   color: Colors.black54,
@@ -1978,7 +2061,7 @@ class _IncubationSetupScreenState extends State<IncubationSetupScreen> {
               );
             },
           ),
-          const Spacer(),
+          const SizedBox(height: 16),
           SizedBox(
             width: double.infinity,
             height: 54,
@@ -2015,7 +2098,7 @@ class _IncubationSetupScreenState extends State<IncubationSetupScreen> {
   // ── Step 2: How many eggs? ──
 
   Widget _buildStep2() {
-    return Padding(
+    return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -2181,7 +2264,7 @@ class _IncubationSetupScreenState extends State<IncubationSetupScreen> {
           // Custom amount: only shown for the Custom quick choice.
           if (_customMode) _buildCustomQuantity(),
 
-          const Spacer(),
+          const SizedBox(height: 16),
           SizedBox(
             width: double.infinity,
             height: 54,
@@ -2564,7 +2647,7 @@ class _IncubationChecklistScreenState extends State<IncubationChecklistScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Incubation Checklist')),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -2599,9 +2682,7 @@ class _IncubationChecklistScreenState extends State<IncubationChecklistScreen> {
                   SpeciesIllustration(
                     species: widget.species.name,
                     emoji: widget.species.emoji,
-                    // Footprint-matched to the old 28px glyph: this screen's
-                    // body is a non-scrollable column, so the circle must not
-                    // grow the card.
+                    // Preserve the established artwork footprint.
                     size: 36,
                   ),
                   const SizedBox(width: 12),
@@ -2664,7 +2745,7 @@ class _IncubationChecklistScreenState extends State<IncubationChecklistScreen> {
                 ),
               );
             }),
-            const Spacer(),
+            const SizedBox(height: 16),
 
             // Helper text when incomplete
             if (!_allChecked)
@@ -3013,6 +3094,7 @@ class ActiveIncubationScreen extends StatefulWidget {
   final String batchId;
   final int sessionId;
   final DateTime startDate;
+  final ConfirmedIncubationTime? confirmedTime;
   const ActiveIncubationScreen({
     super.key,
     required this.species,
@@ -3020,6 +3102,7 @@ class ActiveIncubationScreen extends StatefulWidget {
     required this.batchId,
     required this.sessionId,
     required this.startDate,
+    this.confirmedTime,
   });
 
   @override
@@ -3068,15 +3151,6 @@ class _ActiveIncubationScreenState extends State<ActiveIncubationScreen> {
       !_sessionMissing &&
       (_session == null ||
           '${_session!['status']}'.toLowerCase() == 'active');
-
-  /// The incubation day calculated from the SAVED start date - day 1 is
-  /// the start day itself. Never a default and never a simulation.
-  int _dayFromStart(SpeciesData species) {
-    final elapsed = DateTime.now().difference(widget.startDate).inDays;
-    final day = elapsed + 1;
-    if (day < 1) return 1;
-    return day > species.incubationDays ? species.incubationDays : day;
-  }
 
   /// Opens the validated Finish Batch dialog. On success the batch is
   /// Completed in the database and the farmer lands on a fresh dashboard
@@ -3184,12 +3258,6 @@ class _ActiveIncubationScreenState extends State<ActiveIncubationScreen> {
     final species = widget.species;
     final eggCount = widget.eggCount;
     final batchId = widget.batchId;
-    final startDate = widget.startDate;
-    final currentDay = _dayFromStart(species);
-    final totalDays = species.incubationDays;
-    final progress = currentDay / totalDays;
-    final hatchDate = startDate.add(Duration(days: totalDays));
-    final isComplete = currentDay >= totalDays;
     final targetTemp = double.tryParse(
           species.temperature.replaceAll(RegExp(r'[^0-9.]'), ''),
         ) ??
@@ -3208,16 +3276,11 @@ class _ActiveIncubationScreenState extends State<ActiveIncubationScreen> {
       idealMax: targetHumidity + 5,
     );
 
-    final statusLabel = isComplete ? 'Completed' : 'On track';
-    final statusColor = isComplete
-        ? const Color(0xFF4CAF50)
-        : const Color(0xFF4CAF50);
-    final statusIcon = isComplete ? Icons.check_circle : Icons.play_circle_fill;
-
-    final startDateStr =
-        '${_monthName(startDate.month)} ${startDate.day}, ${startDate.year}';
-    final hatchDateStr =
-        '${_monthName(hatchDate.month)} ${hatchDate.day}, ${hatchDate.year}';
+    const statusLabel = 'Physical state unverified';
+    const statusColor = Color(0xFF757575);
+    const statusIcon = Icons.help_outline;
+    final startDateStr = widget.confirmedTime?.manilaStartLabel ??
+        'Waiting for confirmed start';
 
     return Scaffold(
       appBar: AppBar(title: const Text('Current Incubation')),
@@ -3252,9 +3315,7 @@ class _ActiveIncubationScreenState extends State<ActiveIncubationScreen> {
                           ),
                         ),
                         Text(
-                          isComplete
-                              ? 'Hatching day has arrived!'
-                              : 'Everything is going well',
+                           'Elapsed days do not confirm Running or completion',
                           style: TextStyle(
                             fontSize: 13,
                             color: statusColor.withValues(alpha: 0.8),
@@ -3297,7 +3358,7 @@ class _ActiveIncubationScreenState extends State<ActiveIncubationScreen> {
                       const SizedBox(width: 8),
                       const Expanded(
                         child: Text(
-                          'Incubator is working normally',
+                          'Incubator sensor status',
                           style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.w600,
@@ -3368,12 +3429,6 @@ class _ActiveIncubationScreenState extends State<ActiveIncubationScreen> {
             ),
             const SizedBox(height: 20),
 
-            // ── BROODER STATUS (live from Arduino) ──
-            const _SectionLabel(text: 'BROODER STATUS'),
-            const SizedBox(height: 10),
-            _buildBrooderStatusCard(),
-            const SizedBox(height: 20),
-
             // ── SPECIES + BATCH ──
             Row(
               children: [
@@ -3425,46 +3480,20 @@ class _ActiveIncubationScreenState extends State<ActiveIncubationScreen> {
                   ),
                 ],
               ),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Day $currentDay of $totalDays',
-                        style: const TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black87,
-                        ),
-                      ),
-                      Text(
-                        '${(progress * 100).round()}%',
-                        style: const TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFFE8752A),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: LinearProgressIndicator(
-                      value: progress,
-                      backgroundColor: Colors.grey.shade200,
-                      color: const Color(0xFFE8752A),
-                      minHeight: 10,
-                    ),
-                  ),
-                ],
-              ),
+              child: ConfirmedStartProgress(time: widget.confirmedTime),
             ),
             const SizedBox(height: 20),
 
-            // ── TEMPERATURE GAUGE (live Arduino data only) ──
-            if (_arduino.incubatorTemperature != null)
+            IncubatorReadings(
+              reading: _actualReadings(_arduino),
+              targetTemperature: species.temperature,
+              targetHumidity: '${species.targetHumidity} %',
+            ),
+            const SizedBox(height: 20),
+
+            // Gauges use reported actuals only, never configured targets.
+            if (_actualReadings(_arduino).canShowReportedValues &&
+                _arduino.incubatorTemperature?.isFinite == true)
               TemperatureGauge(
                 currentTemp: _arduino.incubatorTemperature!,
                 idealMin: targetTemp - 0.5,
@@ -3479,7 +3508,8 @@ class _ActiveIncubationScreenState extends State<ActiveIncubationScreen> {
             const SizedBox(height: 20),
 
             // ── HUMIDITY GAUGE (live Arduino data only) ──
-            if (_arduino.incubatorHumidity != null)
+            if (_actualReadings(_arduino).canShowReportedValues &&
+                _arduino.incubatorHumidity?.isFinite == true)
               HumidityGauge(
                 currentHumidity: _arduino.incubatorHumidity!,
                 idealMin: targetHumidity - 5,
@@ -3568,7 +3598,10 @@ class _ActiveIncubationScreenState extends State<ActiveIncubationScreen> {
                 children: [
                   _DetailRow(label: 'Start Date', value: startDateStr),
                   const SizedBox(height: 12),
-                  _DetailRow(label: 'Expected Hatch', value: hatchDateStr),
+                  const _DetailRow(
+                    label: 'Expected Hatch',
+                    value: 'Requires confirmed Start and approved profile',
+                  ),
                 ],
               ),
             ),
@@ -3605,22 +3638,6 @@ class _ActiveIncubationScreenState extends State<ActiveIncubationScreen> {
               actuator: 'incubatorHumidifier',
               icon: Icons.water_drop_outlined,
               label: 'Incubator Humidifier',
-              onSubtitle: 'Humidifying',
-              offSubtitle: 'Off',
-            ),
-            const SizedBox(height: 10),
-            _actuatorTile(
-              actuator: 'brooderBulb',
-              icon: Icons.lightbulb_outline,
-              label: 'Brooder Bulb',
-              onSubtitle: 'Heating ON',
-              offSubtitle: 'Heating OFF',
-            ),
-            const SizedBox(height: 10),
-            _actuatorTile(
-              actuator: 'brooderHumidifier',
-              icon: Icons.cloud_outlined,
-              label: 'Brooder Humidifier',
               onSubtitle: 'Humidifying',
               offSubtitle: 'Off',
             ),
@@ -3705,8 +3722,9 @@ class _ActiveIncubationScreenState extends State<ActiveIncubationScreen> {
             ),
             const SizedBox(height: 8),
             const Text(
-              'Finishing ends this incubation and records the number of '
-              'eggs that actually hatched.',
+               'Finishing ends this incubation record after save confirmation '
+               'and records the manual hatch count. It does not confirm '
+               'physical Stop.',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 12,
@@ -3813,76 +3831,6 @@ class _ActiveIncubationScreenState extends State<ActiveIncubationScreen> {
           accentColor: const Color(0xFF2196F3),
         );
     }
-  }
-
-  String _monthName(int month) {
-    const months = [
-      '', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-    ];
-    return months[month];
-  }
-
-  Widget _buildBrooderStatusCard() {
-    final connected = _arduino.isConnected;
-    final tStatus = _metricStatus(
-      connected: connected,
-      value: _arduino.brooderTemperature,
-      idealMin: 30.0,
-      idealMax: 32.0,
-    );
-    final hStatus = _metricStatus(
-      connected: connected,
-      value: _arduino.brooderHumidity,
-      idealMin: 45.0,
-      idealMax: 60.0,
-    );
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: const Color(0xFF3F51B5).withValues(alpha: 0.06),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFF3F51B5).withValues(alpha: 0.18)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Row(
-            children: [
-              Icon(Icons.nest_cam_wired_stand, color: Color(0xFF3F51B5), size: 22),
-              SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  'Brooder is monitored live',
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xFF3F51B5),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 14),
-          _StatusIndicatorRow(
-            icon: Icons.thermostat_outlined,
-            label: 'Brooder Temperature'
-                '${_arduino.brooderTemperature != null ? ' (${_arduino.brooderTemperature!.toStringAsFixed(1)} °C)' : ''}',
-            statusText: tStatus.$1,
-            statusColor: tStatus.$2,
-          ),
-          const SizedBox(height: 10),
-          _StatusIndicatorRow(
-            icon: Icons.water_drop_outlined,
-            label: 'Brooder Humidity'
-                '${_arduino.brooderHumidity != null ? ' (${_arduino.brooderHumidity!.toStringAsFixed(0)} %)' : ''}',
-            statusText: hStatus.$1,
-            statusColor: hStatus.$2,
-          ),
-        ],
-      ),
-    );
   }
 
   (String, Color) _metricStatus({
@@ -4503,6 +4451,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     endDate: batch.endDate,
                     eggsTotal: batch.eggsTotal,
                     eggsHatched: batch.eggsHatched,
+                    hasRecordedHatchCount: batch.hasRecordedHatchCount,
+                    temperature: batch.temperature,
                     status: batch.status,
                     isSuccess: batch.isSuccess,
                     // Reloading on return keeps Active/Completed statuses
@@ -4714,25 +4664,26 @@ class _BatchDetailsScreenState extends State<BatchDetailsScreen> {
           widget.batch.temperature.replaceAll(RegExp(r'[^0-9.]'), '')) ??
       37.5;
 
-  /// Set point saved on the session itself.
-  double get _setTemperature =>
-      double.tryParse(
-          widget.batch.temperature.replaceAll(RegExp(r'[^0-9.]'), '')) ??
-      _targetTemperature;
-
   double? get _liveTemperature => _liveValue(['temperature', 'temp']);
 
   double? get _liveHumidity =>
       _liveValue(['humidity', 'relative_humidity']);
 
-  double get _temperature => _liveTemperature ?? _setTemperature;
-
-  double get _humidity =>
-      _liveHumidity ?? _species.targetHumidity.toDouble();
+  // The current API returns a global latest row, not authenticated, batch-bound
+  // measurement-time evidence. Do not promote it (or a target) to Actual.
+  ActualReadingSnapshot get _batchReading => ActualReadingSnapshot(
+    state: _reading == null
+        ? ActualReadingState.unavailable
+        : ActualReadingState.unknown,
+    temperature: _liveTemperature,
+    humidity: _liveHumidity,
+  );
 
   int get _totalDays => _species.incubationDays;
 
   int get _currentDay {
+    // Legacy historical reporting only; active progress needs verified time.
+    if (!_isCompleted) return 0;
     final total = _totalDays;
     final start = DateTime.tryParse(widget.batch.startDate);
     int day;
@@ -4761,19 +4712,9 @@ class _BatchDetailsScreenState extends State<BatchDetailsScreen> {
     final currentDay = _currentDay;
     final totalDays = _totalDays;
     final progress = _progress;
-    final temperature = _temperature;
-    final humidity = _humidity;
+    final reading = _batchReading;
     final targetTemperature = _targetTemperature;
     final targetHumidity = speciesData.targetHumidity;
-    final liveTemperature = _liveTemperature;
-    final liveHumidity = _liveHumidity;
-    final hasLiveData = liveTemperature != null || liveHumidity != null;
-
-    final effectiveTemperature = liveTemperature ?? targetTemperature;
-    final effectiveHumidity = liveHumidity ?? targetHumidity.toDouble();
-    final withinRange =
-        (effectiveTemperature - targetTemperature).abs() <= 0.5 &&
-            (effectiveHumidity - targetHumidity).abs() <= 5.0;
 
     final String statusText;
     final String statusHint;
@@ -4784,26 +4725,14 @@ class _BatchDetailsScreenState extends State<BatchDetailsScreen> {
       statusHint = 'Batch finished';
       statusColor = const Color(0xFF4CAF50);
       statusIcon = Icons.check_circle;
-    } else if (!hasLiveData) {
+    } else {
       statusText = 'Standby';
-      statusHint = 'Waiting for sensor data';
+      statusHint = _reading == null
+          ? 'Waiting for sensor data'
+          : 'Cloud reading freshness and batch association unverified';
       statusColor = Colors.grey.shade500;
       statusIcon = Icons.pause_circle_outline;
-    } else if (withinRange) {
-      statusText = 'Normal';
-      statusHint = 'Within target range';
-      statusColor = const Color(0xFF4CAF50);
-      statusIcon = Icons.check_circle;
-    } else {
-      statusText = 'Needs attention';
-      statusHint = 'Outside target range';
-      statusColor = const Color(0xFFF5A623);
-      statusIcon = Icons.warning_amber_rounded;
     }
-
-    final temperatureHint = liveTemperature != null
-        ? 'Target ${targetTemperature.toStringAsFixed(1)}\u00B0C'
-        : 'Set point';
 
     return Scaffold(
       appBar: AppBar(title: Text(batch.batchNumber)),
@@ -4913,25 +4842,36 @@ class _BatchDetailsScreenState extends State<BatchDetailsScreen> {
                   const SizedBox(height: 12),
                   _DetailRow(label: 'Start Date', value: batch.startDate),
                   const SizedBox(height: 12),
-                  _DetailRow(label: 'Hatch Date', value: batch.endDate),
+                  _DetailRow(
+                    label: 'Completed Date',
+                    value: batch.endDate.isEmpty ? 'Unavailable' : batch.endDate,
+                  ),
                   const SizedBox(height: 12),
                   _DetailRow(
-                      label: 'Total Eggs', value: '${batch.eggsTotal}'),
+                      label: 'Eggs set',
+                      value: batch.eggsTotal > 0 ? '${batch.eggsTotal}' : 'Unavailable'),
                   // Hatch results only exist once the farmer finishes the
                   // batch - an incubating batch shows no fabricated counts.
                   if (_isCompleted) ...[
                     const SizedBox(height: 12),
                     _DetailRow(
-                        label: 'Hatched', value: '${batch.eggsHatched}'),
+                        label: 'Hatched',
+                        value: batch.hasRecordedHatchCount
+                            ? '${batch.eggsHatched}'
+                            : 'Unavailable'),
                     const SizedBox(height: 12),
                     _DetailRow(
-                      label: 'Success Rate',
-                      value: '${(hatchRate * 100).toStringAsFixed(0)}%',
+                      label: 'Hatchability',
+                      value: _historicalHatchability(
+                        batch.eggsTotal,
+                        batch.eggsHatched,
+                        batch.hasRecordedHatchCount,
+                      ),
                     ),
                   ],
                   const SizedBox(height: 12),
                   _DetailRow(
-                      label: 'Temperature', value: batch.temperature),
+                      label: 'Configured Temperature', value: batch.temperature),
                 ],
               ),
             ),
@@ -4949,8 +4889,9 @@ class _BatchDetailsScreenState extends State<BatchDetailsScreen> {
                       icon: Icons.thermostat,
                       color: const Color(0xFFE8752A),
                       label: 'Temperature',
-                      value: '${temperature.toStringAsFixed(1)}\u00B0C',
-                      subtitle: temperatureHint,
+                      value: reading.valueText(reading.temperature, '°C'),
+                      subtitle: 'Actual unavailable; target '
+                          '${targetTemperature.toStringAsFixed(1)}°C (read-only)',
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -4959,14 +4900,20 @@ class _BatchDetailsScreenState extends State<BatchDetailsScreen> {
                       icon: Icons.water_drop_outlined,
                       color: const Color(0xFF2196F3),
                       label: 'Humidity',
-                      value: '${humidity.round()}%',
-                      subtitle: 'Target $targetHumidity%',
+                      value: reading.valueText(reading.humidity, '%'),
+                      subtitle: 'Actual unavailable; target $targetHumidity% '
+                          '(read-only)',
                     ),
                   ),
                 ],
               ),
             ),
             const SizedBox(height: 12),
+            Text(reading.message),
+            const Text(
+              'Configured targets are read-only; approval and physical '
+              'application are not verified.',
+            ),
             IntrinsicHeight(
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -4976,8 +4923,12 @@ class _BatchDetailsScreenState extends State<BatchDetailsScreen> {
                       icon: Icons.timelapse_outlined,
                       color: const Color(0xFF9C27B0),
                       label: 'Incubation Progress',
-                      value: '${(progress * 100).round()}%',
-                      subtitle: 'Day $currentDay of $totalDays',
+                      value: _isCompleted
+                          ? '${(progress * 100).round()}%'
+                          : '—',
+                      subtitle: _isCompleted
+                          ? 'Day $currentDay of $totalDays'
+                          : 'Waiting for confirmed start',
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -4994,7 +4945,12 @@ class _BatchDetailsScreenState extends State<BatchDetailsScreen> {
               ),
             ),
             const SizedBox(height: 20),
-            ClipRRect(
+            if (_isCompleted &&
+                _historicalHatchability(
+                  batch.eggsTotal,
+                  batch.eggsHatched,
+                  batch.hasRecordedHatchCount,
+                ) != 'Unavailable') ClipRRect(
               borderRadius: BorderRadius.circular(6),
               child: LinearProgressIndicator(
                 value: hatchRate,
@@ -6600,8 +6556,6 @@ class _SpeciesCard extends StatelessWidget {
                         const SizedBox(height: 8),
                         Text(
                           description,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
                             fontSize: 13,
                             color: AppColors.textSecondary,
@@ -6638,6 +6592,8 @@ class _HistoryBatchCard extends StatelessWidget {
   final String endDate;
   final int eggsTotal;
   final int eggsHatched;
+  final bool hasRecordedHatchCount;
+  final String temperature;
   final String status;
   final bool isSuccess;
 
@@ -6654,27 +6610,34 @@ class _HistoryBatchCard extends StatelessWidget {
     required this.endDate,
     required this.eggsTotal,
     required this.eggsHatched,
+    required this.hasRecordedHatchCount,
+    required this.temperature,
     required this.status,
     required this.isSuccess,
     this.onOpenDetails,
   });
 
   String _formatDate(String dateStr) {
+    if (dateStr.isEmpty) return 'Unavailable';
     final parts = dateStr.split('-');
     if (parts.length != 3) return dateStr;
     const months = [
       '', 'January', 'February', 'March', 'April', 'May', 'June',
       'July', 'August', 'September', 'October', 'November', 'December'
     ];
-    final month = int.tryParse(parts[1]) ?? 1;
-    final day = int.tryParse(parts[2]) ?? 1;
+    final month = int.tryParse(parts[1]);
+    final day = int.tryParse(parts[2]);
+    if (month == null || day == null ||
+        month < 1 || month > 12 || day < 1 || day > 31) {
+      return dateStr;
+    }
     return '${months[month]} $day, ${parts[0]}';
   }
 
   @override
   Widget build(BuildContext context) {
-    final double hatchRate = eggsTotal > 0 ? eggsHatched / eggsTotal : 0;
-    final percentage = '${(hatchRate * 100).round()}%';
+    final percentage =
+        _historicalHatchability(eggsTotal, eggsHatched, hasRecordedHatchCount);
     // Worded status badge: green when the batch finished, amber while it is
     // still running (an in-progress batch is not an error, so no red).
     final bool completed = status.toLowerCase() == 'completed';
@@ -6703,7 +6666,8 @@ class _HistoryBatchCard extends StatelessWidget {
                 endDate: endDate,
                 eggsTotal: eggsTotal,
                 eggsHatched: eggsHatched,
-                temperature: '37.5\u00B0C',
+                hasRecordedHatchCount: hasRecordedHatchCount,
+                temperature: temperature,
                 status: status,
                 isSuccess: isSuccess,
               );
@@ -6769,30 +6733,31 @@ class _HistoryBatchCard extends StatelessWidget {
                   // UI-01: a hatch result only exists once the farmer has
                   // finished the batch. While a batch is incubating the card
                   // says so plainly instead of implying a finished 0% result.
+                  Text('Eggs set: ${eggsTotal > 0 ? eggsTotal : 'Unavailable'}'),
                   if (completed)
-                    Row(
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(
-                          child: Text(
-                            '$eggsHatched / $eggsTotal eggs hatched',
+                        Text(
+                            hasRecordedHatchCount
+                                ? '$eggsHatched / $eggsTotal eggs hatched'
+                                : 'Hatched count unavailable',
                             style: const TextStyle(
                                 fontSize: 13, color: AppColors.textSecondary),
-                            overflow: TextOverflow.ellipsis,
-                          ),
                         ),
-                        const SizedBox(width: AppSpacing.sm),
+                        const SizedBox(height: AppSpacing.sm),
                         // Hatch rate is a result figure, so it keeps the green
                         // pill treatment from the Home last-batch card.
                         Container(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 10, vertical: 4),
                           decoration: BoxDecoration(
-                            color: AppColors.success.withValues(alpha: 0.12),
+                            color: AppColors.success.withValues(alpha: 0.06),
                             borderRadius:
                                 BorderRadius.circular(AppRadius.pill),
                           ),
                           child: Text(
-                            percentage,
+                            'Hatchability: $percentage',
                             style: const TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.w700,
@@ -6822,7 +6787,7 @@ class _HistoryBatchCard extends StatelessWidget {
                       const SizedBox(width: 6),
                       Expanded(
                         child: Text(
-                          _formatDate(startDate),
+                          'Saved start: ${_formatDate(startDate)}',
                           style: const TextStyle(
                               fontSize: 13, color: AppColors.textSecondary),
                           overflow: TextOverflow.ellipsis,
@@ -6830,6 +6795,10 @@ class _HistoryBatchCard extends StatelessWidget {
                       ),
                     ],
                   ),
+                  if (completed) ...[
+                    const SizedBox(height: AppSpacing.sm),
+                    Text('Completed: ${_formatDate(endDate)}'),
+                  ],
                   const SizedBox(height: AppSpacing.md),
                   Row(
                     mainAxisSize: MainAxisSize.min,
@@ -6877,7 +6846,7 @@ class _StatusBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
+        color: color.withValues(alpha: 0.06),
         borderRadius: BorderRadius.circular(AppRadius.pill),
       ),
       child: Row(
@@ -7100,10 +7069,13 @@ class _DetailRow extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          label,
-          style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+        Flexible(
+          child: Text(
+            label,
+            style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+          ),
         ),
+        const SizedBox(width: 12),
         if (leading == null)
           Flexible(child: valueText)
         else
@@ -7371,8 +7343,8 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
   // Local simulated slider values to test the controller logic
   double _simulatedIncTemp = 37.2;
   double _simulatedIncHumidity = 48.0;
-  double _simulatedBroodTemp = 31.0;
-  double _simulatedBroodHumidity = 50.0;
+  final double _simulatedBroodTemp = 31.0;
+  final double _simulatedBroodHumidity = 50.0;
 
   /// The REAL batch incubating right now, loaded from Supabase. The
   /// simulator on this screen is local-only and never touches it.
@@ -7611,10 +7583,6 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
                 _buildIncubatorChamberCard(),
                 const SizedBox(height: 16),
 
-                // 4. BROODER CHAMBER
-                _buildBrooderChamberCard(),
-                const SizedBox(height: 16),
-
 // 4. TEST SENSOR SLIDERS (Hardware Simulator) / live notice
                 if (_arduino.isConnected)
                   _buildLiveNoticeCard()
@@ -7637,10 +7605,6 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
     if (row == null) return const SizedBox.shrink();
     final species = speciesDataForName((row['egg_type'] as String?) ?? '');
     final id = row['id'];
-    final start = DateTime.tryParse('${row['start_date']}');
-    final elapsed =
-        start == null ? 0 : DateTime.now().difference(start).inDays;
-    final day = (elapsed + 1).clamp(1, species.incubationDays).toInt();
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
@@ -7685,8 +7649,8 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        'Day $day of ${species.incubationDays} '
-                        '\u00B7 real saved batch',
+                        'Waiting for confirmed start '
+                        '\u00B7 saved batch',
                         style: const TextStyle(
                           fontSize: 12,
                           color: AppColors.textSecondary,
@@ -8345,12 +8309,21 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
           _buildIncubatorLcdScreen(),
           const SizedBox(height: 14),
 
-          // Temperature & Humidity metrics
-          Row(
+          IncubatorReadings(
+            reading: _actualReadings(_arduino),
+            targetTemperature: '${_controller.profile.temperatureTarget} °C',
+            targetHumidity:
+                '${_controller.humidityLowLimit.toInt()}-${_controller.humidityHighLimit.toInt()} %',
+          ),
+          const SizedBox(height: 12),
+          // Preserve the separate simulator preview; never put it in Actual.
+          if (_controller.sensorsAreSimulated)
+            const Text('SIMULATION preview — not physical readings'),
+          if (_controller.sensorsAreSimulated) Row(
             children: [
               Expanded(
                 child: _buildMetricTile(
-                  label: 'Incubator Temp',
+                  label: 'Simulated Temp',
                   value: _controller.incubatorTemperature != null
                       ? '${_controller.incubatorTemperature!.toStringAsFixed(1)} °C'
                       : 'ERROR',
@@ -8364,7 +8337,7 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
               const SizedBox(width: 12),
               Expanded(
                 child: _buildMetricTile(
-                  label: 'Incubator Humidity',
+                  label: 'Simulated Humidity',
                   value: _controller.incubatorHumidity != null
                       ? '${_controller.incubatorHumidity!.toStringAsFixed(1)} %'
                       : 'ERROR',
@@ -8443,12 +8416,25 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
   }
 
   Widget _buildIncubatorLcdScreen() {
-    final tempStr = _controller.incubatorTemperature != null
-        ? '${_controller.incubatorTemperature!.toStringAsFixed(1)}°C'
-        : 'ERR';
-    final humStr = _controller.incubatorHumidity != null
-        ? '${_controller.incubatorHumidity!.toStringAsFixed(0)}%'
-        : 'ERR';
+    final isSimulation =
+        !_arduino.isConnected && _controller.sensorsAreSimulated;
+    final actual = _actualReadings(_arduino);
+    final temp = _arduino.isConnected
+        ? (actual.canShowReportedValues ? actual.temperature : null)
+        : (_controller.sensorsAreSimulated
+              ? _controller.incubatorTemperature
+              : null);
+    final humidity = _arduino.isConnected
+        ? (actual.canShowReportedValues ? actual.humidity : null)
+        : (_controller.sensorsAreSimulated
+              ? _controller.incubatorHumidity
+              : null);
+    final tempStr = temp != null && temp.isFinite
+        ? '${temp.toStringAsFixed(1)}°C'
+        : '—';
+    final humStr = humidity != null && humidity.isFinite
+        ? '${humidity.toStringAsFixed(0)}%'
+        : '—';
     final currentDay = _controller.currentIncubationDay;
     final stageShort = _controller.isBatchComplete
         ? 'HATCHED'
@@ -8593,7 +8579,9 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'DAY: $currentDay/${_controller.profile.hatchDay}',
+                      isSimulation
+                          ? 'DAY: $currentDay/${_controller.profile.hatchDay}'
+                          : 'DAY: —',
                       style: const TextStyle(
                         fontFamily: 'monospace',
                         fontSize: 16,
@@ -8606,7 +8594,7 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
                       ),
                     ),
                     Text(
-                      '[$stageShort]',
+                      isSimulation ? '[$stageShort]' : '[UNKNOWN]',
                       style: TextStyle(
                         fontFamily: 'monospace',
                         fontSize: 15,
@@ -8625,6 +8613,11 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
               ],
             ),
           ),
+          if (!isSimulation)
+            const Text(
+              'Waiting for confirmed start',
+              style: TextStyle(color: Colors.white),
+            ),
           const SizedBox(height: 6),
           Row(
             children: [
@@ -8637,336 +8630,6 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
                   maxLines: 1,
                   style: const TextStyle(fontSize: 10, color: Color(0xFF64748B)),
                 ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildBrooderChamberCard() {
-    final low = _controller.brooderTargetLow;
-    final high = _controller.brooderTargetHigh;
-    final isMet = _controller.brooderStarted &&
-        _controller.brooderTemperature != null &&
-        _controller.brooderTemperature! >= low &&
-        _controller.brooderTemperature! <= high;
-
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Header with Stage Status
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              // Flexible + ellipsis: the title shrinks before the status
-              // chip on very narrow screens instead of overflowing.
-              Flexible(
-                child: Row(
-                  children: [
-                    const Icon(Icons.nest_cam_wired_stand, color: Colors.indigo, size: 22),
-                    const SizedBox(width: 8),
-                    Flexible(
-                      child: Row(
-                        children: [
-                          Flexible(
-                            child: Text(
-                              'Brooder Chamber',
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          const SizedBox(width: 6),
-                          _sourceChip(_controller.sensorSource),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: _controller.brooderStarted
-                      ? Colors.green.withValues(alpha: 0.12)
-                      : Colors.orange.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: _controller.brooderStarted
-                        ? Colors.green.shade400
-                        : Colors.orange.shade400,
-                  ),
-                ),
-                child: Text(
-                  _controller.brooderStarted
-                      ? 'Brooder Day ${_controller.brooderDay} (Active)'
-                      : 'Awaiting Transfer',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: _controller.brooderStarted
-                        ? Colors.green.shade800
-                        : Colors.orange.shade900,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 6),
-          Text(
-            'Post-incubation brooding stage with weekly species temperature reductions (Arduino Uno Controller).',
-            style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
-          ),
-
-          // Safety Alert Banner (Sensor Error or Temp Out of Safe Bounds)
-          if (_controller.brooderAlarmMessage != null) ...[
-            const SizedBox(height: 12),
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.red.shade50,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: Colors.red.shade400, width: 1.2),
-              ),
-              child: Row(
-                children: [
-                  const Icon(Icons.warning_amber_rounded, color: Colors.red, size: 22),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Text(
-                      _controller.brooderAlarmMessage!,
-                      style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.red,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-
-          const SizedBox(height: 14),
-
-          // Action / Stage Controls
-          if (!_controller.brooderStarted) ...[
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.indigo.shade50,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.indigo.shade100),
-              ),
-              child: Row(
-                children: [
-                  const Expanded(
-                    child: Text(
-                      'Incubation finished? Transfer hatchlings to brooder and start Day 1.',
-                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.indigo),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  ElevatedButton.icon(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.indigo,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                    ),
-                    icon: const Icon(Icons.play_arrow_rounded, size: 18),
-                    label: const Text(
-                      'Start Brooder (A0)',
-                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-                    ),
-                    onPressed: () {
-                      _controller.startBrooding();
-                      _onSensorChanged();
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ] else ...[
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.grey.shade50,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.grey.shade200),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          const Icon(Icons.calendar_today_rounded, size: 16, color: Colors.indigo),
-                          const SizedBox(width: 6),
-                          Text(
-                            'Brooder Day Stepper: Day ${_controller.brooderDay}',
-                            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.remove_circle_outline, size: 20),
-                            color: _controller.brooderDay > 1 ? Colors.indigo : Colors.grey,
-                            padding: EdgeInsets.zero,
-                            constraints: const BoxConstraints(),
-                            onPressed: _controller.brooderDay > 1
-                                ? () {
-                                    _controller.setBrooderDay(_controller.brooderDay - 1);
-                                    _onSensorChanged();
-                                  }
-                                : null,
-                          ),
-                          const SizedBox(width: 8),
-                          IconButton(
-                            icon: const Icon(Icons.add_circle_outline, size: 20),
-                            color: _controller.brooderDay < 42 ? Colors.indigo : Colors.grey,
-                            padding: EdgeInsets.zero,
-                            constraints: const BoxConstraints(),
-                            onPressed: _controller.brooderDay < 42
-                                ? () {
-                                    _controller.setBrooderDay(_controller.brooderDay + 1);
-                                    _onSensorChanged();
-                                  }
-                                : null,
-                          ),
-                          const SizedBox(width: 12),
-                          TextButton(
-                            style: TextButton.styleFrom(
-                              foregroundColor: Colors.red.shade700,
-                              padding: EdgeInsets.zero,
-                              minimumSize: Size.zero,
-                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            ),
-                            onPressed: () {
-                              _controller.stopBrooding();
-                              _onSensorChanged();
-                            },
-                            child: const Text('Reset Brooder', style: TextStyle(fontSize: 11)),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        const Text('Quick Week: ', style: TextStyle(fontSize: 11, color: Colors.grey)),
-                        for (final day in [1, 8, 15, 22, 29, 36])
-                          Padding(
-                            padding: const EdgeInsets.only(right: 6),
-                            child: ActionChip(
-                              label: Text('Day $day'),
-                              padding: const EdgeInsets.symmetric(horizontal: 4),
-                              backgroundColor: _controller.brooderDay == day
-                                  ? Colors.indigo.shade100
-                                  : Colors.grey.shade100,
-                              labelStyle: TextStyle(
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                                color: _controller.brooderDay == day ? Colors.indigo : Colors.black87,
-                              ),
-                              onPressed: () {
-                                _controller.setBrooderDay(day);
-                                _onSensorChanged();
-                              },
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-
-          const SizedBox(height: 14),
-
-          // Sensor Metric Tiles
-          Row(
-            children: [
-              Expanded(
-                child: _buildMetricTile(
-                  label: 'Brooder Temp',
-                  value: _controller.brooderTemperature != null
-                      ? '${_controller.brooderTemperature!.toStringAsFixed(1)} °C'
-                      : 'ERROR',
-                  target: 'Target: ${low.toStringAsFixed(1)} - ${high.toStringAsFixed(1)} °C',
-                  isTargetMet: isMet,
-                  icon: Icons.thermostat_outlined,
-                  iconColor: Colors.indigo,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _buildMetricTile(
-                  label: 'Brooder Humidity',
-                  value: _controller.brooderHumidity != null
-                      ? '${_controller.brooderHumidity!.toStringAsFixed(1)} %'
-                      : 'ERROR',
-                  target: 'Target: 45 - 60 %',
-                  isTargetMet: _controller.brooderHumidity != null &&
-                      _controller.brooderHumidity! >= 45.0 &&
-                      _controller.brooderHumidity! <= 60.0,
-                  icon: Icons.water_drop_outlined,
-                  iconColor: Colors.cyan,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-
-          // Actuator Relay & Buzzer Chips
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              _buildRelayChip(
-                name: 'Brooder Bulb (D11 / IN3)',
-                isOn: _controller.brooderBulbState,
-                activeColor: Colors.indigo,
-                icon: Icons.lightbulb_outline,
-                status: _arduino.commandStatus('brooderBulb'),
-                onTap: () => _toggleActuator('brooderBulb'),
-              ),
-              _buildRelayChip(
-                name: 'Brooder Buzzer (D8)',
-                isOn: _controller.brooderBuzzerAlarm,
-                activeColor: Colors.red,
-                icon: Icons.notifications_active_outlined,
-              ),
-              _buildRelayChip(
-                name: 'Brooder Humidifier (D5 / IN1)',
-                isOn: _controller.brooderHumidifierState,
-                activeColor: Colors.cyan,
-                icon: Icons.cloud_outlined,
-                status: _arduino.commandStatus('brooderHumidifier'),
-                onTap: () => _toggleActuator('brooderHumidifier'),
               ),
             ],
           ),
@@ -9034,35 +8697,6 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
               _onSensorChanged();
             },
           ),
-          const SizedBox(height: 8),
-
-          // Brooder Temp Slider (expanded range 5.0 to 45.0 to test safety cutoff)
-          Text('Brooder Temp: ${_simulatedBroodTemp.toStringAsFixed(1)} °C (Cutoff <10°C or >40°C)'),
-          Slider(
-            value: _simulatedBroodTemp,
-            min: 5.0,
-            max: 45.0,
-            divisions: 80,
-            activeColor: Colors.indigo,
-            onChanged: (val) {
-              setState(() => _simulatedBroodTemp = val);
-              _onSensorChanged();
-            },
-          ),
-
-          // Brooder Humidity Slider
-          Text('Brooder Humidity: ${_simulatedBroodHumidity.toStringAsFixed(1)} %'),
-          Slider(
-            value: _simulatedBroodHumidity,
-            min: 30.0,
-            max: 80.0,
-            divisions: 50,
-            activeColor: Colors.cyan,
-            onChanged: (val) {
-              setState(() => _simulatedBroodHumidity = val);
-              _onSensorChanged();
-            },
-          ),
         ],
       ),
     );
@@ -9072,7 +8706,7 @@ class _IncubatorDashboardPageState extends State<IncubatorDashboardPage> {
   /// simulator preview data, or unavailable.
   Widget _sourceChip(SensorDataSource source) {
     final (String text, Color color, Color bg) = switch (source) {
-      SensorDataSource.physical => ('LIVE', Colors.green.shade700, Colors.green.withValues(alpha: 0.10)),
+      SensorDataSource.physical => ('RECEIVED', Colors.green.shade700, Colors.green.withValues(alpha: 0.10)),
       SensorDataSource.simulated => ('SIMULATED', Colors.orange.shade700, Colors.orange.withValues(alpha: 0.10)),
       SensorDataSource.none => ('—', Colors.grey.shade500, Colors.grey.withValues(alpha: 0.08)),
     };
@@ -9941,7 +9575,7 @@ class _LiveIncubatorStatusCard extends StatelessWidget {
                     const SizedBox(width: 8),
                     const Expanded(
                       child: Text(
-                        'Live Incubator Status',
+                        'Incubator Readings',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
@@ -9979,6 +9613,8 @@ class _LiveIncubatorStatusCard extends StatelessWidget {
                     color: AppColors.textSecondary,
                   ),
                 ),
+                const SizedBox(height: 12),
+                IncubatorReadings(reading: _actualReadings(controller)),
                 const SizedBox(height: 12),
                 SizedBox(
                   width: double.infinity,
@@ -10028,7 +9664,7 @@ class _LiveIncubatorStatusCard extends StatelessWidget {
                     const SizedBox(width: 8),
                     const Expanded(
                       child: Text(
-                        'Live Incubator Status',
+                        'Incubator Readings',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
@@ -10044,7 +9680,7 @@ class _LiveIncubatorStatusCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(AppRadius.badge),
                       ),
                       child: const Text(
-                        'CONNECTING',
+                        'NO CURRENT READING',
                         style: TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.w700,
@@ -10057,13 +9693,17 @@ class _LiveIncubatorStatusCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Connected to ${controller.portName ?? 'Arduino'} — waiting for the first telemetry frame…',
+                  controller.telemetry == null
+                      ? 'Connected to ${controller.portName ?? 'Arduino'} — waiting for the first telemetry frame…'
+                      : 'Reading Not Updated — last received data is not live.',
                   style: const TextStyle(
                     fontSize: 13,
                     height: 1.4,
                     color: AppColors.textSecondary,
                   ),
                 ),
+                const SizedBox(height: 12),
+                IncubatorReadings(reading: _actualReadings(controller)),
                 const SizedBox(height: 12),
                 SizedBox(
                   width: double.infinity,
@@ -10110,7 +9750,7 @@ class _LiveIncubatorStatusCard extends StatelessWidget {
                   const SizedBox(width: 8),
                   const Expanded(
                     child: Text(
-                      'Live Incubator Status',
+                      'Incubator Readings',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
@@ -10126,7 +9766,7 @@ class _LiveIncubatorStatusCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(AppRadius.badge),
                     ),
                     child: const Text(
-                      'LIVE',
+                        'RECEIVED',
                       style: TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.w700,
@@ -10138,57 +9778,7 @@ class _LiveIncubatorStatusCard extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 12),
-              Row(
-                children: [
-                  Expanded(
-                    child: _LiveMetricTile(
-                      icon: Icons.thermostat_rounded,
-                      label: 'Incubator Temp',
-                      value: controller.incubatorTemperature != null
-                          ? '${controller.incubatorTemperature!.toStringAsFixed(1)} °C'
-                          : '—',
-                      color: Colors.deepOrange,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: _LiveMetricTile(
-                      icon: Icons.water_drop_rounded,
-                      label: 'Incubator Humidity',
-                      value: controller.incubatorHumidity != null
-                          ? '${controller.incubatorHumidity!.toStringAsFixed(0)} %'
-                          : '—',
-                      color: Colors.blue,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  Expanded(
-                    child: _LiveMetricTile(
-                      icon: Icons.thermostat_outlined,
-                      label: 'Brooder Temp',
-                      value: controller.brooderTemperature != null
-                          ? '${controller.brooderTemperature!.toStringAsFixed(1)} °C'
-                          : '—',
-                      color: Colors.indigo,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: _LiveMetricTile(
-                      icon: Icons.water_drop_outlined,
-                      label: 'Brooder Humidity',
-                      value: controller.brooderHumidity != null
-                          ? '${controller.brooderHumidity!.toStringAsFixed(0)} %'
-                          : '—',
-                      color: Colors.cyan,
-                    ),
-                  ),
-                ],
-              ),
+              IncubatorReadings(reading: _actualReadings(controller)),
               const Divider(height: 24, color: Color(0x14000000)),
               _EggTurningStatus(controller: controller),
               const SizedBox(height: 12),
@@ -10215,65 +9805,6 @@ class _LiveIncubatorStatusCard extends StatelessWidget {
           ),
         );
       },
-    );
-  }
-}
-
-class _LiveMetricTile extends StatelessWidget {
-  const _LiveMetricTile({
-    required this.icon,
-    required this.label,
-    required this.value,
-    required this.color,
-  });
-
-  final IconData icon;
-  final String label;
-  final String value;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: AppColors.background,
-        borderRadius: BorderRadius.circular(AppRadius.control),
-        border: Border.all(color: const Color(0x0F000000)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(icon, size: 16, color: color),
-              const SizedBox(width: 5),
-              Expanded(
-                child: Text(
-                  label,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 4),
-          Text(
-            value,
-            style: const TextStyle(
-              fontSize: 17,
-              fontWeight: FontWeight.w700,
-              color: AppColors.textPrimary,
-              height: 1.2,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

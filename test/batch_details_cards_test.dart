@@ -27,31 +27,22 @@ void main() {
 
     expect(find.text('BATCH STATUS'), findsOneWidget);
 
-    // Card titles: two "Temperature" labels exist (summary row + card).
-    expect(find.text('Temperature'), findsNWidgets(2));
+    expect(find.text('Configured Temperature'), findsOneWidget);
+    expect(find.text('Temperature'), findsOneWidget);
     expect(find.text('Humidity'), findsOneWidget);
     expect(find.text('Incubation Progress'), findsOneWidget);
     expect(find.text('Incubator Status'), findsOneWidget);
 
-    // Every card always carries a value, even without sensor readings.
-    expect(find.text('37.7\u00B0C'), findsNWidgets(2)); // session set point
-    expect(find.text('58%'), findsOneWidget); // species target humidity
-    expect(find.text('Set point'), findsOneWidget);
+    // The session setting remains available, but never fills an actual slot.
+    expect(find.text('37.7\u00B0C'), findsOneWidget);
+    expect(find.text('—'), findsNWidgets(3));
+    expect(find.textContaining('target 58%'), findsOneWidget);
+    expect(find.text('Set point'), findsNothing);
     expect(find.text('Standby'), findsOneWidget);
     expect(find.text('Waiting for sensor data'), findsOneWidget);
 
-    // Incubation progress is derived from the start date (17-day species).
-    final start = DateTime.parse(batch.startDate);
-    var day = DateTime.now().difference(start).inDays;
-    if (day < 0) day = 0;
-    if (day > 17) day = 17;
-    final percent = ((day / 17) * 100).round();
-
-    expect(find.text('Day $day of 17'), findsOneWidget);
-    expect(
-      find.text('$percent%'),
-      percent == 0 ? findsWidgets : findsOneWidget,
-    );
+    // A date-only legacy record cannot establish a confirmed Start instant.
+    expect(find.text('Waiting for confirmed start'), findsOneWidget);
   });
 
   testWidgets('Batch details handles a species without a preset match',
@@ -76,8 +67,9 @@ void main() {
 
     expect(tester.takeException(), isNull);
     expect(find.text('Incubation Progress'), findsOneWidget);
-    expect(find.text('Day 0 of 21'), findsOneWidget);
-    expect(find.text('37.5\u00B0C'), findsWidgets);
+    expect(find.text('Day 0 of 21'), findsNothing);
+    expect(find.text('Waiting for confirmed start'), findsOneWidget);
+    expect(find.text('—'), findsNWidgets(3));
     expect(find.text('Standby'), findsOneWidget);
   });
 }

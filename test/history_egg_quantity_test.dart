@@ -125,7 +125,7 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 350));
 
-    expect(find.text('Total Eggs'), findsOneWidget);
+    expect(find.text('Eggs set'), findsOneWidget);
     expect(find.text('8'), findsOneWidget);
   });
 }

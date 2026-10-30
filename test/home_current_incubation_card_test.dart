@@ -146,8 +146,9 @@ void main() {
     expect(find.text('CURRENT INCUBATION'), findsOneWidget);
     expect(find.text('Batch #9 \u00B7 Chicken'), findsOneWidget);
     expect(find.textContaining('12 eggs \u00B7 Started'), findsOneWidget);
-    expect(find.text('Day 3 of 21'), findsOneWidget);
-    expect(find.text('18 days left'), findsOneWidget);
+    expect(find.text('Day 3 of 21'), findsNothing);
+    expect(find.text('18 days left'), findsNothing);
+    expect(find.text('Waiting for confirmed start'), findsOneWidget);
     expect(find.text('Incubating'), findsOneWidget);
 
     // The primary action opens the running batch - Start is not offered.

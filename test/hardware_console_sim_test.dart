@@ -155,7 +155,10 @@ void main() {
       find.text('INCUBATING NOW \u00B7 Batch #9 \u00B7 Chicken'),
       findsOneWidget,
     );
-    expect(find.text('Day 3 of 21 \u00B7 real saved batch'), findsOneWidget);
+    expect(
+      find.text('Waiting for confirmed start \u00B7 saved batch'),
+      findsOneWidget,
+    );
 
     // The simulator is labeled everywhere and its phase never claims to be
     // a real incubation.
@@ -263,17 +266,17 @@ void main() {
     expect(find.text('Finish Batch'), findsOneWidget);
     // An incubating batch shows no fabricated results.
     expect(find.text('Hatched'), findsNothing);
-    expect(find.text('Success Rate'), findsNothing);
+    expect(find.text('Hatchability'), findsNothing);
 
     await tester.tap(find.text('Finish Batch'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 300));
 
     // The validated dialog asks for the real hatched count.
-    expect(find.text('Finish Batch #9'), findsOneWidget);
+    expect(find.text('Complete Incubation'), findsOneWidget);
     await tester.enterText(find.byType(TextField), '12');
     await tester.pump();
-    expect(find.text('Hatch success: 100%'), findsOneWidget);
+    expect(find.text('Hatchability: 100.0%'), findsOneWidget);
 
     await tester
         .tap(find.widgetWithText(ElevatedButton, 'Finish Batch').last);
@@ -313,7 +316,7 @@ void main() {
 
     // Results are shown, but nothing can reopen or re-finish the batch.
     expect(find.text('Hatched'), findsOneWidget);
-    expect(find.text('Success Rate'), findsOneWidget);
+    expect(find.text('Hatchability'), findsOneWidget);
     expect(find.text('Finish Batch'), findsNothing);
     expect(find.text('View Current Incubation'), findsNothing);
   });

@@ -1,0 +1,129 @@
+OCT26:K-03B-02 — Ally Firmware Confirmation and Handoff to Cha
+Prepared: 2026-10-30
+
+PURPOSE AND EVIDENCE BOUNDARY
+
+This attachment preserves Ally's firmware-confirmation response as supplied by
+Kath in conversation. Its source/build claims have not been independently
+verified during preparation of this file. This is not a joint profile sign-off,
+firmware deployment record, physical-test result, or authorization to load eggs.
+Only this report file was created; no application, firmware, or database change
+is requested by it.
+
+COVER MESSAGE TO CHA
+
+Hi Cha! Below is Ally's firmware-confirmation response for OCT26:K-03B-02.
+
+It identifies the selected source as:
+arduino/SmartHatch_Combined/SmartHatch_Combined.ino
+Commit: 80971f902d5634f7fed78ff073fcb78fa31be460
+
+Please use this response alongside our previously agreed species document to
+consolidate the Chicken profile. It updates the selected-source information
+reported by Ally; preserve older comparisons as revision-specific history.
+It is not evidence of flashed or physically tested hardware. Do not confuse
+this baseline with the separately named HC-05 Safety Revision summary.
+
+Please identify any existing decisions resolving the turning-stop boundary,
+four-hour turning interval, and heater-control band. Record only genuinely
+outstanding decisions and the required profile-approval evidence. Please also
+record the final profile reference/version and applicable approval dates.
+
+Keep firmware safety/recovery issues separate from profile confirmation,
+including automatic Start on invalid EEPROM, lost outage time, continued
+climate control after schedule completion, and unverified memory/mechanical
+behavior. They are not approved by documenting the profile.
+
+Suggested status: Firmware clarification received; final profile decisions
+and attributable approval record pending.
+
+No implementation, database change, firmware upload, or hardware activation
+is authorized by this handoff.
+
+==========================================================================
+ALLY'S RESPONSE — TRANSCRIBED FROM KATH'S MESSAGE
+==========================================================================
+
+3. Ally — firmware confirmation
+3.1 Exact selected firmware filename/revision and Chicken profile
+File: arduino/SmartHatch_Combined/SmartHatch_Combined.ino
+Header identity: the file header says SmartHatch_Combined_Controller_v6.ino.
+Revision: git 80971f902d5634f7fed78ff073fcb78fa31be460 (2026-10-29), commit “feat(firmware): add NDJSON control, fail-safes and START handshake.”
+Source SHA-256: 3721bce0eb48e654f2116a7ae2faa34d5d6af0bb57a7b1d11224f0ed68fa8dcb.
+Compiled HEX (A-08 build): SHA-256 ccd8143994c236ba6dce267301f7c3fb1aa891b63b635b2dd483198202884429; 21 142 bytes flash (65 %), 1 781 bytes SRAM (86 %), 267 bytes free; compiler low-memory warning.
+Chicken profile: EGG_CHICKEN = 1; 21-day hatch; lockdown starts Day 19; active humidity 45–55 %; lockdown humidity 65–70 %; temperature band 37.5–38.0 °C; over-temperature cutoff 39.0 °C; turning every 4 h.
+Important reconciliation: docs/a03_local_control_failsafe.md still cites revision 38232e9… plus uncommitted changes and HEX 5e43ffd9… from .arduino/build_a03. That is the earlier A-03 build. The current HEAD 80971f9 and the A-08/HW-09 records use HEX ccd81439…. Use the latter as the current profile revision.
+
+Filename caution: README.md and several older contract-review documents still point to arduino/SmartHatch_Uno/SmartHatch_Uno.ino. That file was deleted in commit 38232e9; it is not present in the current tree. The only Chicken-profile firmware present is SmartHatch_Combined. If the project still intends SmartHatch_Uno as the app-facing sketch, that is an unresolved documentation/implementation gap (HW-IMP-01), not the profile source.
+
+3.2 Temperature target, heater thresholds, safety cutoff and reset
+Agreed target: 37.5 °C (99.5 °F).
+Heater control: ON at ≤ 37.5 °C; OFF at ≥ 38.0 °C. There is no PID and no single “setpoint”; the effective control band is 37.5–38.0 °C. The app’s temperatureTarget: 37.5 is the low threshold, not a band midpoint.
+Over-temperature cutoff: at ≥ 39.0 °C, heater OFF, humidifier OFF, circulation fan remains ON.
+Reset behaviour: no latch. When the reading falls below 39.0 °C, normal control resumes. The heater re-enables only at ≤ 37.5 °C; the humidifier may re-enable immediately below 39.0 °C if humidity is below the low limit. The exhaust fan keeps its normal 30 min OFF / 30 s ON schedule; it is not forced on for cooling. There is no distinct over-temperature telemetry flag and no over-temperature buzzer.
+Safety limitation: the cutoff is a software comparison on the same DHT11 that drives the heater. It is not an independent thermal fuse and cannot detect a stuck-but-plausible low reading. HW-10 clearance is not granted.
+Sensor failure: after a stale timeout of 10 s, all incubator controlled outputs (heater, humidifier, circulation fan, exhaust fan) turn OFF; telemetry values become null; the buzzer alarms.
+
+3.3 Main and lockdown humidity ranges and control rules
+Main/active: 45–55 % RH.
+Lockdown: 65–70 % RH.
+Control: humidifier ON when RH < low limit; OFF when RH ≥ high limit; hysteresis only. There is no active dehumidifier. In lockdown the exhaust fan is disabled, so excess humidity cannot be actively removed; the chamber can only be humidified up to the high limit.
+Transition: active → lockdown at the Day 19 boundary (elapsed ≥ 18 days), same instant as the turning stop.
+Source-document inconsistency: the species document says both 50–55 % and 45–55 % for the active stage. The capstone table and the firmware/app use 45–55 %. Treat 45–55 % as the settled profile and correct the 50–55 % passages in the source document rather than reopening the value.
+
+3.4 Automatic turning interval, angle/endpoints, mechanical limitations
+Interval: every 4 h (EGG_TURN_INTERVAL_MS = 14 400 000), i.e. 6 turns/day.
+Angle/endpoints: servo on D3; SERVO_LEFT = 0°, SERVO_RIGHT = 180°, SERVO_CENTER = 90°; 400 ms delay after the left and right moves; then returns to centre. Each turn sweeps the 0–180° span (180°) and returns to centre.
+Mechanical limitations:
+No servo position feedback, limit switches, or stall detection. A blocked or disconnected servo is not detected.
+0°/180° may exceed the safe mechanical range of the actual turner; the firmware header explicitly says to bench-test servo limits.
+The turner always returns to centre, so eggs rest at the same neutral position between turns rather than alternating rest sides.
+performEggTurn() blocks the control loop for about 800 ms (two 400 ms moves) plus servo travel.
+Turning is skipped during lockdown, after batch completion, or while the incubator sensor is invalid.
+TURN_NOW exists in the firmware, but README.md says there is no manual “turn now” button. The app may not expose it; confirm whether that is intentional.
+Agreed-document difference: the species document gives 3–5 turns/day by hand or up to 24/day automatic. The implemented 6/day is an automatic-turner choice, not an explicit species-document value. It is within the “automatic” range but should be acknowledged as an implementation decision.
+
+3.5 Exact elapsed-time boundaries for stopping turning and changing humidity
+Firmware day convention: Day = floor(elapsed_seconds / 86 400) + 1.
+
+Boundary | Elapsed seconds | Firmware day | Behaviour
+Batch start | 0 | Day 1 | Active profile; turning enabled; active humidity
+Last active moment | 1 555 199 | Day 18 | Active humidity; turning still allowed subject to the 4 h schedule
+Lockdown / turning stop / humidity switch | 1 555 200 (18 × 86 400) | Day 19 | Turning disabled; humidity targets become 65–70 %
+Batch complete | 1 814 400 (21 × 86 400) | Day 22 (telemetry day is uncapped) | Turning and exhaust disabled; climate control continues on lockdown targets until NEW_BATCH/RESET
+
+The firmware couples the turning stop and the humidity switch at the Day 19 start boundary.
+The species document says “stop turning … on day 18” and raises humidity for Days 19–21. If that means no turning during Day 18, the firmware is one day late; if it means the last turn is at the end of Day 18, the firmware is correct. This is the main unresolved boundary definition.
+After batch complete, the heater/humidifier are not automatically shut down; they continue on the lockdown targets until a new batch/reset. incubationDay() caps at 21 for the LCD/stage, but telemetry uses the uncapped elapsedDay() and can report day: 22 at completion. Confirm whether the app should display 21 or 22 at completion.
+
+3.6 Lockdown temperature, Start/day convention, power-interruption limitations
+Lockdown temperature: there is no separate Chicken lockdown temperature. The same 37.5–38.0 °C band applies throughout. The species document does not require a Chicken lockdown temperature change.
+Start/day convention: a START ack is receipt only. The original Start is the separate RUNNING confirmation, after fresh sensor reads and relay-latch checks. startNewBatch() then sets elapsed_seconds = 0, which is Day 1. Day N is floor(elapsed/86 400) + 1 from that confirmed Start; it is not wall-clock time, ACK receipt time, or cloud row creation time.
+Power interruption:
+Batch elapsed time is saved to EEPROM every 60 s and restored at boot.
+Power-off time is not counted; there is no RTC. The exact RTC chip/model is unconfirmed and RTC timekeeping has not been tested (HW-01/HW-03/HW-07).
+Up to about 60 s of pre-cut elapsed time can be lost between saves; all off-time is lost.
+lastEggTurn is reset to millis() at boot, so the first post-boot turn can be up to 4 h late; a turn due during the outage is skipped.
+If the EEPROM batch record is invalid, boot auto-starts a new Chicken batch at Day 1 and emits batch_started.
+If a batch is restored but the start record is missing/mismatched, the batch identity is marked unknown; START with a different id is rejected until an explicit NEW_BATCH/SELECT_*. An uncertain Start is never replayed automatically.
+EEPROM writes are not atomic and have no CRC (A-06 limitation).
+
+3.7 Agreed profile vs current firmware — source settings only
+Item | Agreed | Current firmware | Difference
+Incubation | 21 days | 21 days | Match
+Lockdown start | Day 19 | Day 19 (elapsed ≥ 18 d) | Match for humidity
+Active humidity | 45–55 % (capstone) | 45–55 % | Match; source doc has 50–55 % text conflict
+Lockdown humidity | 65–70 % | 65–70 % | Match
+Temperature | 37.5 °C | 37.5–38.0 °C hysteresis band | “Target” is a threshold, not a midpoint
+Turning stop | “on Day 18” / “until approximately Day 18” | Day 19 start | Definition unresolved
+Turning frequency | 3–5/day hand; up to 24/day auto | 6/day (4 h) | Implementation choice, not explicit in source
+Turning angle | 180° (duck section; chicken unspecified) | 0→180→90, 400 ms, centre return | Mechanical behaviour needs bench confirmation
+Lockdown temperature | No change specified | No change | Match
+Over-temperature | Not specified | 39.0 °C cutoff; software only | Added safety behaviour, not a species-doc value
+Sensor read/update | “Every 2 seconds” (species doc) | Read every 2.5 s; telemetry every 5 s | Minor non-profile difference
+
+Physically tested behaviour: none of the above has been physically verified. A-03 and A-08 are explicit: no board was flashed, no load was energized, and all control/fail-safe results are host-simulation results. HW-09 records only software evidence. Therefore the “Firmware implementation” column describes source settings, not measured behaviour.
+
+==========================================================================
+END OF HANDOFF
+==========================================================================

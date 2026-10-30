@@ -109,6 +109,8 @@ void main() {
 
   final api = _FakeSupabaseApi();
 
+  setUp(() => api.requests.clear());
+
   setUpAll(() async {
     await Supabase.initialize(
       url: 'http://localhost:54321',
@@ -125,8 +127,8 @@ void main() {
   });
 
   /// Pumps History on a phone-sized surface and waits out the load.
-  Future<void> pumpHistory(WidgetTester tester) async {
-    tester.view.physicalSize = const Size(450, 836);
+  Future<void> pumpHistory(WidgetTester tester, {double width = 450}) async {
+    tester.view.physicalSize = Size(width, 1000);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.reset);
 
@@ -159,10 +161,97 @@ void main() {
     await pumpHistory(tester);
 
     expect(find.text('6 / 8 eggs hatched'), findsOneWidget);
-    expect(find.text('75%'), findsOneWidget);
+    expect(find.text('Hatchability: 75.0%'), findsOneWidget);
     expect(find.text('Incubation in progress'), findsNothing);
     expect(find.text('Completed'), findsOneWidget);
+    expect(find.text('Eggs set: 8'), findsOneWidget);
+    expect(find.text('Saved start: August 1, 2026'), findsOneWidget);
+    expect(find.text('Completed: August 18, 2026'), findsOneWidget);
   });
+
+  testWidgets('old batch without a hatch count remains viewable, not fake zero', (
+    tester,
+  ) async {
+    api.sessions = [Map<String, dynamic>.from(_completedRow)
+      ..remove('eggs_hatched')
+      ..['temperature'] = 36.8];
+    await pumpHistory(tester);
+    expect(find.text('Hatched count unavailable'), findsOneWidget);
+    expect(find.text('Hatchability: Unavailable'), findsOneWidget);
+    expect(find.text('Hatchability: 0.0%'), findsNothing);
+    await tester.ensureVisible(find.text('View details'));
+    await tester.tap(find.text('View details'));
+    await tester.pumpAndSettle();
+    expect(find.byType(BatchDetailsScreen), findsOneWidget);
+    expect(find.text('Hatched'), findsOneWidget);
+    expect(find.text('Hatchability'), findsOneWidget);
+    expect(find.text('Unavailable'), findsNWidgets(2));
+    expect(find.text('36.8°C'), findsOneWidget);
+    expect(api.requests.every((r) => r.method == 'GET'), isTrue);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('new completed batch opens with stored counts, dates and result', (
+    tester,
+  ) async {
+    api.sessions = [Map<String, dynamic>.from(_completedRow)
+      ..['egg_type'] = 'Duck'
+      ..['eggs_hatched'] = 1];
+    await pumpHistory(tester);
+    expect(find.text('Duck'), findsOneWidget);
+    expect(find.text('1 / 8 eggs hatched'), findsOneWidget);
+    expect(find.text('Hatchability: 12.5%'), findsOneWidget);
+    await tester.ensureVisible(find.text('View details'));
+    await tester.tap(find.text('View details'));
+    await tester.pumpAndSettle();
+    expect(find.byType(BatchDetailsScreen), findsOneWidget);
+    expect(find.text('Eggs set'), findsOneWidget);
+    expect(find.text('8'), findsOneWidget);
+    expect(find.text('1'), findsOneWidget);
+    expect(find.text('12.5%'), findsOneWidget);
+    expect(find.text('2026-08-01'), findsOneWidget);
+    expect(find.text('2026-08-18'), findsOneWidget);
+    expect(find.text('Completed Date'), findsOneWidget);
+    expect(api.requests.every((r) => r.method == 'GET'), isTrue);
+    expect(tester.takeException(), isNull);
+  });
+
+  for (final values in [
+    {'egg_quantity': 0, 'eggs_hatched': 0},
+    {'egg_quantity': -1, 'eggs_hatched': 0},
+    {'egg_quantity': 8, 'eggs_hatched': 9},
+    {'egg_quantity': 8, 'eggs_hatched': -1},
+    {'egg_quantity': 8, 'eggs_hatched': '6'},
+  ]) {
+    testWidgets('invalid legacy result $values remains readable', (tester) async {
+      api.sessions = [Map<String, dynamic>.from(_completedRow)..addAll(values)];
+      await pumpHistory(tester);
+      expect(find.text('Hatchability: Unavailable'), findsOneWidget);
+      await tester.ensureVisible(find.text('View details'));
+      await tester.tap(find.text('View details'));
+      await tester.pumpAndSettle();
+      expect(find.byType(BatchDetailsScreen), findsOneWidget);
+      expect(find.text('Unavailable'), findsWidgets);
+      expect(tester.takeException(), isNull);
+      expect(api.requests.every((r) => r.method == 'GET'), isTrue);
+    });
+  }
+
+  for (final width in [320.0, 390.0, 768.0, 1440.0]) {
+    testWidgets('legacy dates and completed result remain readable at $width', (
+      tester,
+    ) async {
+      api.sessions = [Map<String, dynamic>.from(_completedRow)
+        ..['start_date'] = '2026-99-01'
+        ..['end_date'] = null];
+      await pumpHistory(tester, width: width);
+      expect(find.text('Saved start: 2026-99-01'), findsOneWidget);
+      expect(find.text('Completed: Unavailable'), findsOneWidget);
+      expect(find.text('Hatchability: 75.0%'), findsOneWidget);
+      expect(find.text('View details'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    });
+  }
 
   testWidgets('active and completed batches stay clearly distinct together',
       (tester) async {
@@ -172,7 +261,7 @@ void main() {
 
     expect(find.text('Incubation in progress \u00B7 12 eggs'), findsOneWidget);
     expect(find.text('6 / 8 eggs hatched'), findsOneWidget);
-    expect(find.text('75%'), findsOneWidget);
+    expect(find.text('Hatchability: 75.0%'), findsOneWidget);
     expect(find.text('Active'), findsOneWidget);
     expect(find.text('Completed'), findsOneWidget);
   });
@@ -186,7 +275,7 @@ void main() {
     // The farmer-entered result of 0 hatched eggs is a genuine outcome and
     // must remain visible - the fix only removes PREMATURE results.
     expect(find.text('0 / 10 eggs hatched'), findsOneWidget);
-    expect(find.text('0%'), findsOneWidget);
+    expect(find.text('Hatchability: 0.0%'), findsOneWidget);
     expect(find.text('Incubation in progress'), findsNothing);
     expect(find.text('Completed'), findsOneWidget);
   });

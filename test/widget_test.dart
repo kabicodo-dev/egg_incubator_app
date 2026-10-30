@@ -23,7 +23,7 @@ void main() {
     expect(find.text('Day 7'), findsOneWidget);
     expect(find.text('Fertile Egg Tray & Capacity'), findsOneWidget);
     expect(find.text('Incubator Chamber'), findsOneWidget);
-    expect(find.text('Brooder Chamber'), findsOneWidget);
+    expect(find.textContaining('Brooder'), findsNothing);
     expect(find.textContaining('Fertile Verified'), findsWidgets);
 
     // Dispose the dashboard so the incubator controller's ticker is released.
