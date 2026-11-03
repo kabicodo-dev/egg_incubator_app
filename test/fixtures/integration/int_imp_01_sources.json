@@ -1,0 +1,65 @@
+{
+  "kit_revision": "INT-IMP-01.mock.1",
+  "classification": "SYNTHETIC REVIEW REFERENCES — MOCK USE ONLY — NOT A SELECTED OR APPROVED WIRE CONTRACT",
+  "architecture": {
+    "baseline": "K06 v0.5 design directions supplied by the user",
+    "route": "Uno + RTC <-> HC-05 Bluetooth Classic <-> Android bridge <-> Supabase",
+    "authority": "Uno autonomous local control; offline Start; Chicken-first fresh-eggs scope",
+    "baseline_file_status": "No v0.5 file located in this checkout/Downloads; no hash or unseen contents asserted"
+  },
+  "git_observed": {
+    "remote": "https://github.com/kabicodo-dev/egg_incubator_app.git",
+    "checkout_branch": "cha-branch2",
+    "checkout_commit": "c7a26cfcaa619708aff4f793e8068ee176a6cf58",
+    "remote_ally_branch": "ally-branch3",
+    "remote_ally_head": "d97d6af68118a175d99b1f61747c52b082bc15ec"
+  },
+  "active_implementation": {
+    "firmware_path": null,
+    "firmware_commit": null,
+    "catalog_revision": null,
+    "status": "BLOCKED: Ally must supply the exact active sketch/catalog or a commit containing both; observed branch head is not selection evidence"
+  },
+  "source_snapshots": [
+    {"path": "arduino/SmartHatch_Uno/SmartHatch_Uno.ino", "sha256": "0365b18bc969d36547440b5e4299b946da03fa5aeccdbff0fff8dc8efeef01fc", "lf_sha256": "91bf984aafa384fa1f82a65ca1522e485378c1a746ab46836e7652ab957d54a8", "role": "observed source, not selected/flashed"},
+    {"path": "arduino/SmartHatch_Combined/SmartHatch_Combined.ino", "sha256": "a466a868e6c148cf4f9c3230378d5033d81db89dfb77a3e0fa53891d847a9598", "lf_sha256": "07ca16dcfd20c1cb1702b6c6e812e445447117ea0a98d9c0ba6a695b47ef7ee8", "role": "observed source, not selected/flashed"}
+  ],
+  "wire_references": [
+    {
+      "fixture_file": "hw02_batch_review.ndjson",
+      "reference_id": "HW-02 earlier batch-aware review candidate (not selected)",
+      "source_filename": "HW-02_Exact_Wire_Message_Catalog.md",
+      "source_sha256": "b43da3e1a42d3a2a2a0c5b5455d4dfa713b4d36ac409ae08a5925bd9acd5327d",
+      "expected_content_bytes": [44,133,169,134,45,70,67,198,204,169,48,67,85,105],
+      "known_gaps": ["SH-prefixed dev violates declared hex alphabet", "STATE/EVENT exceed unapproved 191-byte target", "MAC/profile examples are placeholders", "No memory/auth/recovery approval"]
+    },
+    {
+      "fixture_file": "hw02_corrected_review.ndjson",
+      "reference_id": "HW-02 corrected six script literals (not selected)",
+      "source_filename": "HW-02_count_frames.py",
+      "source_sha256": "b2bc944b46bb1535c7a181c8984a3b6cc99a28fb56df9beca9f9924e831fcb0b",
+      "expected_content_bytes": [91,183,127,190,41,93],
+      "known_gaps": ["Not a complete batch Start/Stop/recovery catalog", "Literal sizes are not maximum proofs", "u/time uint64 must not be parsed lossily", "USB/actuator proposal is not established Android architecture"]
+    }
+  ],
+  "db02_reference": {
+    "path": "docs/contract-review/DB-02_Exact_Bridge_Sync_API.md",
+    "revision": "0.1-review; candidate, not deployed; owner Mary",
+    "sha256": "5678de5b6c6c1bcd7de827a4a28ad80b6f6d51454663f73118c6b12229a681ab",
+    "lf_sha256": "5678de5b6c6c1bcd7de827a4a28ad80b6f6d51454663f73118c6b12229a681ab",
+    "checkout_rule": "raw or recorded LF-normalized text hash; only CRLF/LF checkout equivalence accepted, no source-content drift",
+    "request_block": "REQUEST_EXAMPLES",
+    "response_block": "RESPONSE_EXAMPLES",
+    "consumption": "Read pinned examples without changing Mary's implementation; exporter emits them as portable JSON"
+  },
+  "matrix": [
+    {"id":"INT-01","capability":"Bluetooth connect/disconnect and bounded stream framing","mock_tests":"INT-01","real_gate":"Kath physical Android RFCOMM/permissions and Ally module/baud evidence"},
+    {"id":"INT-02","capability":"read-only status request","mock_tests":"INT-02","real_gate":"Ally exact active status/query response; Kath matching decoder"},
+    {"id":"INT-03","capability":"explicit Start and Stop; ACK not Running; completion independent","mock_tests":"INT-03","real_gate":"Ally admitted/occurred/current-state semantics and safety; no actual commands run here"},
+    {"id":"INT-04","capability":"lost ACK and reconnection without a new Start","mock_tests":"INT-04","real_gate":"Ally retained original outcomes; Kath reconnect/query behavior"},
+    {"id":"INT-05","capability":"duplicate/conflicting commands and source events","mock_tests":"INT-05","real_gate":"Ally durable content-aware dedup; Mary transactional source identity"},
+    {"id":"INT-06","capability":"offline event store and outbox restart","mock_tests":"INT-06","real_gate":"Kath SQLite crash/power-loss behavior; host JSON store is only a test double"},
+    {"id":"INT-07","capability":"cloud synchronization, duplicate prevention and lost responses","mock_tests":"INT-07","real_gate":"Mary actual isolated endpoint/transactions/Auth/RLS; no network used"},
+    {"id":"INT-08","capability":"provenance gates and existing Flutter parser compatibility","mock_tests":"INT-08; int_imp_01_parser_compatibility_test.dart","real_gate":"Confirmed active catalog; approved producer/consumer adapters"}
+  ]
+}

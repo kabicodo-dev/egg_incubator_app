@@ -1,0 +1,13 @@
+{
+  "task_id": "CURRENT:DB-IMP-01",
+  "classification": "SYNTHETIC OFFLINE TEST EXPECTATIONS; NOT SOURCE SELECTION OR AUTHORIZATION",
+  "request_source": "Existing hash-pinned DB-02 candidate examples via loadKit(); no new wire fields or targets",
+  "cases": [
+    {"request": "started", "status": 503, "code": "CONTRACT_NOT_ENABLED"},
+    {"request": "stopped", "status": 503, "code": "CONTRACT_NOT_ENABLED"},
+    {"request": "completion", "status": 503, "code": "CONTRACT_NOT_ENABLED"},
+    {"request": "reading", "status": 503, "code": "CONTRACT_NOT_ENABLED"},
+    {"request": "conflicting_count", "status": 503, "code": "CONTRACT_NOT_ENABLED"},
+    {"request": "status", "status": 503, "code": "CONTRACT_NOT_ENABLED"}
+  ]
+}

@@ -1,0 +1,14 @@
+{"v":1,"t":"HELLO","qid":"0123456789abcdef"}
+{"v":1,"t":"HELLO","dev":"SH01A1B2C3D4E5F6","fw":"F2-cand","caps":["J1","EV1","TEL1"],"rx":191,"tx":191,"auth":"unbound","clk":false}
+{"v":1,"t":"START","cid":"0123456789abcdef","bid":"0123456789abcdef0123456789abcdef","iid":"0123456789abcdef","sp":1,"pv":"CH-PENDING","qty":12,"mac":"0123456789abcdef"}
+{"v":1,"t":"STOP","cid":"fedcba9876543210","bid":"0123456789abcdef0123456789abcdef","iid":"0123456789abcdef","mac":"fedcba9876543210"}
+{"v":1,"t":"STATUS","qid":"1111222233334444"}
+{"v":1,"t":"ACK","cid":"0123456789abcdef","ok":true,"code":"ACCEPTED"}
+{"v":1,"t":"ACK","cid":"0123456789abcdef","ok":false,"code":"BUSY"}
+{"v":1,"t":"STATE","qid":"1111222233334444","dev":"SH01A1B2C3D4E5F6","ep":7,"seq":104,"st":"RUNNING","bid":"0123456789abcdef0123456789abcdef","sp":1,"pv":"CH-PENDING","start_s":1793145600,"tv":true}
+{"v":1,"t":"EVENT","dev":"SH01A1B2C3D4E5F6","ep":7,"seq":103,"eid":"SH01A1B2C3D4E5F6-00000103","kind":"started","cid":"0123456789abcdef","bid":"0123456789abcdef0123456789abcdef","ts":1793145600,"tv":true}
+{"v":1,"t":"TEL","dev":"SH01A1B2C3D4E5F6","ep":7,"n":501,"bid":"0123456789abcdef0123456789abcdef","ts":1793145660,"tv":true,"tc":37.6,"t_ok":true,"rh":54.0,"rh_ok":true}
+{"v":1,"t":"ERROR","code":"BAD_JSON","cid":null}
+{"v":1,"t":"REPLAY","after":100,"limit":2,"qid":"2222333344445555"}
+{"v":1,"t":"REPLAY_END","qid":"2222333344445555","first":101,"last":103,"more":false}
+{"v":1,"t":"RCPT_ACK","eid":"SH01A1B2C3D4E5F6-00000103","rev":1,"dis":"applied","mac":"0123456789abcdef"}
