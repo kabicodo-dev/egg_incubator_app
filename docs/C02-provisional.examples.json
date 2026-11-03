@@ -1,0 +1,62 @@
+{
+  "notice": "SYNTHETIC TEST FIXTURES ONLY — not readings, approved profiles, physical evidence, or messages for upload. PROPOSED — PENDING A-01 VERIFICATION.",
+  "draft": "0.1.0-provisional",
+  "examples": [
+    {
+      "name": "telemetry-known-time",
+      "message": {"v": 1, "type": "telemetry", "device_id": "TEST-INC-01", "chamber": "incubator", "batch_id": "TEST-BATCH-A", "command_id": null, "boot_id": "TEST-BOOT-A", "sample_id": "TEST-BOOT-A-S1", "seq": 0, "measured_at": "2026-10-26T00:00:00Z", "timestamp_valid": true, "payload": {"temperature_c": {"value": 25, "valid": true}, "humidity_pct": {"value": 40, "valid": true}}}
+    },
+    {
+      "name": "telemetry-unknown-time",
+      "message": {"v": 1, "type": "telemetry", "device_id": "TEST-INC-01", "chamber": "incubator", "batch_id": "TEST-BATCH-A", "command_id": null, "boot_id": "TEST-BOOT-A", "sample_id": "TEST-BOOT-A-S2", "seq": 1, "measured_at": null, "timestamp_valid": false, "payload": {"temperature_c": {"value": 25, "valid": true}, "humidity_pct": {"value": 40, "valid": true}}}
+    },
+    {
+      "name": "telemetry-invalid-sensors",
+      "message": {"v": 1, "type": "telemetry", "device_id": "TEST-INC-01", "chamber": "incubator", "batch_id": "TEST-BATCH-A", "command_id": null, "boot_id": "TEST-BOOT-A", "sample_id": "TEST-BOOT-A-S3", "seq": 2, "measured_at": null, "timestamp_valid": false, "payload": {"temperature_c": {"value": null, "valid": false}, "humidity_pct": {"value": null, "valid": false}}}
+    },
+    {
+      "name": "telemetry-unassociated-diagnostic",
+      "message": {"v": 1, "type": "telemetry", "device_id": "TEST-INC-01", "chamber": "incubator", "batch_id": null, "command_id": null, "boot_id": "TEST-BOOT-B", "sample_id": "TEST-BOOT-B-S1", "seq": 0, "measured_at": null, "timestamp_valid": false, "payload": {"temperature_c": {"value": null, "valid": false}, "humidity_pct": {"value": 40, "valid": true}}}
+    },
+    {
+      "name": "command-start",
+      "message": {"v": 1, "type": "command", "device_id": "TEST-INC-01", "chamber": "incubator", "batch_id": "TEST-BATCH-A", "command_id": "TEST-CMD-START-A", "boot_id": null, "sample_id": null, "seq": null, "measured_at": null, "timestamp_valid": false, "payload": {"action": "START", "profile_id": "TEST_ONLY_NOT_APPROVED", "profile_version": "TEST-REV-1"}}
+    },
+    {
+      "name": "command-stop",
+      "message": {"v": 1, "type": "command", "device_id": "TEST-INC-01", "chamber": "incubator", "batch_id": "TEST-BATCH-A", "command_id": "TEST-CMD-STOP-A", "boot_id": null, "sample_id": null, "seq": null, "measured_at": null, "timestamp_valid": false, "payload": {"action": "STOP"}}
+    },
+    {
+      "name": "command-status",
+      "message": {"v": 1, "type": "command", "device_id": "TEST-INC-01", "chamber": "incubator", "batch_id": null, "command_id": "TEST-CMD-STATUS-A", "boot_id": null, "sample_id": null, "seq": null, "measured_at": null, "timestamp_valid": false, "payload": {"action": "STATUS"}}
+    },
+    {
+      "name": "ack-accepted-not-running-proof",
+      "message": {"v": 1, "type": "ack", "device_id": "TEST-INC-01", "chamber": "incubator", "batch_id": "TEST-BATCH-A", "command_id": "TEST-CMD-START-A", "boot_id": "TEST-BOOT-A", "sample_id": null, "seq": 3, "measured_at": null, "timestamp_valid": false, "payload": {"received": true, "accepted": true, "code": null}}
+    },
+    {
+      "name": "ack-rejected",
+      "message": {"v": 1, "type": "ack", "device_id": "TEST-INC-01", "chamber": "incubator", "batch_id": "TEST-BATCH-A", "command_id": "TEST-CMD-STOP-A", "boot_id": "TEST-BOOT-A", "sample_id": null, "seq": 4, "measured_at": null, "timestamp_valid": false, "payload": {"received": true, "accepted": false, "code": "UNSUPPORTED_COMMAND"}}
+    },
+    {
+      "name": "status-controller-reported-unconfirmed",
+      "message": {"v": 1, "type": "status", "device_id": "TEST-INC-01", "chamber": "incubator", "batch_id": "TEST-BATCH-A", "command_id": "TEST-CMD-START-A", "boot_id": "TEST-BOOT-A", "sample_id": null, "seq": 5, "measured_at": null, "timestamp_valid": false, "payload": {"state": "RUNNING", "verification": "CONTROLLER_REPORTED", "evidence_id": null, "original_start_at": null, "original_start_valid": false, "inspection_required": null}}
+    },
+    {
+      "name": "status-verified-shape-only-not-real-evidence",
+      "message": {"v": 1, "type": "status", "device_id": "TEST-INC-01", "chamber": "incubator", "batch_id": "TEST-BATCH-A", "command_id": "TEST-CMD-START-A", "boot_id": "TEST-BOOT-A", "sample_id": null, "seq": 6, "measured_at": "2026-10-26T00:00:01Z", "timestamp_valid": true, "payload": {"state": "RUNNING", "verification": "VERIFIED", "evidence_id": "TEST-NOT-PHYSICAL-EVIDENCE", "original_start_at": "2026-10-26T00:00:00Z", "original_start_valid": true, "inspection_required": false}}
+    },
+    {
+      "name": "status-unknown-after-restart",
+      "message": {"v": 1, "type": "status", "device_id": "TEST-INC-01", "chamber": "incubator", "batch_id": null, "command_id": "TEST-CMD-STATUS-A", "boot_id": "TEST-BOOT-B", "sample_id": null, "seq": 1, "measured_at": null, "timestamp_valid": false, "payload": {"state": "UNKNOWN", "verification": "UNKNOWN", "evidence_id": null, "original_start_at": null, "original_start_valid": false, "inspection_required": true}}
+    },
+    {
+      "name": "error-command-correlated",
+      "message": {"v": 1, "type": "error", "device_id": "TEST-INC-01", "chamber": "incubator", "batch_id": "TEST-BATCH-A", "command_id": "TEST-CMD-START-A", "boot_id": "TEST-BOOT-A", "sample_id": null, "seq": 7, "measured_at": null, "timestamp_valid": false, "payload": {"code": "UNSAFE_TO_START", "detail": "Synthetic error fixture; not an observed hardware condition."}}
+    },
+    {
+      "name": "error-unsolicited",
+      "message": {"v": 1, "type": "error", "device_id": "TEST-INC-01", "chamber": "incubator", "batch_id": null, "command_id": null, "boot_id": "TEST-BOOT-B", "sample_id": null, "seq": 2, "measured_at": null, "timestamp_valid": false, "payload": {"code": "CLOCK_INVALID", "detail": "Synthetic invalid-clock fixture; not an RTC test result."}}
+    }
+  ]
+}

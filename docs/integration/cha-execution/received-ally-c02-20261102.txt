@@ -1,0 +1,75 @@
+C-02 firmware compatibility review — 2026-11-02
+I reviewed the actual working-tree files at the hashes below. No firmware was flashed, no serial port was opened, and no repository files were changed.
+
+0. Two corrections to the request
+Before the answers, two premises do not match the repository:
+
+The provisional files contain zero occurrences of START_BATCH and zero of "CONFIRM". The provisional command actions are only START, STOP, and STATUS (C02-provisional.schema.json:85–89, C02-provisional.examples.json:22–31). The START_BATCH/confirm:"CONFIRM" wording is an external candidate mentioned in the review ledger, not in the C-02 attachment.
+The recorded validation result is 14 positive examples, 65 negative mutations, 11 malformed frames, plus CRLF/trailing-whitespace/2 edge cases (C02-provisional-communication-contract.md:423–431). There is no “20 incompatible historical frames” entry in the contract, the review packet, or the repository. I cannot confirm that figure.
+Also: the validator referenced at docs/validate-c02-provisional.cjs is absent from this working tree. The review packet itself flags the 14/65/11 PASS lines as author-claimed and not reproducible from the packet (docs/review/2026-10-30-combined-c02-review/README.md:138–143). Those checks would only establish schema/shape consistency, not firmware compatibility.
+
+1. Current firmware/source/catalog baseline
+The selected firmware is not HEAD alone. It is HEAD plus an uncommitted parser patch.
+
+Layer	Identity
+Branch	ally-branch3
+Commit	80971f902d5634f7fed78ff073fcb78fa31be460
+Committed firmware base	git blob e4b413e6be62b5556943c008d84f46da2c33d7af; SHA-256 3721bce0eb48e654f2116a7ae2faa34d5d6af0bb57a7b1d11224f0ed68fa8dcb
+Uncommitted patch	SHA-256 32240979c25588194bef46d885787437ef74b900c4e2ea6aa8e8cd813b569516; 17 insertions / 3 deletions; changes only readSerialLines()
+Selected working-tree firmware	git blob 4af101de80296c82fe647ff7de7725fc2614ed81; SHA-256 7106ebfe01d037c95766cd51c43b43fa02f92b922fc5a180770fd27b3822c5ec
+A-02 catalog document	docs/a02_ndjson_serial_protocol.md; SHA-256 04ab56ec92f9c6d6346f6129eb8b4a323e0fdb680129a4d131799f313399476c
+Provisional contract	3559b60ace2b2d12e0a52304ed4ff1d9831a416b9a4edb5478d7ec359a69ddb7
+Provisional schema	9e95d34ca160cae8600548c5c4919ece26953d892d77bd786198d9e9e15461dd
+Provisional examples	155a44ed24f2c0627481822569c008b1ee332d315d72abe3bf9f09fc584275b5
+Important limits on that baseline:
+
+The three C-02 files are untracked working-tree files, not committed revisions.
+The flashed/occupied board identity is UNKNOWN. There is no upload log, port, date, operator record, or read-back proving that 7106ebfe… is on the board. Operator context says Ally programmed the live board; that is not a hash match.
+Other uncommitted changes exist under arduino/ (host README, host-only Servo.h shim, deleted arduino_usb_monitor.py, new harnesses), but they do not change the wire catalog. The only firmware-source delta affecting the contract is the readSerialLines() patch.
+The firmware has no build-hash command. controller_ready reports only "protocol":"smarthatch-ndjson-v1" and baud 9600.
+2. Fields and messages incompatible with the firmware
+The provisional envelope is a different protocol family, not a stricter version of the implemented one.
+
+Provisional item	Actual firmware	Result
+Required envelope: device_id, chamber, batch_id, command_id, boot_id, sample_id, seq, measured_at, timestamp_valid, payload (contract:80–93; schema:7–20)	Parser extracts only numeric "id", string "cmd", and optional numeric "batch_id" (SmartHatch_Combined.ino:795–830). All other keys are ignored.	A provisional frame without top-level id/cmd is rejected as INVALID_JSON / required_id_or_cmd_missing. It is not parsed as a command.
+String IDs up to 64 chars (schema:69)	Numeric strtol only; no string IDs, no hex; command id and batch_id are 32-bit long; practical batch_id range 1…2,147,483,647.	"batch_id":"TEST-BATCH-A" cannot parse; START is rejected invalid_batch_id. A quoted numeric string also fails because the parser expects a bare number.
+type:"command" with payload.action (schema:85–89)	No type:"command" frame. Commands are flat {"id":301,"cmd":"START","batch_id":7001}.	The provisional command frame is not recognized. The sender must use the numeric id/cmd family.
+START with profile_id and profile_version	START reads only id, cmd, batch_id. The device stores only batch_id, egg type, and elapsed seconds; profiles are compile-time or set by SELECT_*.	The profile reference cannot be carried, stored, or verified by the Uno. It must stay app/cloud-side keyed by batch_id.
+STOP command (contract:155)	Not implemented. Stop appears only in a comment at line 444. There is no stopped state, no output-off command, no timer freeze.	A STOP request cannot be honoured. batch_complete is not STOP and does not turn outputs off.
+STATUS returns state, verification, evidence_id, original_start_at, original_start_valid, inspection_required (contract:184–221)	The STATUS command emits an ACK telemetry_follows and then one ordinary telemetry frame (ino:726–727,792). It has no state, verification, evidence, original-start, or batch identity.	STATUS cannot answer “which batch do you hold?” and cannot support the provisional recovery rules.
+ACK with received, accepted, code (contract:170–182)	ACK has type, v, numeric id, cmd, `status:"accepted"	"rejected", and either messageorerror:{code,message}. command_id/batch_idappear only for START. Noreceived, accepted, code, device_id, chamber, boot_id, or seq`.
+Separate type:"error" frame with uppercase codes (contract:223–235)	No error frame. Errors are rejected ACKs with lowercase codes: unknown_command, incubator_sensor_invalid, turning_disabled_for_stage, line_too_long, required_id_or_cmd_missing, invalid_batch_id, batch_already_running, batch_already_complete.	Provisional codes such as UNSUPPORTED_VERSION, WRONG_DEVICE, BATCH_MISMATCH, DUPLICATE_CONFLICT, CLOCK_INVALID, UNSAFE_TO_START, INTERNAL_ERROR are not emitted.
+Telemetry payload.temperature_c and payload.humidity_pct as {value,valid}, incubator only (contract:129–144; schema:73–84)	Telemetry is flat: uptime_ms, egg_type, day, hatch_day, elapsed_seconds, stage, batch_complete, plus incubator{valid,temperature_c,humidity_percent,bulb_on,humidifier_on,fan_on,exhaust_fan_on} and brooder{…} (ino:578–599).	Different key names and nesting. The firmware also emits brooder data, which the provisional schema excludes. Provisional additionalProperties:false would reject actual telemetry.
+running is not in the provisional type enum	Firmware emits type:"running" for TURN_NOW in-flight and for START post-confirmation (ino:670–687).	An implemented frame family is missing from the provisional contract.
+event is not in the provisional type enum	Firmware emits controller_ready, batch_state_restored, batch_started, and egg_turn_completed.	Another implemented family missing from the contract.
+measured_at, timestamp_valid, original_start_at	No RTC or wall clock. Only uptime_ms and elapsed_seconds; original Start is the RUNNING confirmation, not a UTC timestamp.	The device cannot truthfully populate these fields. timestamp_valid must remain false/absent.
+device_id, boot_id, sample_id, seq	All absent. No unique MCU ID, no boot epoch, no sample ID, no sequence counter.	The firmware cannot emit conforming telemetry/status/ACK frames at all.
+ACK dedupe keyed by full identity with conflict rejection	8-entry RAM cache keyed by id only; cleared at boot. Same ID with changed content replays the original ACK; after reboot a duplicate can re-apply the side effect.	Provisional duplicate/conflict and durable correlation rules are not implemented.
+Unsupported versions must be rejected with UNSUPPORTED_VERSION	v is emitted as 1 but never checked on input. The parser ignores type and v.	Unknown versions/fields can be processed if id/cmd happen to parse. No version rejection exists.
+Command frames up to provisional sizes	Application RX line is 119 content bytes (serialLine[120]). Provisional command examples are 314 B (START), 243 B (STOP), 237 B (STATUS) of content.	All three exceed the RX buffer. The patched firmware discards through LF and emits line_too_long; it cannot receive the provisional command frames intact.
+Additional gaps relevant to a corrected contract: implemented commands NEW_BATCH, RESET, SELECT_CHICKEN, SELECT_DUCK, SELECT_QUAIL, and TURN_NOW are absent from the provisional command set. The firmware also accepts legacy plain-text commands, which the provisional contract does not describe.
+
+3. START, START_BATCH and CONFIRM
+Provisional: has START, STOP, STATUS. It has no START_BATCH and no CONFIRM.
+Firmware: has a numeric START ({"id":301,"cmd":"START","batch_id":7001}), with ACK start_received followed later by a running frame with status:"running". It has no START_BATCH, no CONFIRM, and no STOP.
+Supersession: the implemented numeric START is the only START that exists in firmware/fixtures/tests. START_BATCH/CONFIRM is not implemented and is not in the C-02 files; it should be explicitly marked superseded/not selected. Do not alias either vocabulary onto the other.
+Replacement: I have not issued a corrected contract that replaces the provisional version. The existing docs/ally_response_2026-11-01.md is a firmware review/response, not a replacement wire contract. The corrected C-02 should be one jointly reviewed revision; my input is the compatibility findings above and the implemented numeric catalog.
+4. Disposition
+REQUEST CHANGES. I do not accept the provisional contract as firmware-compatible.
+
+Exact shared-wire acceptance of provisional v1 is BLOCKED on the same fundamental mismatch Kath identified: the provisional type/command_id/payload.action family is not the implemented id/cmd/START family, and the firmware lacks the required identities, timestamps, status frame, error frame, STOP, and RX capacity.
+
+C-02 itself is not blocked. A corrected revision can be reviewed if it does one of these explicitly:
+
+Adopt the implemented numeric catalog as interim v1, documenting its limitations: numeric id/batch_id, flat telemetry, ACK/RUNNING/event, no STOP, no status-state frame, no RTC, no device_id/boot_id/sample_id/seq, 119-byte RX. Then treat the verbose envelope as a future target.
+Declare the verbose envelope a target v2 and state that current firmware does not implement it, with a migration plan for the parser, IDs, timestamps, status/error frames, and buffer changes.
+Minimum corrections before I can accept a corrected revision:
+
+One named wire family and version; no silent translation or aliasing.
+START literal matching the implementation, or explicitly marked target-only.
+Remove or mark proposed: STOP, VERIFIED status, status/error frames, START_BATCH, CONFIRM.
+Omit or null unsupported identities/timestamps, with a target tag; do not fabricate measured_at, device_id, boot_id, sample_id, or seq.
+Command frames within 119 content bytes, or an approved buffer-change decision (the current build has only 266 B SRAM free).
+Profile/quantity/actor kept app/cloud-side keyed by batch_id.
+Preserve the correct semantics: ACK is not physical proof; START ACK is receipt only; RUNNING is controller-reported, not independent relay-contact evidence.
+The semantic direction in the provisional contract—invalid readings are null, timestamps are not invented, ACK is not Running—is sound and should be preserved. The wire format is what needs changing.
