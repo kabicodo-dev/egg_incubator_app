@@ -1,0 +1,131 @@
+{
+  "reviewSource": "C:/Users/Mary Charlyn/Downloads/Kath-C02-Provisional-Focused-Review-2026-10-30.md",
+  "reviewSha256": "4473813552ef21a77fe57296f89fb7843a3b4f1ad19990c3e596b70f66e162e0",
+  "inputs": [
+    {
+      "path": "docs/C02-provisional-communication-contract.md",
+      "reviewedSha256": "3559b60ace2b2d12e0a52304ed4ff1d9831a416b9a4edb5478d7ec359a69ddb7",
+      "snapshot": "docs/integration/cha-execution/kath-focused-review-inputs/C02-provisional-communication-contract.md",
+      "currentSha256": "3559b60ace2b2d12e0a52304ed4ff1d9831a416b9a4edb5478d7ec359a69ddb7"
+    },
+    {
+      "path": "docs/C02-provisional.schema.json",
+      "reviewedSha256": "9e95d34ca160cae8600548c5c4919ece26953d892d77bd786198d9e9e15461dd",
+      "snapshot": "docs/integration/cha-execution/kath-focused-review-inputs/C02-provisional.schema.json",
+      "currentSha256": "9e95d34ca160cae8600548c5c4919ece26953d892d77bd786198d9e9e15461dd"
+    },
+    {
+      "path": "docs/C02-provisional.examples.json",
+      "reviewedSha256": "155a44ed24f2c0627481822569c008b1ee332d315d72abe3bf9f09fc584275b5",
+      "snapshot": "docs/integration/cha-execution/kath-focused-review-inputs/C02-provisional.examples.json",
+      "currentSha256": "155a44ed24f2c0627481822569c008b1ee332d315d72abe3bf9f09fc584275b5"
+    },
+    {
+      "path": "docs/contract-review/CONTRACT-FREEZE-01_Team_Decisions.md",
+      "reviewedSha256": "2ecf175119fcff30f512a9988a104c498468205ad1598c36bb147e51eaac60fa",
+      "snapshot": "docs/integration/cha-execution/kath-focused-review-inputs/CONTRACT-FREEZE-01_Team_Decisions.md",
+      "currentSha256": "6197a2b78fe173a9ff3bf08427903bbc2b28bbe35bd6d4959ab7f4411826c604"
+    },
+    {
+      "path": "docs/contract-review/DB-02_30Oct_Consolidated_Alignment.md",
+      "reviewedSha256": "0c66ef938d5fd89628b70b14517f8ba602e766735fb87f381247d4dde4ca66a6",
+      "snapshot": "docs/integration/cha-execution/kath-focused-review-inputs/DB-02_30Oct_Consolidated_Alignment.md",
+      "currentSha256": "01bce400e1519ee798dbfd5dcc94ef74923f21c2ddcdec95a2efa046cd93c8bd"
+    }
+  ],
+  "sizes": [
+    {
+      "name": "telemetry-known-time",
+      "contentBytes": 334,
+      "withLF": 335
+    },
+    {
+      "name": "telemetry-unknown-time",
+      "contentBytes": 317,
+      "withLF": 318
+    },
+    {
+      "name": "telemetry-invalid-sensors",
+      "contentBytes": 323,
+      "withLF": 324
+    },
+    {
+      "name": "telemetry-unassociated-diagnostic",
+      "contentBytes": 310,
+      "withLF": 311
+    },
+    {
+      "name": "command-start",
+      "contentBytes": 314,
+      "withLF": 315
+    },
+    {
+      "name": "command-stop",
+      "contentBytes": 243,
+      "withLF": 244
+    },
+    {
+      "name": "command-status",
+      "contentBytes": 237,
+      "withLF": 238
+    },
+    {
+      "name": "ack-accepted-not-running-proof",
+      "contentBytes": 274,
+      "withLF": 275
+    },
+    {
+      "name": "ack-rejected",
+      "contentBytes": 291,
+      "withLF": 292
+    },
+    {
+      "name": "status-controller-reported-unconfirmed",
+      "contentBytes": 388,
+      "withLF": 389
+    },
+    {
+      "name": "status-verified-shape-only-not-real-evidence",
+      "contentBytes": 436,
+      "withLF": 437
+    },
+    {
+      "name": "status-unknown-after-restart",
+      "contentBytes": 367,
+      "withLF": 368
+    },
+    {
+      "name": "error-command-correlated",
+      "contentBytes": 329,
+      "withLF": 330
+    },
+    {
+      "name": "error-unsolicited",
+      "contentBytes": 299,
+      "withLF": 300
+    }
+  ],
+  "checks": [
+    {
+      "name": "supplied review fingerprint and all five reviewed input snapshots match",
+      "result": "PASSED"
+    },
+    {
+      "name": "all fourteen reported UTF-8 content and LF byte counts independently reproduced",
+      "result": "PASSED"
+    },
+    {
+      "name": "all three command fixtures exceed the reported 119-byte incoming-content bound",
+      "result": "PASSED"
+    },
+    {
+      "name": "review explicitly distinguishes proposed positions and parser probe from full schema validation",
+      "result": "PASSED"
+    },
+    {
+      "name": "review carries result-save guard and no physical Start replay boundaries",
+      "result": "PASSED"
+    }
+  ],
+  "scope": "Independent SHA-256/JSON syntax and byte-count reproduction only. Kath Dart parser probe is attributed, not rerun. No full JSON Schema/Flutter/firmware/cloud/hardware test performed."
+}

@@ -1,0 +1,196 @@
+﻿{
+    "observedAtUtc":  "2026-10-31T11:00:09.3840467Z",
+    "scope":  "LOCAL MOCKS ONLY; no sockets, libpq load, Supabase or remote SQL",
+    "sqlSha256":  "9cac281d9ecca2dda46c93de85f2b26b01f9b762d2def67a5efa5ad578242fdc",
+    "tests":  46,
+    "passed":  46,
+    "failed":  0,
+    "serializedEvidenceRedaction":  "PASS",
+    "cases":  [
+                  {
+                      "Name":  "exact approved hash and byte-perfect 17-statement reconstruction",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Name":  "successful sequence on one connection, explicit rollback and idle close",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Name":  "SQL hash mismatch: zero connections and SQL",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Name":  "target or TLS field mismatch 0: fail before connection",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Name":  "target or TLS field mismatch 1: fail before connection",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Name":  "target or TLS field mismatch 2: fail before connection",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Name":  "target or TLS field mismatch 3: fail before connection",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Name":  "target or TLS field mismatch 4: fail before connection",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Name":  "target or TLS field mismatch 5: fail before connection",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Name":  "target or TLS field mismatch 6: fail before connection",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Name":  "target or TLS field mismatch 7: fail before connection",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Name":  "SSL/auth verification failure: no BEGIN",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Name":  "connected but TLS/target attestation false: no BEGIN",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Name":  "connection not initially idle: no BEGIN",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Name":  "incorrect transaction read-only/isolation/role 0: no catalog SELECT",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Name":  "incorrect transaction read-only/isolation/role 1: no catalog SELECT",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Name":  "incorrect transaction read-only/isolation/role 2: no catalog SELECT",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Name":  "exactly 500 catalog rows allowed",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Name":  "501 row overflow in catalog statement 6: immediate rollback",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Name":  "501 row overflow in catalog statement 7: immediate rollback",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Name":  "501 row overflow in catalog statement 8: immediate rollback",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Name":  "501 row overflow in catalog statement 9: immediate rollback",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Name":  "501 row overflow in catalog statement 10: immediate rollback",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Name":  "501 row overflow in catalog statement 11: immediate rollback",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Name":  "501 row overflow in catalog statement 12: immediate rollback",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Name":  "501 row overflow in catalog statement 13: immediate rollback",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Name":  "501 row overflow in catalog statement 14: immediate rollback",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Name":  "501 row overflow in catalog statement 15: immediate rollback",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Name":  "501 row overflow in catalog statement 16: immediate rollback",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Name":  "SQL error/statement timeout/lock timeout 42601: no continuation",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Name":  "SQL error/statement timeout/lock timeout 42501: no continuation",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Name":  "SQL error/statement timeout/lock timeout 57014: no continuation",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Name":  "SQL error/statement timeout/lock timeout 55P03: no continuation",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Name":  "connection loss: no reconnect, resumption or unusable rollback",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Name":  "client watchdog: pending connection unusable, close not rollback",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Name":  "final rollback failure: not retried or falsely confirmed",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Name":  "rollback tag but non-idle state: stopped and distinguished",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Name":  "incomplete/multiple/malformed/unexpected/missing result 0: stopped",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Name":  "incomplete/multiple/malformed/unexpected/missing result 1: stopped",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Name":  "incomplete/multiple/malformed/unexpected/missing result 2: stopped",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Name":  "incomplete/multiple/malformed/unexpected/missing result 3: stopped",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Name":  "incomplete/multiple/malformed/unexpected/missing result 4: stopped",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Name":  "close failure cannot be reported as success",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Name":  "credential/token/metadata text fully withheld from evidence",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Name":  "native adapter remote-disabled guard: no DLL load or connection",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Name":  "all preparation complete before first BEGIN",
+                      "Status":  "PASS"
+                  }
+              ],
+    "taskStatus":  "Q12 Phase A incomplete; DB-IMP-01 not Completed; remote execution awaiting explicit approval"
+}

@@ -1,7 +1,322 @@
 # CONTRACT-FREEZE-01 — One-round team decisions
 
 **Coordinator:** Cha · **Backend owner:** Mary · **Date/deadline:** 2026-10-28
-**Status:** ANSWERS REQUIRED — NOT A FROZEN OR APPROVED CONTRACT
+**Status:** PARTIAL PERSONAL/DESIGN ANSWERS RECORDED — EXACT SHARED CHOICES OPEN; NOT APPROVED
+
+**2 Nov Ally exact-input C-02 CHANGE review received and verified:** user supplied
+`c-02.txt`; byte-identical snapshot and full hashes retained. Both delivered
+reviews reference the same three unchanged provisional inputs. Fresh current-byte
+schema execution passed 14 examples / 65 negatives / 11 malformed/unsafe cases;
+six local integrity/boundary checks passed. See [receipt and closure assessment](../integration/cha-execution/ALLY_C02_20261102_RECEIPT_AND_CLOSURE.md).
+The missing Ally review/supersession answer is now RECEIVED; do not request another
+general review of these bytes. C-02A's review-only criteria are evidenced and
+eligible for scoped completion, not shared-wire approval. C-02B's F-01–F-10
+comparison is evidenced; retain Partial until its separate A-01 prerequisite is
+confirmed from existing evidence. Published portal statuses/counts are unchanged.
+[Focused numeric interim v1 versus target v2 request](C02_Wire_Family_Decision_Request_2026-11-02.md)
+is prepared, not sent or selected. Actual shared acceptance remains BLOCKED; no
+adapter/ingestion activation, code/database/hardware operation or broader consent.
+Older missing-review statements below remain historical, superseded by this receipt.
+
+**2 Nov revised SMTP plan accepted / recipient consent relayed:** in the ongoing
+Kath-response exchange, Mary supplied acceptance of the revised test plan and
+personal consent for one clearly labeled, non-actionable test email. Recorded as
+Kath's user-relayed response, not consent for Mary/Cha, Ally or any other recipient
+and not setup/send authorization. Revised proposal: one such message per consenting
+recipient, maximum three in one agreed window, no automatic retries; test-only
+project, no Auth-state-changing verification/reset/signup actions. Still pending:
+remaining individual consent, exact window/timezone, current target verification,
+supported secure port/TLS and non-actionable send method, recoverable previous SMTP
+configuration and final explicit execution authorization. Earlier plan uses 587/
+STARTTLS; relayed proposal uses 465/implicit TLS; neither selected or tested here.
+No App Password generation, configuration inspection/change or email send performed.
+
+**2 Nov Gmail eligibility/custodian update and SMTP scope preparation:** Mary
+reports dedicated SmartHatch Gmail created, 2-Step Verification/authenticator
+configured and App Password option available, with screenshot evidence not attached
+here. Mary remains the designated custodian. No App Password generated or Supabase
+SMTP configured is reported. Mary states P1–P6 0.2 approved at design scope only;
+no independent Kath signature or setup permission inferred. Kath's user-relayed
+reply requests target, SMTP fields, consent, delivery checks and rollback while
+keeping signup/other Auth/database settings unchanged. [SMTP test-project plan 0.1](Q07_SMTP_Test_Project_Plan_0.1.md)
+proposes isolated hosted smarthatch-test only, explicitly excludes application
+project, separates transport checks from Auth-state-changing verification/reset
+tests and requires exact later authorization. No secret, account action, remote
+inspection/send/configuration change, purchase or hardware operation performed.
+
+**2 Nov latest account-planning correction supplied:** the latest user message
+requests self-service Sign Up/one-time email verification; ordinary email/password
+login without emailed codes; one-time team assignment of correct incubator records
+to account; no phone approval/installation restriction; and no administrator
+reapproval after ordinary logout/login or password reset. Recorded as supplied
+planning direction for revision, not an independently authenticated Kath signature,
+joint final adoption or permission to implement. [Technical companion 0.2](Q07_Provider_Session_Binding_Policy_0.2.md)
+and [aligned simple proposal 0.2](Q07_Plain_Language_Access_Proposal_0.2.md)
+replace contrary invited-user/OTP/session-pinned/single-phone recommendations in
+current access planning. Older M07 and Q06/Q07 receipts remain dated history;
+do not claim all their authorization assumptions are unchanged. Existing code/SQL
+does not implement this account-only policy; scoped compatibility review is required
+without reinterpreting immutable installation/actor IDs or queued hashes. M08,
+result/Active separation, source gates, occupied-batch protection and Q12 limits
+remain. Final review, hosted/native/security verification and execution remain pending.
+
+**2 Nov backend Q07 policy prepared:** [technical policy 0.1](Q07_Provider_Session_Binding_Policy_0.1.md)
+complements the existing plain-language proposal without changing it. P1–P6 propose
+admin-precreated/invited existing-user typed OTP/no implicit signup, separate binding,
+same-session refresh/new-session reapproval, transactional revocation/singleton,
+truthful logout/unknown outcomes and scoped read-only historical replacement access.
+These are review recommendations, not new Mary/Kath votes, selected hosted values,
+implemented admin operations or authorization to execute them. Local config permits
+signup/anonymous access and localhost redirects; hosted state not inspected. Named
+admin, lifetime/configuration, SDK/native evidence and shared source facts remain
+open. Preserve the reported running batch; no connection, registration or commands.
+No SQL/code/permission/source-gate/task-status change or remote/native test performed.
+
+**2 Nov Q06/Q07 response revision 3 received:** user supplied the standalone
+`SEND_TO_MARY_Q06_Q07_RESPONSE.md`, SHA-256
+`7b5c0bb8ca8b0ad3e4cbc900b3ef567f7ca27eab32a2675ae5d52b717c3be41e`.
+Its proposal-0.1 hash matches the unchanged local bytes. See
+[full scoped receipt and next-owner actions](Q06_Q07_Kath_Response_Rev3_Receipt_2026-11-02.md).
+Four recommended-design ACCEPT rows (S3/S4/E4/E5), five BLOCKED
+(S1/S2/E1/E2/E3); the attachment explicitly excludes new personal approvals,
+implementation consent and task completion. Infinix Smart 8 is the intended phone
+as reported confirmed by Kath, not a verified native target. Recover existing
+detailed device evidence; no phone reselection or inferred API/ABI/page size.
+Mary's provider/session/binding policy and Kath's native/SDK design/evidence
+remain due. M01–M08/manual-result 0.2 scoped ACCEPT unchanged; source, Q12 and
+physical gates remain open. No hosted configuration or remote/native test verified.
+
+**1 Nov Q06/Q07 coordination prepared:** at Mary's request, the
+[storage/enrollment/session proposal 0.1](Q06_Q07_Kath_Mary_Decision_Proposal_0.1.md)
+sets out S1–S4/E1–E5 recommendations, exact remaining owner inputs and future
+acceptance gates. It reuses Kath's existing suggestions and Mary's M01–M08;
+no repeated manual-result 0.2 review, new package/API-floor/expiry selection or
+member vote. Kath/Mary exact choices and delivery of this new proposal remain
+pending; no implementation, account/configuration, remote test or deployment
+permission inferred. Ally's source/decoder gates remain separate and open.
+
+## 1 Nov — Kath acknowledges the focused request
+
+**Provenance:** Mary supplied the following text in this conversation as Kath's
+response. Recorded 2026-11-01; original message timestamp/source attachment not
+supplied. This is a user-relayed acknowledgment, not an independently verified
+signature or a same-hash technical review.
+
+> Received, Cha. I’m awaiting Ally’s matching source/catalog/hash packet before confirming decoder compatibility. I’ll send the scoped findings once those files are available. Android transport, storage and enrollment/session choices remain for coordination with you; no compatibility pass is claimed yet. The recorded manual-result 0.2 ACCEPT remains unchanged.
+
+- Request acknowledgment from Kath is now received through Mary; no repeat
+  acknowledgment or general manual-result 0.2 review is needed.
+- D01/D02/D03 source/decoder compatibility remains pending Ally's matching packet
+  and Kath's subsequent scoped findings. No source revision/hash is selected.
+- Q06 storage/Android choices and Q07 enrollment/session choices remain open for
+  Mary/Kath coordination. This reply does not choose packages, device floor,
+  activation expiry or session/replacement semantics. Those discussions may
+  proceed independently where they do not depend on the missing source packet.
+- Existing scoped manual-result 0.2 ACCEPT is unchanged; it is not expanded into
+  protocol approval, implementation permission or task completion.
+- Ally's acknowledgment/new packet is not supplied by this reply. No code,
+  task-card status, source gate, deployment or database permission changes.
+
+The earlier preparation note below predates this acknowledgment; its pending
+Kath-reply wording is historical, not a request to resend her acknowledgment.
+
+**1 Nov independent Mary checklist preparation:** user reports sending the focused
+request to Ally and Kath; acknowledgment/replies and matching new source packet
+remain pending. [Local backend preparation](MARY_Backend_Preparation_2026-11-01.md)
+records a 13-input raw-byte snapshot, provisional checkout-to-DB-02 mapping,
+legacy-client/Q06/Q07 gaps and conditional authorization acceptance cases.
+This is automated source analysis, not Mary's new personal vote or a member's
+ACCEPT/CHANGE/BLOCKED response. Current local Combined source differs from the
+reported later patch; no source selected or accepted for ingestion. Existing
+manual-result 0.2 scoped ACCEPT and M01–M08 are preserved. No task status,
+production code, draft SQL, cloud setting, source gate or permission is changed;
+Q12 remote retry/later phases remain separately gated.
+
+**31 Oct Q12 phase A Attempt 1 PARTIAL/BLOCKED (Mary's manual report):** exact SQL
+hash reportedly passed; BEGIN and three SET LOCAL statements executed, then the
+60-second idle timeout terminated the original connection before any catalog
+SELECT. Explicit rollback confirmation unavailable; client reconnection is not
+proof of the original transaction's state. No database modifications reported;
+log not independently received/verified. See [Attempt 1 receipt](../integration/cha-execution/Q12_PHASE_A_ATTEMPT_1_RECEIPT.md).
+Propose automated single-session, per-result gating without changing SQL bytes or
+timeouts; no retry executed by agent. Phase A approval stands, later phases remain
+excluded; neither Q12 nor DB-IMP-01 is Completed. Earlier no-remote-attempt records
+remain historical agent-preflight evidence, not the status of this later manual run.
+
+**31 Oct Q12 phase A explicitly approved; blocked before remote execution:** Mary
+confirmed authority and approved only the exact prepared test-project read-only
+inspection, sanitized evidence and rollback. This supersedes the earlier pending
+phase-A authorization statement, not the later-phase gates. Local preflight found
+that linked CLI setup may mint a temporary login role; no configured direct
+connection was available. No remote access/query/transaction was attempted; no
+rollback result is claimed. See [approval and blocker receipt](../integration/cha-execution/Q12_PHASE_A_APPROVAL_AND_BLOCKER.md).
+Do not ask for phase A approval again or silently permit role creation. Q12 overall
+remains unresolved; mutations/deployments/production/later phases remain excluded.
+
+**31 Oct Q12 plan prepared; execution NOT approved:** Mary's “alright lets do your
+recommendation” authorizes preparation only. [Staged approval plan](../integration/cha-execution/Q12_Test_Project_Approval_Plan.md)
+and sibling phase-A catalog SQL now identify a read-only first request for
+smarthatch-test `zbwntspdecngnicllwlw` only, with rollback/evidence boundaries.
+No remote inspection or mutation was performed. Account/fixture/schema/RLS/grant/
+RPC/deployment phases require new exact consent; existing SQL drafts are not
+approved for application and do not implement the accepted result-only 0.2 API.
+Main/production excluded, source acceptance disabled; Q12 remains unresolved.
+
+**31 Oct manual-result 0.2 delta review ACCEPT received:** Kath requests no
+additional candidate text changes. Version/core, lookup tuple/receipt continuity,
+retryability/commit-state, malformed-response rejection and scenario/M08 rules
+have scoped ACCEPT review evidence. Delivered source/new captured logs report
+106 Dart review assertions with matching full canonical strings/digests. Her
+Node attempt was tooling-blocked before cases (missing Ajv); Mary independently
+reran the exact unchanged suite with existing temporary tools: 27/27 passed.
+See [recorded delta acceptance](../integration/cha-execution/KATH_02_DELTA_ACCEPT_RECEIPT.md).
+Do not ask for another general Q05 review or create a revision without a concrete
+new finding/change. This is review completion, not whole-task completion or
+implementation consent; source/manifest, Q06/Q07 and Q12 gates remain.
+
+**31 Oct M08 approved and separate next candidate prepared:** User explicitly
+answered “yes i approve that specific rule”: reserve action UUID at first durable
+draft creation and reuse it as result_id at sealing/retry of that committed
+action. M08 is now recorded in [Mary's position file](D04_D06_Mary_Backend_Position.md);
+do not request this choice again. [Manual-result 0.2 review delta](DB-02_Manual_Result_API_0.2-review.md)
+proposes the new contract discriminator, strict lookup tuple/receipt comparisons,
+code-specific retryability and explicit alternative fixtures. 27 local candidate
+checks passed; 0.1 parent bytes unchanged. Exact 0.2 consumer/hash review remains
+open; no production implementation, whole-task completion or other-choice approval.
+
+**31 Oct existing Dart evidence/full-card receipt delivered:** Kath supplied the
+exact previously identified Dart script, console-output export and eight-task
+mapping. Hash/size checks pass and standalone mapping matches ZIP copy. Output
+is expressly an export from retained console text, not a separately captured
+original log or a new run here. Kath now confirms full 79-file packet, all 34
+cards/102 NOT RUN cases and architecture documents received; earlier availability
+gaps are cleared. See [delivery/provenance receipt](../integration/cha-execution/KATH_DART_EVIDENCE_20261031_RECEIPT.md).
+Do not request another script/card delivery or general review. No formal adoption,
+implementation permission, other-recipient distribution or whole-task acceptance
+inferred. Draft UUID reservation remains a specific unresolved Mary choice.
+
+**31 Oct Kath substantive manual-result review received:** Exact W/R/A/S/F/C
+fingerprints and both reported 422/445-byte Dart vector digests match the local
+review artifacts. Scoped ACCEPT recommendations now cover concrete result-only
+version/time/core/receipt/real-mapping semantics; do not request another generic
+review. Specific CHANGE requests: durable-draft UUID reuse at seal (Mary decision
+still needed), fixture scenario wording, lookup tuple guard and error retry rules
+in an explicitly identified next candidate. 0.1 inputs preserved. Script/raw Dart
+log not attached; 41 Dart assertions remain attributed, not rerun here. See
+[receipt and remaining exact actions](../integration/cha-execution/KATH_CLOSURE_20261031_RECEIPT.md).
+Kath received indexes, not all task cards; existing full ZIP contains 34 cards and
+102 NOT RUN cases. This is a delivery gap, not a new missing-work claim. No new
+full task completion, exact protocol agreement, adoption or execution permission.
+
+**All remaining task preparation opened — 30 Oct:** User requested concrete
+preparation across every unfinished task and one consolidated response packet.
+All 34 now have individual criteria/dependency/evidence work cards and three
+future cases each; all 102 acceptance cases remain NOT RUN. Existing local
+backend regression rerun: 110/110 passes. Fresh schema/reference suites retained.
+Four exact current-source observations were documented without editing Kath's app.
+See [one remaining-decision batch](../integration/remaining-task-workqueue/REMAINING_DECISIONS_ALL_OWNERS.md)
+and [all 34 work cards](../integration/remaining-task-workqueue/README.md).
+Q01–Q14 preserve existing answers and request only missing artifacts/choices or
+separately scoped permission. Preparation is started; gated implementation is NOT
+claimed started/completed. No bulk status edits: 7 Completed / 9 Partial /
+25 Not started / 1 Superseded. Superseded work remains excluded.
+
+**ARCH-05 source recovery/document placement — 30 Oct:** Actual standalone K06
+v0.3 and supplied v0.4 were located in Downloads and placed byte-identically in
+docs/. Their 17 decision IDs and raw hashes are retained. See
+[controlled architecture amendment record](ARCH-05_K06_Architecture_Amendment_Record.md)
+and ARCH-05_source_manifest.json. Eight integrity/document checks passed. v0.4
+explicitly requires final team review/adoption before adopted/distributed claims;
+that exact-revision evidence remains missing. ARCH-05 stays Partial until actual
+adoption is supplied; no personal or other-member approval invented. Earlier
+missing-v0.3 statements describe older observations, not the current file state.
+Follow-up: user explicitly answered **Not yet adopted**. Repository placement and
+record verification are performed, but formal adoption has not occurred; do not
+ask again whether old approval evidence exists or mark ARCH-05 Completed.
+
+**Independent monitoring work while C-02 is parked — 30 Oct:** ORIGINAL:C-09
+received 27 new actual helper/input-boundary tests; targeted 27/27 and regression
+110/110 passed (regression includes those 27). See
+[monitoring boundary report](../integration/cha-execution/ORIGINAL_C09_MONITORING_BOUNDARIES.md).
+Source modules unchanged; arbitrary synthetic policy values are not approved
+freshness/skew thresholds. Strict input guard unit checks pass; actual source
+association/transport/UI composition and measured cadence/policy remain open.
+No new full task Completed; Superseded work remains inactive.
+
+**Fresh independent verification — 30 Oct:** Existing temporary Ajv 8.17.1 /
+ajv-formats 3.0.1 reused, with no installs. Unchanged C-02 passed meta-validation,
+14 examples, 65 negative mutations and 11 unsafe frames; exact manual-result
+schema passed 13 standards-check groups and 21 existing reference checks.
+See [dated C-02A verification](../integration/cha-execution/INDEPENDENT_SCHEMA_VERIFICATION.md).
+C-02A now Partial: sample validation performed and Kath review received, but
+Ally's exact schema/example review remains open. Schema-vs-runtime gaps are
+documented, not silently fixed in already-shared bytes. No full task Completed;
+all 24 future implementation cases remain NOT RUN. Current Cha counts:
+7 Completed / 9 Partial / 25 Not started / 1 Superseded.
+
+**Latest Kath/Mary seven-item proposal received — 30 Oct:** User supplied
+`updated-Kath-Mary-Remaining-Decisions-Proposal-2026-10-30` (SHA-256
+fcac95a70cbce94d6fe7e244310eea8b26ba92d3a7d34b436cf2a1c0faaf8fc7).
+Its prior reviewed snapshots do not include the new manual-result API. Specific
+workflow/local-schema/key/session/finalization proposals are now received, not
+missing; exact native packages/API-30 floor, activation expiry and future
+administrator-finalization/hold policy are NOT approved by forwarding the file.
+See [focused comparison/recommended response](../integration/cha-execution/KATH_REMAINING_DECISIONS_RECEIPT.md).
+Previously confirmed M01–M07 remain; no new personal vote, shared approval or
+task completion is inferred. Kath must review the already prepared exact API bytes
+to resolve result receipt/mapping/revision differences rather than repeat audit.
+
+**Latest independent preparation — 30 Oct:** Mary's result-interface proposal is
+now drafted as [DB-02 manual-result 0.1-review](DB-02_Manual_Result_API_0.1-review.md),
+with a distinct candidate api_version/contract, closed schema, two synthetic
+canonical hash vectors, receipt/lookup examples and 24 NOT RUN closure cases.
+21 pure local proposal/reference checks passed; no actual API, persistence,
+authorization, Dart, firmware or physical integration was tested. Existing DB-02
+candidate bytes and disabled source acceptance remain unchanged. Exact-byte
+Kath review and shared dependencies remain open; no new task is Completed.
+
+**Latest Mary confirmation — 30 Oct:** User explicitly answered “alright, i
+confirm” to seven proposed backend positions. M01–M07 are now personal choices in
+[Mary's existing position record](D04_D06_Mary_Backend_Position.md): durable result
+workflow, result alone retains Active guard and does not set Completed, original
+manifest validation, deferred submitted corrections, Mary-owned versioned API
+proposal, atomic local durability requirements, and controlled cloud enrollment.
+Exact Kath package/UX/bootstrap and shared source/finalization/admission choices
+remain open. No implementation approval or other-member acceptance is inferred.
+
+**Latest Kath focused review receipt — 30 Oct:** The user supplied
+`Kath-C02-Provisional-Focused-Review-2026-10-30.md`. All five reviewed input hashes
+matched this checkout at receipt; snapshots preserved before this ledger edit.
+Overall CHANGE; exact wire acceptance BLOCKED. All fourteen reported message
+byte counts independently reproduced; START/STOP/STATUS are 314/243/237 content
+bytes versus Ally's reported 119-byte RX capacity. This is not a firmware or
+Dart test rerun. See [received positions and task impact](../integration/cha-execution/KATH_FOCUSED_REVIEW_RECEIPT.md)
+and section 10. The review is prepared for Kath to confirm, not an authenticated
+signature; specific supported directions are recorded without blanket approval.
+
+**Latest direct ZIP receipt — 30 Oct:** Received 34 Markdown files in
+`01-20261030T075957Z-1-001.zip`, SHA-256
+`d7657d191f11d18d4e87f803c1314719157bbe7b9f56a184b56e0cde31d15eb2`.
+All 13 Ally dispositions and four completion conditions are now directly read,
+not merely cited by a reviewer. See the [C-02B review and responses](../integration/cha-execution/ALLY_ZIP_C02B_REVIEW.md).
+C-02B progresses to Partial, not Completed: C-02A's exact-schema reviews remain
+open. The ZIP still omits raw source/patch, fixtures, build artifacts and Dart model.
+
+**Prior consolidation — 30 Oct:** The supplied Ally packet review and Flutter
+compatibility review supersede older receipt summaries below. Ally's D02/D04/D06
+positions are received, including conditional support for independent manual
+results. The user's current message supports design principles only, not the exact
+protocol or implementation; its pasted team-addressed wording is not independently
+authenticated as Kath's technical sign-off. See [one consolidated update and
+DB-02 amendment](DB-02_30Oct_Consolidated_Alignment.md) for only the remaining
+choices, owners and closure tests. No full task completion is newly claimed.
+
+**30 Oct response update:** Mary Charlyn's explicit D04/D06 personal backend
+answers are now recorded in [D04_D06_Mary_Backend_Position.md](D04_D06_Mary_Backend_Position.md).
+D04 cloud authorization/retention and D06 sync invariants are personally accepted;
+independent manual completion is a **CHANGE REQUEST**, not joint approval.
+Further exact shared choices and implementation gates remain outstanding. No deployment
+or code/schema change is authorized. Cha and Mary are the same respondent.
 
 Purpose: ratify v1.3 section 4 defaults once, record actual answers, then unlock
 only the corresponding implementation slices. This sheet is not a new contract
@@ -44,16 +359,22 @@ schema/limit/key/profile. No automatic AGREED on accepting OpenCode's suggestion
 
 | ID/topic | Recommended default already in v1.3 | Exact choice/values required in this round | Existing evidence / limitation | Responsible answer/sign-off | Team's actual answer | Status | Implementation unlocked after sufficient agreement |
 |---|---|---|---|---|---|---|---|
-| D01 — baseline | HC-05/Android primary, USB diagnostics; prefer earlier batch-aware catalog, not actuator-only replacement | Select canonical remote, development branch/commit/sketch, actual sketch SHA-256, core/toolchain and catalog revision/hash. Flashed identity may honestly be UNKNOWN. Confirm same source packet for all owners. | v1.3:82; UI-03 §1/§9 and Integration B01: sketch/catalog lineage differs; README is not selection or flash proof. | Ally supplies manifest; Kath + Mary accept; Cha records | PENDING — no D01 team answer supplied | NEEDS ANSWER | HW-IMP-01 baseline/build setup; schema pin for UI-IMP-01, DB-IMP-01 and INT-IMP-01 |
-| D02 — lifecycle/identity/recovery | Explicit START/STOP, read-only STATUS/STATE, original batch/command/event IDs, ACK not transition, no blind retry; bounded recovery if feasible | Accept earlier batch-aware basis or identify a complete alternative; attach exact fields/types/ID widths, duplicate-content and rejection rules, persistent original manifest, current-vs-history recovery and replay scope. If replay infeasible, state exact lost-event cases accepted by all. | v1.3:83; Integration B02–B05/B08 and UI-03 R08–R18: missing/contradictory exact messages and retained recovery. A policy yes without catalog is not a byte-level freeze. | Ally leads; Kath + Mary accept; Cha records exact revision | PENDING — no D02 team answer supplied | NEEDS ANSWER | HW-IMP-01 behavior, UI-IMP-01 decoder, HW-IMP-02 recovery and DB-IMP-01 source adapter; remaining gates still apply |
-| D03 — bytes/build | JSON-LF only if actual memory/service feasibility supports it; ring64 is not complete-frame limit; no arbitrary binary switch | Supply or assign exact missing proof: full maximum fixtures, RX/TX/parse bounds including delimiter treatment, widths, service budget, true compile/link/ELF/HEX/size and stack estimate. Choose a bounded multi-frame alternative only if evidence requires it, with exact approved schema. | v1.3:84; Integration B06/B07; UI-03 §5: counts are literals, memory unverified, exit0/unused input is not a build. No new measurements here. | Ally provides proof; Kath validates Android bounds; Mary accepts mapping | PENDING — no D03 team answer or new build/limit evidence supplied | BLOCKED | HW-IMP-01 parser/build and UI-IMP-01 real byte bounds; HW-IMP-02 memory budget. A failing build becomes a named blocker, not another broad review |
-| D04 — trust/release | One provisioned Android installation; separate offline command authority and authenticated cloud uploader; retention_ack:null; no auto-release | Agree feasible local provisioning/revocation/threat model and online authorization/session scope; choose bounded journal/service retention + exact accepted loss cases OR feasible verified server release. Specify journal-full safe behavior and demo restriction when unavailable. Never use placeholder MAC/phone HTTP result as source release. | v1.3:85 and C-07/C-08; Integration B09/B10: offline auth and Uno-verifiable receipt proof not supplied. Online revocation cannot instantly reach an offline link. | Ally local + Mary cloud; Kath setup/storage/UX; Cha records loss guarantee | PENDING — no D04 team answer or accepted authority/loss policy supplied | BLOCKED | HW-IMP-01/02 authority/retention and DB-IMP-01 auth tests; live Start/ingestion stay disabled until implementation/security gates pass |
-| D05 — Chicken/profile/time | Chicken fresh-egg physical pilot only; manual hatch count; unknown RTC remains unknown; no invented numeric profile | Name designated approver and exact approved Chicken profile/version (heat/humidity/stages/turning/safety values), real quantity bounds, RTC/module, invalid-clock Start rule, outage elapsed-day rule and sensor validity/freshness. If unavailable, choose mock/non-powered demo, not guessed settings. | v1.3:86,31–34; Integration B11; UI-03 R19–R21/R30: UI6..12 is source behavior, not approved capacity; profile/RTC/skew/cadence unapproved. | Ally + named profile approver sign; Kath + Mary acknowledge mappings; Cha records | PENDING — approver/name/values and D05 team answer not supplied | BLOCKED | HW-IMP-01 readiness, HW-IMP-02 clock policy, UI day/reading display, DB time/profile validation. Powered/egg tests still need separate clearance |
-| D06 — local/cloud mapping | SQLite intent/dispatch/evidence/outbox; Mary's idempotent bridge-sync candidate; preserve real DB names; cloud cannot initiate physical Start | Confirm source adapter/catalog revision, exact API/receipt/hash/dependency/session mapping, approved local package/support floor and online auth/RLS test scope. Decide Stop prerequisite vs local manual-count draft/pending handling and new-batch lifecycle. Name isolated test destination and choose mocked/read-only fallback if migrations/security are not ready. | v1.3:87; UI-03 §6/R25–R29 and Integration B12: source adapter mismatch; manual completion's Stop dependency needs explicit choice. No test project or migration authorization inferred. | Mary + Kath lead; Ally checks source facts; Cha records | PENDING — no D06 team answer supplied | NEEDS ANSWER | UI-IMP-02 durable transactions, DB-IMP-01 adapter/receipts/security, INT-IMP-01 shared fixtures. Deployments remain separately gated |
+| D01 — baseline | HC-05/Android primary; USB diagnostics; no architecture re-vote | Pin one source/catalog/toolchain and explicit supersession answer; flashed image may remain UNKNOWN | Supplied packet review §D01/protocol mismatch: original 3721bce0… vs patched 7106ebfe…; numeric START vs START_BATCH/CONFIRM | Ally supplies source/supersession; Mary + Kath accept same bytes | RECEIVED: Ally reports ally-branch3 / 80971f9… and patched source; architecture retained. No selected common protocol or delivered raw source in reviewed Markdown ZIP. | ANSWERED IN PART; SELECTION OPEN | No adapter/decoder unlocked until matching source/catalog accepted |
+| D02 — lifecycle/identity/recovery | Deliberate Start; ACK/state/physical feedback distinct; no automatic physical Start replay | Exact STOP/read-only recovery, IDs, boot/reset/selection/invalid-EEPROM outputs and retained loss boundary | Packet review cites numeric uint32 batch, volatile 8-entry ACK cache, missing STOP and incomplete STATUS; boot descriptions conflict | Ally transition/output table + schemas; Kath + Mary mapping acceptance | RECEIVED: current limitations explicitly answered; user supports deliberate Start/durable original evidence. Blank/corrupt EEPROM fresh-batch/control-resume reports need reconciliation, not an inferred no-auto-heat pass. | ANSWERED IN PART; SEMANTICS OPEN | HW/UI/DB implementations remain dependent on exact accepted facts |
+| D03 — bytes/build | Separate software RX ring, parser buffer, TX, Android bounds and HTTP ceilings | Deliver existing raw build/fixtures; approve maxima, delimiters, stack/service and identity/journal byte budget | Reported 21,164 B flash / 1,782 B static SRAM / 266 B remaining; oversized-input LF drain; not reproduced here | Ally AVR/RX/TX/layout; Kath Android framing; Mary adapter bounds | RECEIVED: real build reported, not absent. serialLine[120] is RX application storage, not TX maximum; HTTP 4096 ceiling is not a Uno requirement. Eight-byte command does not fit four-byte AVR long. | BUILD REPORTED; FEASIBILITY BLOCKED | No final byte/schema freeze or safe runtime claim |
+| D04 — trust/release | Controlled non-anonymous cloud enrollment; separate controller authority; retention_ack:null; no HTTP-only release | Exact key/provision/revoke threat model, Flutter bootstrap, bounded journal/service/full/corrupt/loss rules | Packet review cites no current wire authorization; four-slot critical journal proposal, not production retention | Ally controller/key/journal; Mary cloud; Kath secure storage/startup; all accept loss limits | RECEIVED: Mary's scoped non-anonymous cloud and fail-closed release positions; Ally retains null/no synthetic release and proposes full/corrupt journal block new Start, not emergency safety action. User supports controlled enrollment. Exact mechanism and loss policy not approved. | PRINCIPLES RECORDED; IMPLEMENTATION BLOCKED | App enrollment is NOT controller authentication; live gates remain off |
+| D05 — Chicken/profile/time | Preserve Chicken pilot scope and unknown-clock provenance; no invented settings | Named approver accepts existing candidate values/version/capacity; choose invalid-clock/outage/freshness policy | Packet review cites supplied profile record :335–353 with values and approval state; actual numerical record not attached here | Ally supplies existing record/module facts; designated approver signs values; Kath + Mary time/display mapping | RECEIVED: candidate values exist in Ally packet; do NOT ask Ally to invent/restate them. Approval, RTC identification and physical checks remain missing. Phone receipt is not source occurrence time. | VALUES REPORTED; APPROVAL/TIME BLOCKED | No physical readiness or numeric profile approval inferred |
+| D06 — local/cloud mapping | Durable original intent/evidence; idempotent cloud sync; result/ACK/state/lifecycle/receipt/admission distinct | Accept exact amended result/lifecycle/admission policy, selected source adapter, API/hash/dependencies and Kath storage transactions | Packet review cites Ally conditional completion support :235–250; Flutter review reports cloud-success Started UI, legacy parser and missing durable batch intent | Mary DB-02 amendment; Kath UX/transactions; Ally source/admission conditions | RECEIVED: Mary sync invariants and independent manual result request; Ally conditionally supports result recording without Stop, not clearing single-Active guard or admitting a new physical batch. User supports principles, not exact implementation. See DB-02 amendment; original stopped_event_id schemas remain historical candidates, NOT compatible with requested change. | CONDITIONAL DIRECTION RECORDED; EXACT AMENDMENT OPEN | No migration/RPC/adapter activation. Isolated test target unchanged; previous narrow permission not expanded |
 
 **Actual D01–D06 agreements recorded: NONE.** Existing architecture/scope directions
 are carried forward as requested, not reopened; they are not new answers to the
 six exact freeze choices. No v1.3 approval or successful technical test is inferred.
+
+**Earlier individual response (superseded by the latest consolidation above):** Mary's four explicit D04/D06 selections are now
+recorded; “NONE” above means no complete **joint D01–D06 agreement**, not no
+individual replies. D01/D02/D03/D05 exact approvals remain unrecorded. Her
+independent-completion choice requests a revision rather than accepting the
+candidate's existing Stop prerequisite.
 
 ## 3. Copy/paste: one focused group-chat round
 
@@ -102,11 +423,11 @@ Design-freeze disposition: **NOT APPROVED**
 
 | Member | Decisions requiring their answer | Actual reply / source link / date | Sign-off |
 |---|---|---|---|
-| Ally | D01–D06 firmware/source/safety feasibility | PENDING — no reply supplied | PENDING |
-| Kath | D01–D06 Android/compatibility/local recovery | PENDING — no reply supplied | PENDING |
-| Mary | D01–D06 backend/source/security/data mapping | PENDING — no reply supplied | PENDING |
+| Ally | D01–D06 firmware/source/safety feasibility | Full 13-position response and four completion conditions now directly received in the 34-Markdown ZIP; no Stop implication, no Active/admission release, unknown time NULL, manual bounded counts. Source/patch/fixtures/raw build/model still missing. Current limitations and fail-closed release recorded above. | PERSONAL POSITIONS RECEIVED; EXACT SHARED CHOICES OPEN; NOT JOINT SIGN-OFF |
+| Kath / Flutter reviewer | D01–D06 Android/compatibility/local recovery | Latest focused five-input review directly received; exact hashes matched. CHANGE provisional schema, BLOCKED common wire; supports scoped cloud enrollment, durable original identities and conservative manual-result amendment with guard retained. Concrete local/storage/UX positions proposed, not implemented. Earlier compatibility review/63 tests remain attributed evidence. | EXACT-INPUT REVIEW RECEIVED; PERSONAL CONFIRMATION/SHARED WIRE ACCEPTANCE OPEN |
+| Mary | D01–D06 backend/source/security/data mapping | Earlier four answers plus explicit later M01–M07 confirmation recorded in D04_D06_Mary_Backend_Position.md. Prototype result alone retains Active and defers lifecycle finalization/corrections; exact API remains to draft after workflow alignment. D01/D02/D03/D05 and concrete remaining implementation choices not signed. | PERSONAL M01–M07 CONFIRMED; EXACT SHARED AMENDMENT OPEN; NOT FULL SIGN-OFF |
 | Designated profile approver (name required) | D05 exact numerical profile/capacity/safety values | PENDING — person/values not supplied | PENDING |
-| Cha | D01–D06 coordination acknowledgment and revision record | Sheet prepared; no team answers received | PENDING — no ratification recorded |
+| Cha | D01–D06 coordination acknowledgment and revision record | Same person as Mary above; recorded her actual D04/D06 answers on 2026-10-30, no separate technical vote or other-member response inferred | COORDINATION RECORD UPDATED; JOINT RATIFICATION PENDING |
 
 After the user supplies the actual replies, Cha updates section 2's answer/status
 cells and this record with exact agreed choices/values, source revisions, named
@@ -166,7 +487,7 @@ authorized read-only cloud; real hardware/cloud segments only when their gates
 and tests pass. No fake telemetry/physical Start/security/hatchability claim to
 meet October 30. Do not create another competing contract or general audit.
 
-## 7. This task's actual verification
+## 7. Historical 28 Oct preparation verification (before actual replies)
 
 Prepared from the four requested documents only; no new compatibility, live
 schema, hardware or application audit. Input SHA-256 values were computed, not
@@ -186,3 +507,58 @@ or physical test is claimed. The sheet is untracked/uncommitted on `cha-branch2`
 in `C:\EggIncubator\egg_incubator_app`; existing worktree/work remains active and
 preserved. No staging, commits, pushes, merges, deployment or cleanup occurred.
 Task follow-up is waiting for the user's actual team answers, not another audit.
+
+## 8. 30 Oct actual Mary response update
+
+The historical no-answer statements in section 7 describe preparation on 28 Oct.
+They are not the current response state. Mary's D04 cloud identity and
+fail-closed retained-evidence release positions, and D06 sync invariants, are
+now personally accepted. Her D06 independent-completion choice is a requested
+change to the candidate, pending Kath/Ally and safe lifecycle agreement.
+
+See [the exact response record](D04_D06_Mary_Backend_Position.md) and
+`../integration/cha-execution/mary-d04-d06-answers.json`. The input candidate
+hashes identify reviewed context only, not a jointly selected/frozen revision.
+No full member sign-off or code/deployment authorization was inferred. D04 stays
+BLOCKED and D06 NEEDS ANSWER in their joint scope. No SQL/Flutter/firmware or
+remote operation occurred in this response-recording update.
+
+## 9. Historical receipt of earlier 30 Oct Ally progress-report packet
+
+Received `SmartHatch-all-reports-2026-10-30-1.json` (26 records, 23 outer task IDs).
+This is useful attributed source/build/host/model progress, **not** a complete
+formal answer/sign-off packet. In particular, STOP/admission/RTC/production
+durability and joint source/mapping decisions remain blocked; no explicit response
+to Mary's independent-completion change request is present. Do not reuse the
+earlier “no reply supplied” preparation wording as though no evidence was received.
+
+See `../integration/cha-execution/ALLY_REPORT_REVIEW.md` for the D01–D06 matrix,
+exact source differences, two misfiled HW-IMP bodies and the small follow-up packet.
+The later personal-response and supplied reviews supersede this earlier missing-response
+finding; conditional support is now recorded in section 2. No Ally task/status,
+report attribution or joint approval was changed. Original
+export and browser data are preserved; reported tests were not rerun here.
+
+## 10. Kath focused five-input review — specific positions, not another pending reply
+
+Source: user-delivered `Kath-C02-Provisional-Focused-Review-2026-10-30.md`, SHA-256
+`4473813552ef21a77fe57296f89fb7843a3b4f1ad19990c3e596b70f66e162e0`.
+The five reviewed snapshots are pinned in
+`../integration/cha-execution/kath-focused-review-validation.json`; current ledger
+and amendment may subsequently evolve without overwriting those exact inputs.
+
+| Existing decision | Actual supplied review position | Exact remaining action |
+|---|---|---|
+| D01 | BLOCKED common source/protocol; no silent translation | Ally supplies supersession and existing matching artifacts; Kath/Mary accept same bytes |
+| D02 | ACCEPT identity/no-replay direction, CHANGE historical wire; proposes T1 intent/T2 dispatch marker and correlated outcome recovery | Ally literal STOP/recovery and pending-Start lifetime/cancel semantics; final encoding/manifest; Kath maps approved facts |
+| D03 | CHANGE/BLOCKED bounds; independently reproduced literal sizes show three incoming commands too large | Ally RX/TX/stack/service/layout proof; Kath exact byte framer/decoder tests after selected maxima |
+| D04 | ACCEPT scoped cloud direction/null release; proposes protected Android storage, local-state-before-auth startup and logout preserving evidence without STOP | Confirm proposed personal positions; exact package/SDK/key/bootstrap/revocation plus controller-side authorization and bounded loss policy |
+| D05 | ACCEPT truthful independent validity/time/state dimensions; BLOCKED numerical profile/time/freshness policy | Named profile approval and exact elapsed/outage/age rules; no automatic UTC substitution |
+| D06 | ACCEPT design amendment A/B/C and Ally's four conditions; result alone keeps Active guard; local saved only after durable commit, atomic outbox/receipt mappings proposed | Mary exact versioned result representation/API/hash proposal; Kath concrete transaction/package/UX acceptance; joint explicit finalization/admission rule |
+
+These are received review dispositions, not a jointly approved D01–D06 revision
+or Kath's signature inferred from a prepared AI response. No new implementation
+authorization or full task completion. C-02A has Kath's exact-input review;
+Ally's same-schema/example review and applicable sample validation remain open.
+Do not ask Kath to repeat this review. The delivery acknowledgment confirms this
+review reached us, not distribution to every required ARCH-06 recipient/session.

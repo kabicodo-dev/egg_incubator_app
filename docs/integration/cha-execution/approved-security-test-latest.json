@@ -1,0 +1,9 @@
+{
+  "taskId": "OCT26:C-01",
+  "runDirectory": "security-run-2026-10-29T19-29-38-293Z",
+  "approval": "User approved narrowly scoped security testing on smarthatch-test zbwntspdecngnicllwlw, temporary test identities/records and run-owned cleanup. No migrations, RLS changes, RPC activation, deployment, production access or commits; stop before Kath/Ally decisions.",
+  "taskStatus": "Partial",
+  "securityResult": "FAILED_INTENDED_INSTALLATION_SCOPING",
+  "title": "Approved test-project PostgreSQL role/RLS probe and verified rollback",
+  "remaining": "Actual JWT/Auth and installation enrollment/revocation tests, ownership, source/receipt mappings, other application tables and RPC/transaction acceptance remain unverified or team-gated. No security remediation performed."
+}

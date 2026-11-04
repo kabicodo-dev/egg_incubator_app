@@ -1,0 +1,44 @@
+{
+  "date": "2026-10-30",
+  "source": "supabase/functions/_shared/bridge-monitoring.mjs",
+  "sourceSha256": "863447ee1c8a869cff380a7d55e99d6ce5ae207b9bf8237dc849efbdb0b434ec",
+  "scope": "Observed pure-helper behavior only. These are caller-boundary findings, NOT accepted production safety results or proof an actual upstream path is exploitable.",
+  "findings": [
+    {
+      "id": "MON-01",
+      "input": "measured_at=2026-02-30T00:00:00Z, now=2026-03-02T00:00:00Z",
+      "observed": {
+        "state": "fresh",
+        "live_value": 25,
+        "last_value": 25
+      },
+      "required": "A strict validated input boundary must reject impossible calendar dates before freshness classification. Date.parse alone normalizes this date; helper must not serve as raw timestamp validator.",
+      "status": "CALLER/INTEGRATION GUARD NOT VERIFIED"
+    },
+    {
+      "id": "MON-02",
+      "input": "No device_id, batch_id or sample identity; otherwise fresh synthetic values",
+      "observed": {
+        "state": "fresh",
+        "live_value": 25,
+        "last_value": 25
+      },
+      "required": "Validate source authorization and original batch/sample association before selecting a live reading. Helper itself cannot establish association and must not be the selection/security gate.",
+      "status": "CALLER/INTEGRATION GUARD NOT VERIFIED"
+    },
+    {
+      "id": "MON-03",
+      "input": "connected:false plus otherwise fresh synthetic acquisition",
+      "observed": {
+        "state": "fresh",
+        "live_value": 25,
+        "last_value": 25
+      },
+      "required": "Track transport connected/disconnected as an independent dimension; metric freshness alone is not connection status. Do not interpret loss as physical Stop or suppress the separate disconnection warning.",
+      "status": "UI/TRANSPORT COMPOSITION NOT VERIFIED"
+    }
+  ],
+  "productionSourceChanged": false,
+  "selectedFreshnessThreshold": null,
+  "newTaskCompletions": []
+}

@@ -1,0 +1,282 @@
+{
+  "scope": "Current independent full-completion eligibility assessment only; no portal status mutation",
+  "completedNow": [
+    "OCT26:C-03"
+  ],
+  "remainingSourceRecords": 34,
+  "eligibleForFullCompletionNow": [],
+  "parked": [
+    {
+      "id": "ORIGINAL:C-02",
+      "title": "Define JSON telemetry and command contracts",
+      "owner": "Mary Charlyn",
+      "priority": "P1",
+      "statusUnchanged": "Not started",
+      "reason": "Exact selected interface packet and Ally/Kath schema review are missing."
+    },
+    {
+      "id": "ORIGINAL:C-03",
+      "title": "Secure ESP8266 data ingestion",
+      "owner": "Mary Charlyn",
+      "priority": "P0",
+      "statusUnchanged": "Partial",
+      "reason": "Secure source ingestion needs the selected source contract, identity scope and separately authorized schema/RPC implementation."
+    },
+    {
+      "id": "ORIGINAL:C-04",
+      "title": "Configure one authorized application device",
+      "owner": "Mary Charlyn",
+      "priority": "P0",
+      "statusUnchanged": "Not started",
+      "reason": "Actual installation bootstrap/session/Flutter compatibility remains undecided; no pilot enrollment approved."
+    },
+    {
+      "id": "ORIGINAL:C-05",
+      "title": "Test RLS and permission boundaries",
+      "owner": "Mary Charlyn",
+      "priority": "P0",
+      "statusUnchanged": "Not started",
+      "reason": "Full authorized/other/revoked matrix needs implemented identity/RPC boundaries; the sensor role probe is not that matrix."
+    },
+    {
+      "id": "ORIGINAL:C-06",
+      "title": "Prevent duplicate Start requests",
+      "owner": "Mary Charlyn",
+      "priority": "P1",
+      "statusUnchanged": "Not started",
+      "reason": "Confirmed source command/batch lifecycle and real Start reconciliation are not pinned/implemented across owners."
+    },
+    {
+      "id": "ORIGINAL:C-07",
+      "title": "Preserve accurate timestamps and associations",
+      "owner": "Mary Charlyn",
+      "priority": "P1",
+      "statusUnchanged": "Not started",
+      "reason": "Original source timestamp/identity and batch-association mapping are not finalized."
+    },
+    {
+      "id": "ORIGINAL:C-08",
+      "title": "Save manual hatch counts and hatchability",
+      "owner": "Mary Charlyn",
+      "priority": "P1",
+      "statusUnchanged": "Not started",
+      "reason": "Manual completion independent of Stop is a pending shared change; persisted validated completion is not verified."
+    },
+    {
+      "id": "ORIGINAL:C-09",
+      "title": "Handle stale readings and disconnections",
+      "owner": "Mary Charlyn",
+      "priority": "P1",
+      "statusUnchanged": "Partial",
+      "reason": "Measured cadence/freshness policy required by this task is not approved; do not invent a threshold."
+    },
+    {
+      "id": "OCT26:ARCH-05",
+      "title": "Record the architecture decision as a formal amendment to the K06 v0.3 contract.",
+      "owner": "Mary Charlyn",
+      "priority": "P1",
+      "statusUnchanged": "Partial",
+      "reason": "Formal adoption/repository-baseline evidence is not supplied; a locally drafted amendment is not adoption."
+    },
+    {
+      "id": "OCT26:ARCH-06",
+      "title": "Share the updated K06 decision with all team members and their OpenCode sessions.",
+      "owner": "Mary Charlyn",
+      "priority": "P1",
+      "statusUnchanged": "Not started",
+      "reason": "Actual distribution/recipient/date acknowledgments are missing; preparing a handoff is not sending it."
+    },
+    {
+      "id": "OCT26:C-02A",
+      "title": "Prepare provisional JSON/NDJSON communication contract.",
+      "owner": "Mary Charlyn",
+      "priority": "P0",
+      "statusUnchanged": "Not started",
+      "reason": "Existing provisional schema still lacks the required Ally/Kath review."
+    },
+    {
+      "id": "OCT26:C-02B",
+      "title": "Review provisional contract against Ally's A-01 findings.",
+      "owner": "Mary Charlyn",
+      "priority": "P1",
+      "statusUnchanged": "Not started",
+      "reason": "Requires reviewed provisional contract and the actual matching Ally interface/handoff packet, not report path strings."
+    },
+    {
+      "id": "OCT26:C-02C",
+      "title": "Finalize communication fields, validation rules, and message examples after team approval.",
+      "owner": "Mary Charlyn",
+      "priority": "P0",
+      "statusUnchanged": "Not started",
+      "reason": "Final fields/examples need the preceding reviews and explicit shared selection."
+    },
+    {
+      "id": "OCT26:C-04",
+      "title": "Design secure telemetry ingestion without exposing privileged Supabase keys.",
+      "owner": "Mary Charlyn",
+      "priority": "P0",
+      "statusUnchanged": "Partial",
+      "reason": "Actual secure-ingestion acceptance is source/Auth/SQL-dependent; candidate fixture success is not a real secure endpoint."
+    },
+    {
+      "id": "OCT26:C-05",
+      "title": "Confirm how one authorized Flutter installation will access SmartHatch data.",
+      "owner": "Mary Charlyn",
+      "priority": "P0",
+      "statusUnchanged": "Not started",
+      "reason": "Non-anonymous installation setup and Flutter compatibility remain jointly unresolved."
+    },
+    {
+      "id": "OCT26:C-06",
+      "title": "Verify species-specific incubation profiles in the database.",
+      "owner": "Mary Charlyn",
+      "priority": "P1",
+      "statusUnchanged": "Not started",
+      "reason": "Approved species-profile input and database values/approval provenance have not been established."
+    },
+    {
+      "id": "OCT26:C-07",
+      "title": "Fix or safely handle missing species-profile values; do not silently use Chicken defaults.",
+      "owner": "Mary Charlyn",
+      "priority": "P1",
+      "statusUnchanged": "Not started",
+      "reason": "Depends on species-profile verification; app/profile behavior cannot be finalized from unapproved values."
+    },
+    {
+      "id": "OCT26:C-08",
+      "title": "Implement or verify Start Pending, physical Start confirmation, and retry protection.",
+      "owner": "Mary Charlyn",
+      "priority": "P0",
+      "statusUnchanged": "Not started",
+      "reason": "Depends on final contract and physical START/STATE implementation; missing cross-owner source and device evidence."
+    },
+    {
+      "id": "OCT26:C-09",
+      "title": "Verify correct timestamps, batch association, and stale sensor handling.",
+      "owner": "Mary Charlyn",
+      "priority": "P0",
+      "statusUnchanged": "Partial",
+      "reason": "Source schema/time/cadence and truthful batch/freshness mapping are not finalized."
+    },
+    {
+      "id": "OCT26:C-10",
+      "title": "Verify manual hatch-count storage and hatchability calculation.",
+      "owner": "Mary Charlyn",
+      "priority": "P1",
+      "statusUnchanged": "Not started",
+      "reason": "Depends on Kath completion flow and the shared completion rule; real persisted result acceptance remains unverified."
+    },
+    {
+      "id": "OCT26:C-11",
+      "title": "Test cloud synchronization, security rules, and disconnection recovery.",
+      "owner": "Mary Charlyn",
+      "priority": "P0",
+      "statusUnchanged": "Not started",
+      "reason": "Real secure synchronization/recovery needs DB-IMP-01 and Kath durable outbox implementation."
+    },
+    {
+      "id": "OCT26:TEST-01",
+      "title": "Test Arduino-to-Flutter communication using the approved transport.",
+      "owner": "Mary Charlyn",
+      "priority": "P0",
+      "statusUnchanged": "Not started",
+      "reason": "Actual approved-transport Arduino/Android communication requires source, Android implementation and authorized devices."
+    },
+    {
+      "id": "OCT26:TEST-02",
+      "title": "Test secure Flutter/gateway-to-Supabase synchronization.",
+      "owner": "Mary Charlyn",
+      "priority": "P0",
+      "statusUnchanged": "Not started",
+      "reason": "Secure Flutter-to-Supabase sync requires actual identities/RPCs/outbox; not established by host fixtures."
+    },
+    {
+      "id": "OCT26:TEST-03",
+      "title": "Test loss of Bluetooth/Wi-Fi and internet connections.",
+      "owner": "Mary Charlyn",
+      "priority": "P0",
+      "statusUnchanged": "Not started",
+      "reason": "Real Bluetooth/internet failure-recovery evidence is missing; mock link tests are not device results."
+    },
+    {
+      "id": "OCT26:TEST-04",
+      "title": "Confirm Arduino maintains safe independent operation during communication loss.",
+      "owner": "Mary Charlyn",
+      "priority": "P0",
+      "statusUnchanged": "Not started",
+      "reason": "Physical autonomous-control loss testing requires source, approvals, hardware and qualified clearance."
+    },
+    {
+      "id": "OCT26:TEST-05",
+      "title": "Test real physical Start, Stop, and restart behavior.",
+      "owner": "Mary Charlyn",
+      "priority": "P0",
+      "statusUnchanged": "Not started",
+      "reason": "Real physical Start/Stop/restart remains unimplemented/unverified; safety and shared lifecycle gates outstanding."
+    },
+    {
+      "id": "OCT26:TEST-06",
+      "title": "Test accurate sensor readings, timestamps, and freshness labels.",
+      "owner": "Mary Charlyn",
+      "priority": "P0",
+      "statusUnchanged": "Not started",
+      "reason": "Real sensor accuracy/time/freshness checks need attributable source policy and hardware evidence."
+    },
+    {
+      "id": "OCT26:TEST-07",
+      "title": "Test species-specific incubation settings.",
+      "owner": "Mary Charlyn",
+      "priority": "P1",
+      "statusUnchanged": "Not started",
+      "reason": "Approved species values and actual integrated species-setting behavior are not verified."
+    },
+    {
+      "id": "OCT26:TEST-08",
+      "title": "Test egg turning and hatching-stage transitions.",
+      "owner": "Mary Charlyn",
+      "priority": "P0",
+      "statusUnchanged": "Not started",
+      "reason": "Turning/lockdown depends on approved timing/mechanics and shared implementation; do not infer host checks are physical proof."
+    },
+    {
+      "id": "OCT26:TEST-09",
+      "title": "Test manual hatch-count entry and History persistence.",
+      "owner": "Mary Charlyn",
+      "priority": "P1",
+      "statusUnchanged": "Not started",
+      "reason": "Real manual-entry/History persistence and approved completion behavior need the compatible app/backend."
+    },
+    {
+      "id": "OCT26:TEST-10",
+      "title": "Complete farmer usability testing.",
+      "owner": "Mary Charlyn",
+      "priority": "P1",
+      "statusUnchanged": "Not started",
+      "reason": "Requires actual farmer usability sessions and records; cannot fabricate participant outcomes."
+    },
+    {
+      "id": "OCT26:TEST-11",
+      "title": "Record genuine incubation and hatchability results without fabricated data.",
+      "owner": "Mary Charlyn",
+      "priority": "P1",
+      "statusUnchanged": "Not started",
+      "reason": "Requires safety-cleared actual pilot/cycle/hatch data; no real results supplied."
+    },
+    {
+      "id": "CURRENT:DB-IMP-01",
+      "title": "Implement DB-IMP-01: version-pinned bridge-sync adapter in an isolated environment",
+      "owner": "Mary Charlyn",
+      "priority": "P0",
+      "statusUnchanged": "Partial",
+      "reason": "Exact source/API/identity/storage/lifecycle decisions and separately approved remote implementation are missing."
+    },
+    {
+      "id": "CURRENT:INT-IMP-01",
+      "title": "Coordinate INT-IMP-01: single evidence ledger and integration runbook",
+      "owner": "Mary Charlyn",
+      "priority": "P1",
+      "statusUnchanged": "Partial",
+      "reason": "Exact matching source/decoder/backend packet and full integration acceptance remain missing; review summaries do not finish the ticket."
+    }
+  ]
+}

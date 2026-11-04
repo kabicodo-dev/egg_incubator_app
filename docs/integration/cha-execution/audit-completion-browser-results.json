@@ -1,0 +1,21 @@
+{
+  "scope": "Targeted browser runtime checks of audit completion publication, not backend or physical integration",
+  "browser": "OpenCode Chromium browser.evaluate/browser.reload",
+  "emptyOrigin": "http://localhost:8876",
+  "records": 136,
+  "tabs": 8,
+  "sourceGroups": {"ORIGINAL":32,"OCT26":92,"CURRENT":7,"NEW":5},
+  "chaCounts": {"Completed":6,"Partial":7,"Not started":28,"Superseded":1},
+  "emptyOriginStatuses": [
+    {"id":"ORIGINAL:C-01","defaultStatus":"Completed","displayStatus":"Completed"},
+    {"id":"OCT26:C-01","defaultStatus":"Completed","displayStatus":"Completed"}
+  ],
+  "emptyOriginStorageKeysAfterStartup": [],
+  "previousSyntheticOrigin": "http://127.0.0.1:8876",
+  "existingSyntheticStorageByteIdenticalAfterReload": true,
+  "savedOverridesPreserved": [
+    {"id":"ORIGINAL:C-01","defaultStatus":"Completed","displayStatus":"Partial"},
+    {"id":"OCT26:C-01","defaultStatus":"Completed","displayStatus":"Needs verification"}
+  ],
+  "limits": "Existing file-tab/user storage not touched. No storage clearing, status overwrite or import performed in these checks. Earlier responsive/full-import browser results remain historical; only the targeted runtime checks here are new."
+}

@@ -1,0 +1,36 @@
+{
+  "tasks": [
+    {
+      "id": "OCT26:C-02B",
+      "owner": "Mary Charlyn",
+      "initialStatus": "Not started",
+      "status": "Partial",
+      "reportId": "R-CHA-ALLY-ZIP-C02B-REVIEW-01",
+      "reportFile": "ALLY_ZIP_C02B_REVIEW.md",
+      "evidence": "Directly reviewed supplied A-01/A-03 interface and D02/D04/D06 response: ten findings compared, thirteen dispositions and four completion conditions received. See ALLY_ZIP_C02B_REVIEW.md. No reported build or physical test rerun.",
+      "remaining": "C-02A exact provisional schema/sample review by Ally and Kath remains open; common source/catalog and supersession not selected. Review output performed, full dependent task not Completed."
+    },
+    {
+      "id": "OCT26:C-02A",
+      "owner": "Mary Charlyn",
+      "initialStatus": "Not started",
+      "status": "Partial",
+      "reportId": "R-CHA-C02A-SCHEMA-REVALIDATION-01",
+      "reportFile": "INDEPENDENT_SCHEMA_VERIFICATION.md",
+      "evidence": "Fresh unchanged C02 schema meta-validation, 14 positive examples, 65 negative mutations and 11 unsafe frames passed. Manual-result Ajv 13/13 and reference 21/21 checks passed; semantic gaps documented. Kath exact-input review received; see INDEPENDENT_SCHEMA_VERIFICATION.md.",
+      "remaining": "Ally exact provisional schema/example review and protocol supersession remain open. No approval or source compatibility inferred from local schema tests; final fields stay gated.",
+      "links": "docs/integration/cha-execution/INDEPENDENT_SCHEMA_VERIFICATION.md\ndocs/integration/cha-execution/independent-schema-verification.json\ndocs/integration/cha-execution/c02-schema-revalidation.txt\ndocs/integration/cha-execution/manual-result-jsonschema.tap"
+    },
+    {
+      "id": "ORIGINAL:C-09",
+      "owner": "Mary Charlyn",
+      "initialStatus": "Partial",
+      "status": "Partial",
+      "reportId": "R-CHA-C09-MONITORING-BOUNDARIES-01",
+      "reportFile": "ORIGINAL_C09_MONITORING_BOUNDARIES.md",
+      "evidence": "New actual backend monitoring boundary tests: 27/27 targeted and 110/110 regression passed (including those 27). Three caller/composition limitations recorded; actual input validator rejects impossible dates and missing batch. No approved threshold, app integration or physical evidence inferred.",
+      "remaining": "Measured selected-source cadence and accepted freshness/skew/time policy, source association and actual transport/UI composition still required. Local test portion performed; full task remains Partial.",
+      "links": "docs/integration/cha-execution/ORIGINAL_C09_MONITORING_BOUNDARIES.md\ndocs/integration/cha-execution/monitoring-boundary-targeted.tap\ndocs/integration/cha-execution/monitoring-backend-regression.tap\ndocs/integration/cha-execution/monitoring-boundary-probes.json"
+    }
+  ]
+}

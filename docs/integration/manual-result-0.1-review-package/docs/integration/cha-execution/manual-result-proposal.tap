@@ -1,0 +1,136 @@
+TAP version 13
+# Subtest: published synthetic fixtures reproduce exact closed input and output snapshots
+ok 1 - published synthetic fixtures reproduce exact closed input and output snapshots
+  ---
+  duration_ms: 10.2397
+  type: 'test'
+  ...
+# Subtest: zero and original-quantity upper bound pass pure local dependency checks
+ok 2 - zero and original-quantity upper bound pass pure local dependency checks
+  ---
+  duration_ms: 0.9334
+  type: 'test'
+  ...
+# Subtest: negative fractional string Boolean and over-original counts are rejected locally
+ok 3 - negative fractional string Boolean and over-original counts are rejected locally
+  ---
+  duration_ms: 3.706
+  type: 'test'
+  ...
+# Subtest: exact no-Stop request rejects legacy dependency and lifecycle/physical command fields
+ok 4 - exact no-Stop request rejects legacy dependency and lifecycle/physical command fields
+  ---
+  duration_ms: 3.52
+  type: 'test'
+  ...
+# Subtest: old version or unknown contract cannot silently use proposal semantics
+ok 5 - old version or unknown contract cannot silently use proposal semantics
+  ---
+  duration_ms: 0.7567
+  type: 'test'
+  ...
+# Subtest: UUID lexemes are lossless and reject legacy numeric identities
+ok 6 - UUID lexemes are lossless and reject legacy numeric identities
+  ---
+  duration_ms: 1.3171
+  type: 'test'
+  ...
+# Subtest: unknown original action time stays null; no false phone/controller provenance
+ok 7 - unknown original action time stays null; no false phone/controller provenance
+  ---
+  duration_ms: 0.9774
+  type: 'test'
+  ...
+# Subtest: invalid calendar dates and fractional timestamp input fail rather than silently rounding
+ok 8 - invalid calendar dates and fractional timestamp input fail rather than silently rounding
+  ---
+  duration_ms: 0.6016
+  type: 'test'
+  ...
+# Subtest: missing manifest or real mapping is not a fabricated validated result
+ok 9 - missing manifest or real mapping is not a fabricated validated result
+  ---
+  duration_ms: 0.948
+  type: 'test'
+  ...
+# Subtest: original manifest controller batch actor and digest mismatches fail local comparison
+ok 10 - original manifest controller batch actor and digest mismatches fail local comparison
+  ---
+  duration_ms: 1.117
+  type: 'test'
+  ...
+# Subtest: zero original quantity and unknown quantity cannot validate counts
+ok 11 - zero original quantity and unknown quantity cannot validate counts
+  ---
+  duration_ms: 0.7851
+  type: 'test'
+  ...
+# Subtest: new result fixture cannot reopen a non-Active session
+ok 12 - new result fixture cannot reopen a non-Active session
+  ---
+  duration_ms: 0.776
+  type: 'test'
+  ...
+# Subtest: canonical order and exact same content reproduce both published digests
+ok 13 - canonical order and exact same content reproduce both published digests
+  ---
+  duration_ms: 0.5512
+  type: 'test'
+  ...
+# Subtest: current uploader replacement does not rewrite original actor content digest
+ok 14 - current uploader replacement does not rewrite original actor content digest
+  ---
+  duration_ms: 0.5392
+  type: 'test'
+  ...
+# Subtest: count manifest batch result identity and original phone time changes alter digest
+ok 15 - count manifest batch result identity and original phone time changes alter digest
+  ---
+  duration_ms: 1.4485
+  type: 'test'
+  ...
+# Subtest: bigint mapping remains string beyond JavaScript safe-number range; overflow is rejected
+ok 16 - bigint mapping remains string beyond JavaScript safe-number range; overflow is rejected
+  ---
+  duration_ms: 20.7434
+  type: 'test'
+  ...
+# Subtest: receipt identity count hash mapping fixed effects and retention must all match
+ok 17 - receipt identity count hash mapping fixed effects and retention must all match
+  ---
+  duration_ms: 1.7725
+  type: 'test'
+  ...
+# Subtest: an immutable receipt cannot silently acquire a new ID or first receive time on replay
+ok 18 - an immutable receipt cannot silently acquire a new ID or first receive time on replay
+  ---
+  duration_ms: 1.7448
+  type: 'test'
+  ...
+# Subtest: read-only lookup carries original namespace without count command or desired status
+ok 19 - read-only lookup carries original namespace without count command or desired status
+  ---
+  duration_ms: 0.9779
+  type: 'test'
+  ...
+# Subtest: reference checks do not mutate fixture inputs or session Active status
+ok 20 - reference checks do not mutate fixture inputs or session Active status
+  ---
+  duration_ms: 1.1439
+  type: 'test'
+  ...
+# Subtest: schema parses and closure plan is not misreported as executed integration
+ok 21 - schema parses and closure plan is not misreported as executed integration
+  ---
+  duration_ms: 1.3416
+  type: 'test'
+  ...
+1..21
+# tests 21
+# suites 0
+# pass 21
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 256.5164

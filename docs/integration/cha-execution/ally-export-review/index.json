@@ -1,0 +1,950 @@
+{
+  "source": "C:/Users/Mary Charlyn/Downloads/SmartHatch-all-reports-2026-10-30-1.json",
+  "sha256": "09309a30346acd04b14f4db058d0aa0019dc1a77bbb748535f0b9541b7745da8",
+  "exportedAt": "2026-10-30T02:38:43.020Z",
+  "reportCount": 26,
+  "distinctTaskCount": 23,
+  "uniqueReportIds": 26,
+  "importPerformed": false,
+  "scope": "Source reports indexed only. Reported status/build/hardware claims are not independent verification; referenced file bodies are not included merely because paths are listed.",
+  "reports": [
+    {
+      "number": 1,
+      "file": "01-ORIGINAL_A-06.md",
+      "id": "R-mvtml756lyul",
+      "taskId": "ORIGINAL:A-06",
+      "owner": "Ally",
+      "reportedBy": "Ally",
+      "status": "Completed",
+      "date": "2026-10-29",
+      "declaredBodyTaskId": null,
+      "taskIdMismatch": false,
+      "createdAt": 1793283322218,
+      "updatedAt": 1793283322218,
+      "latestSuppliedAttempt": true,
+      "bodyChars": 2141,
+      "bodySha256": "2367ebda14a485c9d4dc434b8e36391b2cd170bd38107acb5c9c1d12ec268ccd",
+      "keywordHits": {
+        "decision": [
+          "Same batch/new command id was accepted as idempotent; different batch and completed batch were rejected."
+        ],
+        "authority": [
+          "After an EEPROM reload simulation, the start identity was restored and a duplicate START did not reset elapsed time.",
+          "Physical verification requires separate authorization and qualified documented electrical safety clearance.",
+          "START identity uses magic/version but no CRC; EEPROM writes are not atomic."
+        ],
+        "completion": [
+          "First START produced ACK start_received with no RUNNING in the receipt pass.",
+          "Same batch/new command id was accepted as idempotent; different batch and completed batch were rejected.",
+          "Flutter start handler still creates the Supabase session/cloud Active row before hardware confirmation; it does not send START or consume RUNNING.",
+          "Cloud Active vs physical RUNNING mapping and the original Start timestamp.",
+          "HW-IMP-01 — wire the Flutter start handler and transport to this START/RUNNING contract, keeping cloud Active distinct from physical RUNNING. Then run a supervised unpowered/low-power bench START test before any loaded incubator run."
+        ]
+      }
+    },
+    {
+      "number": 2,
+      "file": "02-ORIGINAL_A-08.md",
+      "id": "R-mvtmy9ex8u5s",
+      "taskId": "ORIGINAL:A-08",
+      "owner": "Ally",
+      "reportedBy": "Ally",
+      "status": "Completed",
+      "date": "2026-10-29",
+      "declaredBodyTaskId": null,
+      "taskIdMismatch": false,
+      "createdAt": 1793283931689,
+      "updatedAt": 1793283931689,
+      "latestSuppliedAttempt": true,
+      "bodyChars": 1542,
+      "bodySha256": "6062c64d5f8ea44ebffd78c423d6759d085b635e86381138ddae2deab2d69738",
+      "keywordHits": {
+        "decision": [
+          "Cla review and sign-off."
+        ],
+        "authority": [
+          "Explicit authorization and qualified documented electrical safety clearance for physical tests.",
+          "HC-05 module, Android phone and authorized Supabase environment for end-to-end rows.",
+          "Cla review of the A-08 format and the 2026-10-29 software bundle, followed by a supervised unpowered/low-power bench session covering P-01, P-02, P-03, P-09, P-10 and P-12 after written safety clearance. The empty-incubator rows follow only after separate authorization."
+        ],
+        "completion": [
+          "HC-05 module, Android phone and authorized Supabase environment for end-to-end rows.",
+          "That cloud Active is not reported as physical RUNNING."
+        ]
+      }
+    },
+    {
+      "number": 3,
+      "file": "03-OCT26_HW-02.md",
+      "id": "R-mvtnulv1n4g1",
+      "taskId": "OCT26:HW-02",
+      "owner": "Ally",
+      "reportedBy": "Ally",
+      "status": "Not started",
+      "date": "2026-10-29",
+      "declaredBodyTaskId": null,
+      "taskIdMismatch": false,
+      "createdAt": 1793285440812,
+      "updatedAt": 1793285440812,
+      "latestSuppliedAttempt": false,
+      "bodyChars": 1978,
+      "bodySha256": "f11726c8190249da74ea7e6be3783c8fcaa514c1ac3b817bc9b4615ca0fe00ae",
+      "keywordHits": {
+        "decision": [
+          "Obtain a dated photo/macro of the ZS-040 carrier and RF module marking plus the matching datasheet. Perform BT-01…BT-10 at approved logic levels under qualified supervision, read-only, with no live incubator and no PIN/address in the public log. Do not change the HC-05/Android architecture until the exact module and firmware are confirmed."
+        ],
+        "authority": [
+          "No safety/authorization record for physical inspection."
+        ],
+        "completion": []
+      }
+    },
+    {
+      "number": 4,
+      "file": "04-OCT26_HW-03.md",
+      "id": "R-mvtofvcy8i95",
+      "taskId": "OCT26:HW-03",
+      "owner": "Ally",
+      "reportedBy": "Ally",
+      "status": "Not started",
+      "date": "2026-10-29",
+      "declaredBodyTaskId": null,
+      "taskIdMismatch": false,
+      "createdAt": 1793286432898,
+      "updatedAt": 1793286432898,
+      "latestSuppliedAttempt": true,
+      "bodyChars": 1801,
+      "bodySha256": "4d2e52864e63ea9445cd9794b67e48a3f8be068802440ccafcbb651218233486",
+      "keywordHits": {
+        "decision": [],
+        "authority": [
+          "Safety/authorization record.",
+          "That the RTC/EEPROM addresses do not conflict with the LCD at 0x27.",
+          "Complete HW-01 chip/model identification first, then perform RTC-W-01…W-10 read-only under qualified supervision. Do not add an RTC library or write time/EEPROM until the exact chip, module pin map, voltage/pull-ups and battery requirements are confirmed."
+        ],
+        "completion": [
+          "Complete HW-01 chip/model identification first, then perform RTC-W-01…W-10 read-only under qualified supervision. Do not add an RTC library or write time/EEPROM until the exact chip, module pin map, voltage/pull-ups and battery requirements are confirmed."
+        ]
+      }
+    },
+    {
+      "number": 5,
+      "file": "05-OCT26_HW-04.md",
+      "id": "R-mvtopdz3cdjd",
+      "taskId": "OCT26:HW-04",
+      "owner": "Ally",
+      "reportedBy": "Ally",
+      "status": "Not started",
+      "date": "2026-10-29",
+      "declaredBodyTaskId": null,
+      "taskIdMismatch": false,
+      "createdAt": 1793286876927,
+      "updatedAt": 1793286876927,
+      "latestSuppliedAttempt": true,
+      "bodyChars": 4535,
+      "bodySha256": "d5d31ff750cf249c54fe3554afea2827c66ea29f0e1becd52cf594cf7f254528",
+      "keywordHits": {
+        "decision": [],
+        "authority": [
+          "safety rules: no 5 V assumption, no live incubator, no pairing PIN in the log, no module setting writes.",
+          "Pairing/SPP and end-to-end test.",
+          "Safety/authorization record.",
+          "BT-W-01…BT-W-12: pin map, power, logic voltage, TX/RX crossover, read-only module settings, pairing/SPP, app telemetry at 9600 8-N-1, local regulation without USB/PC, disconnect/reconnect/live-vs-stale, and no automatic Start replay.",
+          "That pairing/SPP does not replay an uncertain Start automatically."
+        ],
+        "completion": [
+          "explicit TBD tables for module pins, VCC/current/peak, logic voltage/level shifting, module baud/parity/stop bits, role/name/SPP UUID/PIN, and Uno-side port choice;",
+          "Actual module baud/parity/stop bits/role/name/SPP UUID.",
+          "Complete HW-02 module/firmware identification first, then perform BT-W-01…BT-W-12 read-only/unpowered under qualified supervision. Do not change module settings or connect to a live incubator until the pin map, power, logic voltage and actual UART settings are confirmed."
+        ]
+      }
+    },
+    {
+      "number": 6,
+      "file": "06-OCT26_HW-05.md",
+      "id": "R-mvtoxafeu0jf",
+      "taskId": "OCT26:HW-05",
+      "owner": "Ally",
+      "reportedBy": "Ally",
+      "status": "Not started",
+      "date": "2026-10-29",
+      "declaredBodyTaskId": null,
+      "taskIdMismatch": false,
+      "createdAt": 1793287245578,
+      "updatedAt": 1793287245578,
+      "latestSuppliedAttempt": true,
+      "bodyChars": 4737,
+      "bodySha256": "5bc597acc6b50c4af8ef23905292d9df56d98e6f0771225b41a5245e43fec298",
+      "keywordHits": {
+        "decision": [
+          "Complete HW-01 and HW-02 identity first, then perform the UNO-RTC, UNO-BT and UNO-BOTH checks unpowered or at approved low voltage under qualified supervision. Do not connect both modules to a live incubator or add integration firmware until the power, logic, pin and address records are complete."
+        ],
+        "authority": [
+          "Safety/authorization record.",
+          "UNO-BT-01…05: pin map/logic, current, port/USB coexistence, 9600 8-N-1 match, pairing/SPP/app telemetry."
+        ],
+        "completion": [
+          "Complete HW-01 and HW-02 identity first, then perform the UNO-RTC, UNO-BT and UNO-BOTH checks unpowered or at approved low voltage under qualified supervision. Do not connect both modules to a live incubator or add integration firmware until the power, logic, pin and address records are complete."
+        ]
+      }
+    },
+    {
+      "number": 7,
+      "file": "07-OCT26_HW-06.md",
+      "id": "R-mvtp63zjsbmu",
+      "taskId": "OCT26:HW-06",
+      "owner": "Ally",
+      "reportedBy": "Ally",
+      "status": "Not started",
+      "date": "2026-10-29",
+      "declaredBodyTaskId": null,
+      "taskIdMismatch": false,
+      "createdAt": 1793287657135,
+      "updatedAt": 1793287657135,
+      "latestSuppliedAttempt": true,
+      "bodyChars": 4292,
+      "bodySha256": "6628cf09719eca08d0756c9531d0bab185234b475c305ac1f967485d0f5281ef",
+      "keywordHits": {
+        "decision": [],
+        "authority": [
+          "Did not change firmware, wiring, loads, fuse/thermal protection, authorization state or hardware.",
+          "PASS: HW-06 review remains NOT VERIFIED; 12 gates NOT RUN and G-13 NOT AUTHORIZED; 10 ",
+          "Signed electrical safety clearance and authorization.",
+          "Obtain qualified electrical safety clearance and the missing load/relay/PSU measurements before any powered integration. Then perform G-01…G-12 unpowered/low-power first, with the heater load last and only under supervision. Do not perform G-13 (egg test) without separate explicit authorization."
+        ],
+        "completion": [
+          "stop conditions and the evidence required before VERIFIED;"
+        ]
+      }
+    },
+    {
+      "number": 8,
+      "file": "08-OCT26_HW-07.md",
+      "id": "R-mvtpe63vbcwo",
+      "taskId": "OCT26:HW-07",
+      "owner": "Ally",
+      "reportedBy": "Ally",
+      "status": "Not started",
+      "date": "2026-10-29",
+      "declaredBodyTaskId": null,
+      "taskIdMismatch": false,
+      "createdAt": 1793288033131,
+      "updatedAt": 1793288033131,
+      "latestSuppliedAttempt": true,
+      "bodyChars": 4238,
+      "bodySha256": "efe05801d0b05e1a35b23b2bf6c67c566b1d62d24099f7bb08353760fe754e55",
+      "keywordHits": {
+        "decision": [
+          "Approved drift tolerance and observation/power-loss intervals."
+        ],
+        "authority": [
+          "Status: NOT TESTED / BLOCKED. No RTC timekeeping or retention test was run. The exact RTC chip/model, pin/battery/library details and electrical safety clearance are still pending.",
+          "timekeeping and power-loss retention procedures;",
+          "a measurement template for RTC vs reference-clock drift, battery voltage and retention intervals;",
+          "Did not add an RTC driver/library, set RTC time, write EEPROM, or claim any timekeeping result.",
+          "Repository search for RTC driver/timekeeping/retention/battery records.",
+          "No RTC time set/read, power-loss retention, battery measurement, photo or physical test was possible or authorized.",
+          "No RTC timekeeping/retention evidence exists.",
+          "PASS: HW-07 RTC test remains NOT TESTED/BLOCKED; 11 RTC-T rows NOT RUN/BLOCKED; 9 evidence files match sha256sums.txt; no timekeeping/retention result was inferred",
+          "RTC timekeeping and time retention: NOT TESTED.",
+          "Approved drift tolerance and observation/power-loss intervals.",
+          "RTC test sketch/library compile and authorization.",
+          "RTC-T-01…RTC-T-11: prerequisites, time set, short/long-window drift, power-loss retention, repeated cycles, battery/charging safety, drift calculation, Day N/original Start distinction, evidence capture and safety.",
+          "Time retention across main-power loss.",
+          "Battery voltage/retention and safe battery behavior.",
+          "Complete HW-01, HW-03 and HW-06 first, then run RTC-T-01…RTC-T-10 on an RTC-only bench under qualified supervision — no mains/loads and no egg test. Do not add RTC firmware or write time/EEPROM until the chip, pin/battery records and safety clearance are complete."
+        ],
+        "completion": [
+          "explicit Day N / original Start / ACK receipt-time distinctions;",
+          "Complete HW-01, HW-03 and HW-06 first, then run RTC-T-01…RTC-T-10 on an RTC-only bench under qualified supervision — no mains/loads and no egg test. Do not add RTC firmware or write time/EEPROM until the chip, pin/battery records and safety clearance are complete."
+        ]
+      }
+    },
+    {
+      "number": 9,
+      "file": "09-OCT26_HW-08.md",
+      "id": "R-mvtpix4fj4wr",
+      "taskId": "OCT26:HW-08",
+      "owner": "Ally",
+      "reportedBy": "Ally",
+      "status": "Not started",
+      "date": "2026-10-29",
+      "declaredBodyTaskId": null,
+      "taskIdMismatch": false,
+      "createdAt": 1793288254767,
+      "updatedAt": 1793288254767,
+      "latestSuppliedAttempt": true,
+      "bodyChars": 4428,
+      "bodySha256": "cb11d2a37008545224ac2ecbf8203b44825fe1476f9530773a1d4a66dbe21309",
+      "keywordHits": {
+        "decision": [],
+        "authority": [
+          "Status: NOT TESTED / BLOCKED. No HC-05, Android device, pairing, RFCOMM/SPP session, telemetry, lifecycle test or end-to-end run was performed.",
+          "an 18-row pairing/communication/lifecycle matrix (SPP-01 … SPP-18), all NOT RUN;",
+          "rules for pairing vs connection vs live telemetry, ACK vs physical RUNNING, cloud Active vs RUNNING, original Start vs receipt time, live vs stale, and no automatic Start replay;",
+          "No Android device, pairing, RFCOMM/SPP, telemetry or lifecycle test was possible or authorized.",
+          "PASS: HW-08 SPP test remains NOT TESTED/BLOCKED; 18 SPP rows NOT RUN; 12 evidence files match sha256sums.txt; no pairing/SPP/lifecycle result was inferred",
+          "HC-05/Android SPP communication, pairing and lifecycle: NOT TESTED.",
+          "Pairing/SPP/lifecycle evidence and reviewer.",
+          "SPP-01…SPP-18: identity, permissions, discovery/pairing, RFCOMM/SPP connect, telemetry, ACK, START/RUNNING, duplicate START, disconnect/reconnect, background/foreground, phone reboot, module power cycle, stale/live, latency, cleanup, Day N/original Start, safety, evidence.",
+          "Pairing persistence across phone reboot/module power cycle."
+        ],
+        "completion": [
+          "rules for pairing vs connection vs live telemetry, ACK vs physical RUNNING, cloud Active vs RUNNING, original Start vs receipt time, live vs stale, and no automatic Start replay;",
+          "ACK vs RUNNING, cloud Active vs RUNNING, original Start vs receipt, live vs stale.",
+          "Implement/approve the Android Bluetooth Classic SPP transport with the required permissions, then complete HW-02/HW-04/HW-05/HW-06 and run SPP-01…SPP-18 on the intended Android device, unpowered/no-load first. Do not test against a live incubator or replay an uncertain Start."
+        ]
+      }
+    },
+    {
+      "number": 10,
+      "file": "10-OCT26_HW-09.md",
+      "id": "R-mvtq4awye6yz",
+      "taskId": "OCT26:HW-09",
+      "owner": "Ally",
+      "reportedBy": "Ally",
+      "status": "Partial",
+      "date": "2026-10-29",
+      "declaredBodyTaskId": null,
+      "taskIdMismatch": false,
+      "createdAt": 1793289252418,
+      "updatedAt": 1793289252418,
+      "latestSuppliedAttempt": false,
+      "bodyChars": 3951,
+      "bodySha256": "cc5364deb92694bc68f4dd5d65ba71f658dcc0c251e38345a7708fbd107326d1",
+      "keywordHits": {
+        "decision": [
+          "reviewer sign-off block."
+        ],
+        "authority": [
+          "No physical module inspection, photo, RTC test, SPP test, electrical measurement or loaded/egg test was possible or authorized.",
+          "HW-07 RTC timekeeping/retention.",
+          "HW-08 Android SPP implementation/pairing/lifecycle.",
+          "RTC timekeeping/retention.",
+          "HC-05/Android SPP pairing/lifecycle."
+        ],
+        "completion": [
+          "actual-vs-target and ACK/RUNNING/cloud/Start/live-state distinctions;",
+          "End-to-end HC-05 → Android → Supabase operation.",
+          "Complete HW-IMP-01 and the pending HW-01…HW-08 prerequisites, then fill the HW-09 index/photos with dated physical evidence. Do not convert any pending row to PASS without an actual measurement, photo, raw capture and reviewer."
+        ]
+      }
+    },
+    {
+      "number": 11,
+      "file": "11-OCT26_HW-09.md",
+      "id": "R-mvtqgen39xyx",
+      "taskId": "OCT26:HW-09",
+      "owner": "Ally",
+      "reportedBy": "Ally",
+      "status": "Partial",
+      "date": "2026-10-29",
+      "declaredBodyTaskId": null,
+      "taskIdMismatch": false,
+      "createdAt": 1793289817119,
+      "updatedAt": 1793289817119,
+      "latestSuppliedAttempt": true,
+      "bodyChars": 4082,
+      "bodySha256": "9173afdd820789cd312d788eb6338607f11b94dcee7150ba58aed9565c9a147a",
+      "keywordHits": {
+        "decision": [
+          "reviewer sign-off block."
+        ],
+        "authority": [
+          "No physical module inspection, photo, RTC test, SPP test, electrical measurement or loaded/egg test was possible or authorized.",
+          "HW-07 RTC timekeeping/retention.",
+          "HW-08 Android SPP implementation/pairing/lifecycle.",
+          "RTC timekeeping/retention.",
+          "HC-05/Android SPP pairing/lifecycle."
+        ],
+        "completion": [
+          "actual-vs-target and ACK/RUNNING/cloud/Start/live-state distinctions;",
+          "End-to-end HC-05 → Android → Supabase operation.",
+          "Complete HW-IMP-01 and the pending HW-01…HW-08 prerequisites, then fill the HW-09 index/photos with dated physical evidence. Do not convert any pending row to PASS without an actual measurement, photo, raw capture and reviewer."
+        ]
+      }
+    },
+    {
+      "number": 12,
+      "file": "12-OCT26_HW-10.md",
+      "id": "R-mvtr0lu90ybf",
+      "taskId": "OCT26:HW-10",
+      "owner": "Ally",
+      "reportedBy": "Ally",
+      "status": "Not started",
+      "date": "2026-10-30",
+      "declaredBodyTaskId": null,
+      "taskIdMismatch": false,
+      "createdAt": 1793290759569,
+      "updatedAt": 1793290759569,
+      "latestSuppliedAttempt": false,
+      "bodyChars": 3586,
+      "bodySha256": "55a88a345a3f9fb78b0b28d741245eeec6c296163191bb3a462b11e544c1c281",
+      "keywordHits": {
+        "decision": [
+          "a formal sign-off block for a qualified reviewer;",
+          "A qualified electrical reviewer completes M-01…M-12, the hazard/control checklist and the sign-off block. Then run C-02/C-03 unpowered/low-power first and C-04 last under supervision. Do not energise a heater or run an egg test before a signed clearance exists."
+        ],
+        "authority": [
+          "Status: NO CLEARANCE GRANTED — REQUEST PREPARED; NOT SIGNED. Powered-load and egg testing remain unauthorized.",
+          "Powered-load and egg tests: NOT AUTHORIZED.",
+          "Separate egg-test authorization.",
+          "C-05 egg test only after separate explicit authorization."
+        ],
+        "completion": [
+          "explicit stop rules if clearance is not granted.",
+          "A qualified electrical reviewer completes M-01…M-12, the hazard/control checklist and the sign-off block. Then run C-02/C-03 unpowered/low-power first and C-04 last under supervision. Do not energise a heater or run an egg test before a signed clearance exists."
+        ]
+      }
+    },
+    {
+      "number": 13,
+      "file": "13-OCT26_HW-10.md",
+      "id": "R-mvu9ug4j9wdx",
+      "taskId": "OCT26:HW-10",
+      "owner": "Ally",
+      "reportedBy": "Ally",
+      "status": "Not started",
+      "date": "2026-10-30",
+      "declaredBodyTaskId": null,
+      "taskIdMismatch": false,
+      "createdAt": 1793322384930,
+      "updatedAt": 1793322384930,
+      "latestSuppliedAttempt": true,
+      "bodyChars": 3719,
+      "bodySha256": "b9439394eceb591ebd0011c3564cb54457e6c52828e273dbaa35783c61b88be7",
+      "keywordHits": {
+        "decision": [
+          "A qualified electrical reviewer completes M-01…M-12, the hazard/control checklist and the sign-off block. Then run C-02/C-03 unpowered/low-power first and C-04 last under supervision. Do not energise a heater or run an egg test before a signed clearance exists."
+        ],
+        "authority": [
+          "Status: NO CLEARANCE GRANTED — REQUEST PREPARED; NOT SIGNED. Re-verified against current HEAD; powered-load and egg testing remain unauthorized.",
+          "PASS: HW-10 clearance remains NOT GRANTED/NOT SIGNED; 12 measurement rows NOT RUN; powered-load and egg testing NOT AUTHORIZED; 11 evidence files match sha256sums.txt; no clearance was inferred",
+          "Powered-load and egg tests: NOT AUTHORIZED.",
+          "Separate egg-test authorization.",
+          "C-05 egg test only after separate explicit authorization."
+        ],
+        "completion": [
+          "A qualified electrical reviewer completes M-01…M-12, the hazard/control checklist and the sign-off block. Then run C-02/C-03 unpowered/low-power first and C-04 last under supervision. Do not energise a heater or run an egg test before a signed clearance exists."
+        ]
+      }
+    },
+    {
+      "number": 14,
+      "file": "14-OCT26_A-01.md",
+      "id": "R-mvuaacum9bxm",
+      "taskId": "OCT26:A-01",
+      "owner": "Ally",
+      "reportedBy": "Ally",
+      "status": "Completed",
+      "date": "2026-10-30",
+      "declaredBodyTaskId": null,
+      "taskIdMismatch": false,
+      "createdAt": 1793323127182,
+      "updatedAt": 1793323127182,
+      "latestSuppliedAttempt": true,
+      "bodyChars": 4497,
+      "bodySha256": "859e6893539fcd078216208e98900222cd4cdf5399a884b8963e4fa45ac87d43",
+      "keywordHits": {
+        "decision": [
+          "Incubation thresholds are not formally approved."
+        ],
+        "authority": [
+          "RTC timekeeping/retention.",
+          "Android SPP pairing/lifecycle."
+        ],
+        "completion": []
+      }
+    },
+    {
+      "number": 15,
+      "file": "15-OCT26_A-02.md",
+      "id": "R-mvuafvxcr8cs",
+      "taskId": "OCT26:A-02",
+      "owner": "Ally",
+      "reportedBy": "Ally",
+      "status": "Not started",
+      "date": "2026-10-30",
+      "declaredBodyTaskId": null,
+      "taskIdMismatch": false,
+      "createdAt": 1793323385184,
+      "updatedAt": 1793323385184,
+      "latestSuppliedAttempt": true,
+      "bodyChars": 3862,
+      "bodySha256": "30a2b92cc11858c6e910492e1e702ba2c6aee7c1128f5e775a3c1c84545f7ad0",
+      "keywordHits": {
+        "decision": [
+          "Approved incubation values."
+        ],
+        "authority": [
+          "RTC timekeeping/retention."
+        ],
+        "completion": []
+      }
+    },
+    {
+      "number": 16,
+      "file": "16-OCT26_A-03.md",
+      "id": "R-mvuarlyt8z9k",
+      "taskId": "OCT26:A-03",
+      "owner": "Ally",
+      "reportedBy": "Ally",
+      "status": "Not started",
+      "date": "2026-10-30",
+      "declaredBodyTaskId": null,
+      "taskIdMismatch": false,
+      "createdAt": 1793323932149,
+      "updatedAt": 1793323932149,
+      "latestSuppliedAttempt": true,
+      "bodyChars": 3478,
+      "bodySha256": "2a6a25665f527d9502cdcf7f391ce24bf3d0fbba8b54457c322a8b5c5225fb44",
+      "keywordHits": {
+        "decision": [
+          "Approved values and electrical safety clearance remain separate."
+        ],
+        "authority": [
+          "Send the memo to Cha through the project’s authorized channel."
+        ],
+        "completion": [
+          "ten explicit C-02 review questions covering baseline source, protocol family, RUNNING semantics, sensor ranges, identity mapping, cloud-vs-physical state, Day N, evidence and reconnect policy;",
+          "running semantics, sensor range, identity mapping, cloud Active vs physical RUNNING, original Start vs receipt, and Day N.",
+          "Send this memo to Cha through the project channel, then reconcile the app-facing source revision (HW-IMP-01) and record Cha’s C-02 decisions. Do not treat this prepared memo as a completed review."
+        ]
+      }
+    },
+    {
+      "number": 17,
+      "file": "17-OCT26_A-04.md",
+      "id": "R-mvub3ef370p4",
+      "taskId": "OCT26:A-04",
+      "owner": "Ally",
+      "reportedBy": "Ally",
+      "status": "Not started",
+      "date": "2026-10-30",
+      "declaredBodyTaskId": null,
+      "taskIdMismatch": false,
+      "createdAt": 1793324482239,
+      "updatedAt": 1793324482239,
+      "latestSuppliedAttempt": true,
+      "bodyChars": 3731,
+      "bodySha256": "ee05dee62f008bcf4c906f5f10dc6c59d996fe37a6a64888ba3e1dd26cdf8ef0",
+      "keywordHits": {
+        "decision": [
+          "Status: PROPOSED — CHA AGREEMENT PENDING. v1 is frozen as the implemented baseline; v2 is a proposal only. No external message was sent and no Cha/Kath approval is implied.",
+          "Options A/B/C for Cha: freeze v1, bump to v2 with the K-04-identified fields, or use a v1 + ingestion-envelope approach;",
+          "a blank Cha/Kath sign-off block.",
+          "v1 is frozen; v2/format agreement remains PENDING.",
+          "PASS: OCT26:A-04 format remains PROPOSED / CHA PENDING; v1 frozen, v2 proposal and D-01..",
+          "Approved incubation values and safety clearance.",
+          "Cha/Kath sign-off on the final format.",
+          "Send the memo to Cha through the project channel and record Cha's decision in the sign-off. If v2 is selected, create a versioned contract and update firmware, parser, tests and captures together. Do not edit v1 in place or claim agreement before the sign-off."
+        ],
+        "authority": [],
+        "completion": []
+      }
+    },
+    {
+      "number": 18,
+      "file": "18-OCT26_A-05.md",
+      "id": "R-mvub9md9dxb1",
+      "taskId": "OCT26:A-05",
+      "owner": "Ally",
+      "reportedBy": "Ally",
+      "status": "Not started",
+      "date": "2026-10-30",
+      "declaredBodyTaskId": null,
+      "taskIdMismatch": false,
+      "createdAt": 1793324772477,
+      "updatedAt": 1793324772477,
+      "latestSuppliedAttempt": true,
+      "bodyChars": 3721,
+      "bodySha256": "b7752c5482e983eb92fb26fb4447b87fc5f0d3300ceed0f15d5285217519915a",
+      "keywordHits": {
+        "decision": [
+          "Approved incubation values."
+        ],
+        "authority": [],
+        "completion": [
+          "the ACK-is-receipt-only and RUNNING-only-after-fresh-sensors/latch criteria;",
+          "duplicate-START, no-reset/no-replay, cloud-Active-vs-RUNNING and Day N rules;",
+          "Cloud Active vs physical RUNNING; original Start vs ACK/RUNNING receipt; Day N."
+        ]
+      }
+    },
+    {
+      "number": 19,
+      "file": "19-OCT26_A-06.md",
+      "id": "R-mvubfek5r42b",
+      "taskId": "OCT26:A-06",
+      "owner": "Ally",
+      "reportedBy": "Ally",
+      "status": "Not started",
+      "date": "2026-10-30",
+      "declaredBodyTaskId": null,
+      "taskIdMismatch": false,
+      "createdAt": 1793325042292,
+      "updatedAt": 1793325042292,
+      "latestSuppliedAttempt": true,
+      "bodyChars": 3652,
+      "bodySha256": "126e3819debea093741e5d3773c3ececd1d32fcc93fb77e2d1e4b89e179d57d9",
+      "keywordHits": {
+        "decision": [
+          "Approved incubation limits."
+        ],
+        "authority": [
+          "an 11-row physical/bench matrix (A06-P-01…P-11), all NOT RUN except the egg test, which is NOT AUTHORIZED;",
+          "Physical/bench rows: NOT RUN; egg test: NOT AUTHORIZED.",
+          "Power-cycle/EEPROM restore.",
+          "Supervised empty-incubator run; egg test only after separate authorization.",
+          "After HW-10 clearance, run A06-P-01/P-02 unpowered or low-power first, then A06-P-03…P-08 with supervision, then the supervised empty-incubator A06-P-09. Do not run A06-P-11 (egg test) without separate explicit authorization."
+        ],
+        "completion": [
+          "source evidence that the Combined sketch has no Wi-Fi/Ethernet/ESP8266/HTTP/MQTT/Supabase/Bluetooth identifiers;",
+          "state distinctions: actual vs target, ACK/cloud Active vs physical RUNNING, original Start vs receipt, live vs stale, Day N, no automatic Start replay.",
+          "Cloud Active vs physical state, live vs stale, Day N."
+        ]
+      }
+    },
+    {
+      "number": 20,
+      "file": "20-OCT26_A-07.md",
+      "id": "R-mvubshcuos2q",
+      "taskId": "OCT26:A-07",
+      "owner": "Ally",
+      "reportedBy": "Ally",
+      "status": "Not started",
+      "date": "2026-10-30",
+      "declaredBodyTaskId": null,
+      "taskIdMismatch": false,
+      "createdAt": 1793325652446,
+      "updatedAt": 1793325652446,
+      "latestSuppliedAttempt": true,
+      "bodyChars": 4206,
+      "bodySha256": "a768d877aa8c17a1f5a3c3d46cae4a7d8e3a4de2105d43ac519f4637e72ce5c5",
+      "keywordHits": {
+        "decision": [],
+        "authority": [
+          "Status: HOST/SOURCE VERIFIED — RTC AND PHYSICAL RESTART NOT VERIFIED. 29 recovery checks pass; EEPROM tearing, RTC timing/retention and physical power-cycle remain pending.",
+          "simulates power cycles by resetting runtime state and re-running setup() with the EEPROM shim retained;",
+          "RTC status (no RTC/driver; Day N uses millis/EEPROM);",
+          "EEPROM tearing/no-CRC, watchdog and data-loss limitations.",
+          "EEPROM tearing, RTC, physical power-cycle and empty-incubator: NOT RUN/NOT VERIFIED.",
+          "Physical power-cycle/EEPROM tearing test (HW-10 clearance).",
+          "EEPROM has no CRC/journal; corruption can lose batch identity/progress.",
+          "Real EEPROM read/write/torn-write behavior.",
+          "Real RTC timekeeping/retention and battery backup.",
+          "Corrupt EEPROM recovery and data-loss extent.",
+          "Complete HW-01/HW-03/HW-07 RTC work and HW-10 clearance; then run A07-P-01/P-02 unpowered/low-power first, followed by supervised power-cycle tests and the empty-incubator restart. Do not power-cycle a loaded incubator or run an egg test without separate authorization."
+        ],
+        "completion": [
+          "Cloud Active vs physical state after restart.",
+          "Complete HW-01/HW-03/HW-07 RTC work and HW-10 clearance; then run A07-P-01/P-02 unpowered/low-power first, followed by supervised power-cycle tests and the empty-incubator restart. Do not power-cycle a loaded incubator or run an egg test without separate authorization."
+        ]
+      }
+    },
+    {
+      "number": 21,
+      "file": "21-OCT26_A-08.md",
+      "id": "R-mvuc1lxv4yam",
+      "taskId": "OCT26:A-08",
+      "owner": "Ally",
+      "reportedBy": "Ally",
+      "status": "Not started",
+      "date": "2026-10-30",
+      "declaredBodyTaskId": null,
+      "taskIdMismatch": false,
+      "createdAt": 1793326078290,
+      "updatedAt": 1793326078290,
+      "latestSuppliedAttempt": true,
+      "bodyChars": 3897,
+      "bodySha256": "15422431ebe07ed71580d70653b2f93c56c9220df626cb8f92464b061f453c87",
+      "keywordHits": {
+        "decision": [
+          "Capture: 21 frames; accepted/rejected TURN_NOW; egg_turn_completed events; invalid-sensor and stage rejections.",
+          "4 h interval and stage days are source values, not formally approved."
+        ],
+        "authority": [
+          "a 9-row physical/mechanical matrix, all NOT RUN except the egg test, which is NOT AUTHORIZED;",
+          "Egg movement/turning with eggs only after separate authorization.",
+          "After HW-10 clearance, run A08-P-01/P-02 unpowered and with the linkage disconnected; calibrate safe travel before A08-P-03. Do not run A08-P-09 (eggs) without separate explicit authorization."
+        ],
+        "completion": [
+          "checks manual TURN_NOW, automatic 4 h boundary, invalid-sensor/lockdown/complete gates and schedule reset.",
+          "Capture: 21 frames; accepted/rejected TURN_NOW; egg_turn_completed events; invalid-sensor and stage rejections.",
+          "Tray/linkage safe travel and stop calibration."
+        ]
+      }
+    },
+    {
+      "number": 22,
+      "file": "22-OCT26_A-09.md",
+      "id": "R-mvuc7kvp9wy6",
+      "taskId": "OCT26:A-09",
+      "owner": "Ally",
+      "reportedBy": "Ally",
+      "status": "Not started",
+      "date": "2026-10-30",
+      "declaredBodyTaskId": null,
+      "taskIdMismatch": false,
+      "createdAt": 1793326356852,
+      "updatedAt": 1793326356852,
+      "latestSuppliedAttempt": true,
+      "bodyChars": 5046,
+      "bodySha256": "ad7092c710181b9aa9d9011c6a2f4f12ca0afc521c30fb8bf42ba51ef4080bbd",
+      "keywordHits": {
+        "decision": [
+          "Status: HOST/SOURCE VERIFIED — APPROVED LIMITS NOT VERIFIED — PHYSICAL RESPONSE NOT RUN. 138 host checks pass at the implemented source values. No signed approved limits and no physical heater/fan/humidifier/relay/sensor evidence.",
+          "the implemented limits and an explicit not approved statement;",
+          "host case table A09-01…A09-12, with A09-12 (approved-limit behaviour) PENDING;",
+          "PASS: OCT26:A-09 host control evidence recorded; 109 + 29 checks/0 failures; 12 cases with A09-12 PENDING; 11 physical rows NOT RUN/NOT AUTHORIZED; 12 evidence files match sha256sums.txt; approved limits and physical response remain NOT VERIFIED",
+          "Approved-limit behaviour: PENDING — K-03B-02 P1–P3 remain proposed with no adviser signature/date.",
+          "Regulation at signed approved limits (A09-12)."
+        ],
+        "authority": [
+          "physical matrix A09-P-01…A09-P-11, all NOT RUN except the egg test (NOT AUTHORIZED);",
+          "PASS: OCT26:A-09 host control evidence recorded; 109 + 29 checks/0 failures; 12 cases with A09-12 PENDING; 11 physical rows NOT RUN/NOT AUTHORIZED; 12 evidence files match sha256sums.txt; approved limits and physical response remain NOT VERIFIED",
+          "Egg test only after separate authorization.",
+          "Obtain the K-03B-02 signature/date and HW-10 clearance. Then run A09-P-01/P-02 unpowered, followed by A09-P-03…P-09 with supervision and reference instruments; run A09-P-10 only as a supervised empty-incubator test. Do not run A09-P-11 without separate explicit authorization."
+        ],
+        "completion": [
+          "exhaust gates in lockdown, complete and invalid-sensor states;",
+          "Supervised empty-incubator run and cloud Active vs physical state."
+        ]
+      }
+    },
+    {
+      "number": 23,
+      "file": "23-OCT26_A-10.md",
+      "id": "R-mvucdh22c1di",
+      "taskId": "OCT26:A-10",
+      "owner": "Ally",
+      "reportedBy": "Ally",
+      "status": "Not started",
+      "date": "2026-10-30",
+      "declaredBodyTaskId": null,
+      "taskIdMismatch": false,
+      "createdAt": 1793326631832,
+      "updatedAt": 1793326631832,
+      "latestSuppliedAttempt": true,
+      "bodyChars": 5333,
+      "bodySha256": "ac78c381e05b779c4ae2e1ba0eeacc1518d5146ec726671ec155ef0977c1dc57",
+      "keywordHits": {
+        "decision": [
+          "Signed HW-10 clearance with scope, approved loads and supervisor.",
+          "Independent thermal cutoff/watchdog and approved incubation limits."
+        ],
+        "authority": [
+          "records the unsigned HW-10 clearance and missing authorization;",
+          "PASS: OCT26:A-10 readiness recorded; 17 communication rows and 16 safety rows NOT RUN/BLOCKED/NOT AUTHORIZED; build and NDJSON v1 conformance recorded; 13 evidence files match sha256sums.txt; clearance and physical tests remain BLOCKED",
+          "Safety: NOT RUN/BLOCKED; egg test NOT AUTHORIZED.",
+          "No build or host-check errors. Physical testing is blocked by missing authorization and missing modules/transport, not by a build failure.",
+          "RTC timekeeping, drift and retention.",
+          "HC-05 pairing/RFCOMM, 9600 8-N-1 telemetry and lifecycle.",
+          "Egg test only after separate authorization."
+        ],
+        "completion": [
+          "records stop conditions, state distinctions and exact dependencies.",
+          "End-to-end Uno ↔ HC-05 ↔ Android ↔ Supabase; Day N and cloud state."
+        ]
+      }
+    },
+    {
+      "number": 24,
+      "file": "24-OCT26_HW-01.md",
+      "id": "R-mvuclz61hgzq",
+      "taskId": "OCT26:HW-01",
+      "owner": "Ally",
+      "reportedBy": "Ally",
+      "status": "Completed",
+      "date": "2026-10-30",
+      "declaredBodyTaskId": "CURRENT:HW-IMP-01",
+      "taskIdMismatch": true,
+      "createdAt": 1793327028552,
+      "updatedAt": 1793327028552,
+      "latestSuppliedAttempt": true,
+      "bodyChars": 5204,
+      "bodySha256": "87554a66ed55150c7e4b62387c6b040b12b21828f660a7ccdc05989eea121ec7",
+      "keywordHits": {
+        "decision": [
+          "Status: PARTIAL — parser LF-drain patch and START/STATUS host fixtures implemented (40/40); STOP, authorization admission, RTC and durable recovery remain unimplemented/blocked because the D01–D06 record is absent. No commit, flash, wiring or powered load.",
+          "Did not implement STOP: its exact D02 semantics are absent. Implementing one now would invent protocol behavior and could destroy a valid batch.",
+          "Team-filled D01–D06 record: selected source, STOP semantics, parser bounds, admission/authorization, destination.",
+          "STOP implementation and approved state transitions.",
+          "Approved incubation limits (K-03B-02 PENDING).",
+          "Exact STOP behavior and fixtures once D02 exists.",
+          "Authorized vs unauthorized live admission once D04/D05 exist.",
+          "Obtain the team-filled D01–D06 record. Implement STOP and the authorization admission seam against those exact definitions, then add host fixtures for STOP, authorized/unauthorized admission and power-loss recovery. Do not flash, wire or energise a load before signed HW-10 clearance.",
+          "Source SHA-256: 7106ebfe01d037c95766cd51c43b43fa02f92b922fc5a180770fd27b3822c5ec"
+        ],
+        "authority": [
+          "Status: PARTIAL — parser LF-drain patch and START/STATUS host fixtures implemented (40/40); STOP, authorization admission, RTC and durable recovery remain unimplemented/blocked because the D01–D06 record is absent. No commit, flash, wiring or powered load.",
+          "Did not add an authorization field, RTC code or durable command ledger.",
+          "PASS: HW-IMP-01 partial patch recorded; parser LF-drain and 40/40 START/STATUS fixtures; 240 regression checks/0 failures; STOP, authorization, RTC and durable recovery remain blocked; 12 evidence files match sha256sums.txt",
+          "STOP/authorization/RTC/live admission: not implemented.",
+          "Team-filled D01–D06 record: selected source, STOP semantics, parser bounds, admission/authorization, destination.",
+          "Authorization/live admission and RTC policy.",
+          "Authorized vs unauthorized live admission once D04/D05 exist.",
+          "Power-loss recovery and durable duplicate suppression (HW-IMP-02).",
+          "Obtain the team-filled D01–D06 record. Implement STOP and the authorization admission seam against those exact definitions, then add host fixtures for STOP, authorized/unauthorized admission and power-loss recovery. Do not flash, wire or energise a load before signed HW-10 clearance."
+        ],
+        "completion": [
+          "Status: PARTIAL — parser LF-drain patch and START/STATUS host fixtures implemented (40/40); STOP, authorization admission, RTC and durable recovery remain unimplemented/blocked because the D01–D06 record is absent. No commit, flash, wiring or powered load.",
+          "Did not implement STOP: its exact D02 semantics are absent. Implementing one now would invent protocol behavior and could destroy a valid batch.",
+          "Did not add an authorization field, RTC code or durable command ledger.",
+          "docs/hwimp01_source_patch_start_stop_status.md (new)",
+          "PASS: HW-IMP-01 partial patch recorded; parser LF-drain and 40/40 START/STATUS fixtures; 240 regression checks/0 failures; STOP, authorization, RTC and durable recovery remain blocked; 12 evidence files match sha256sums.txt",
+          "STOP/authorization/RTC/live admission: not implemented.",
+          "Team-filled D01–D06 record: selected source, STOP semantics, parser bounds, admission/authorization, destination.",
+          "STOP implementation and approved state transitions.",
+          "Durable command/ACK ledger and recovery (HW-IMP-02).",
+          "Exact STOP behavior and fixtures once D02 exists.",
+          "Obtain the team-filled D01–D06 record. Implement STOP and the authorization admission seam against those exact definitions, then add host fixtures for STOP, authorized/unauthorized admission and power-loss recovery. Do not flash, wire or energise a load before signed HW-10 clearance.",
+          "docs/hwimp01_source_patch_start_stop_status.md"
+        ]
+      }
+    },
+    {
+      "number": 25,
+      "file": "25-OCT26_HW-02.md",
+      "id": "R-mvucw1mbzn44",
+      "taskId": "OCT26:HW-02",
+      "owner": "Ally",
+      "reportedBy": "Ally",
+      "status": "Completed",
+      "date": "2026-10-30",
+      "declaredBodyTaskId": "CURRENT:HW-IMP-02",
+      "taskIdMismatch": true,
+      "createdAt": 1793327498290,
+      "updatedAt": 1793327498290,
+      "latestSuppliedAttempt": true,
+      "bodyChars": 4976,
+      "bodySha256": "812346de73b670fb5a3a003058624878f21ca444a9cd114522170c57da0f096d",
+      "keywordHits": {
+        "decision": [
+          "Status: DESIGN + HOST MODEL ONLY — 31/31 checks pass; production firmware still has no durable journal, CRC, RTC or watchdog. D02–D05 are absent, so the EEPROM layout and replay/loss policy remain proposals. No flashing, real EEPROM write or powered test.",
+          "Team-filled D02–D05: phases/identities, memory map, retention/loss policy, RTC/profile policy.",
+          "Approved memory map and journal retention.",
+          "Event loss/replay policy against D04.",
+          "Obtain D02–D05. Then convert the approved layout into a production storage module with write verification and bounded journal retention, and run supervised power-cut tests only after HW-10 clearance. Treat this host model as design evidence, not physical reliability.",
+          "Source SHA-256: 7106ebfe01d037c95766cd51c43b43fa02f92b922fc5a180770fd27b3822c5ec"
+        ],
+        "authority": [
+          "Status: DESIGN + HOST MODEL ONLY — 31/31 checks pass; production firmware still has no durable journal, CRC, RTC or watchdog. D02–D05 are absent, so the EEPROM layout and replay/loss policy remain proposals. No flashing, real EEPROM write or powered test.",
+          "a proposed non-overlapping EEPROM journal at 0x0200..0x02FF (4 × 64 B);",
+          "CRC-32 plus a commit marker written last;",
+          "torn-write/power-cut simulation at every byte offset;",
+          "journal-full fail-closed behavior with no overwrite;",
+          "committed-only command dedupe and transition retention;",
+          "Added docs/hwimp02_durable_recovery_design.md covering the EEPROM map, record format, commit phases, boot reconciliation, RTC/time-validity policy, event replay/loss draft and fail-closed matrix.",
+          "docs/evidence/hwimp02/2026-10-30/eeprom_map.txt (new)",
+          "No flash, real EEPROM write, RTC, load or egg test.",
+          "Proposed journal: 4 × 64 B at 0x0200..0x02FF, outside BatchState (0x0000..0x0007) and StartRecord (0x0020..0x0027).",
+          "Torn-write sweep: all 64 cut offsets preserve the prior committed record; a torn first start creates no batch.",
+          "Journal full: journal_full; no valid slot overwritten; latest record preserved.",
+          "Corruption of body/CRC/marker: slot ignored; no fabricated batch.",
+          "PASS: HW-IMP-02 design/model recorded; 31/31 checks; 64 torn-write cuts never select the torn record; journal-full fails closed; RTC/time and event-loss policies remain proposals; 11 evidence files match sha256sums.txt; production durability not claimed",
+          "Team-filled D02–D05: phases/identities, memory map, retention/loss policy, RTC/profile policy.",
+          "Production journal implementation with real write verification.",
+          "RTC hardware and time retention (HW-01/HW-03/HW-07).",
+          "Authorization/live admission.",
+          "Real EEPROM torn-write, wear and brown-out behavior.",
+          "Approved memory map and journal retention.",
+          "RTC time validity/retention and Day N policy.",
+          "Event loss/replay policy against D04.",
+          "Obtain D02–D05. Then convert the approved layout into a production storage module with write verification and bounded journal retention, and run supervised power-cut tests only after HW-10 clearance. Treat this host model as design evidence, not physical reliability."
+        ],
+        "completion": [
+          "HC-05/Android/Supabase recovery end to end."
+        ]
+      }
+    },
+    {
+      "number": 26,
+      "file": "26-NEW_PILOT-GATE-01.md",
+      "id": "R-mvud52n5i06s",
+      "taskId": "NEW:PILOT-GATE-01",
+      "owner": "Ally",
+      "reportedBy": "Ally",
+      "status": "Not started",
+      "date": "2026-10-30",
+      "declaredBodyTaskId": "NEW:PILOT-GATE-01",
+      "taskIdMismatch": false,
+      "createdAt": 1793327919521,
+      "updatedAt": 1793327919521,
+      "latestSuppliedAttempt": true,
+      "bodyChars": 4195,
+      "bodySha256": "0f9fc9af33965c322ff821b6d41d73cba66b8544e2e1abfc67d2a8e5cc0f2c57",
+      "keywordHits": {
+        "decision": [
+          "Approved K-03B-02 Chicken profile and numerical limits.",
+          "Approved empty-incubator observation window and targets.",
+          "Actual temperature/humidity versus approved targets.",
+          "Obtain the signed HW-10 clearance and approved K-03B-02 profile, name the responsible testers, then execute PG-04…PG-06 unpowered and PG-07…PG-12 at low power. Do not run PG-20 or load eggs until every critical gate is PASS with attributable evidence and the responsible team signs the readiness record.",
+          "Source SHA-256: 7106ebfe01d037c95766cd51c43b43fa02f92b922fc5a180770fd27b3822c5ec"
+        ],
+        "authority": [
+          "the authorized plan marked NOT EXECUTED, with stop conditions.",
+          "Authorized cloud path and physical START/RUNNING evidence.",
+          "Power-loss/recovery with no automatic Start replay.",
+          "Egg test only after separate authorization and every gate passes."
+        ],
+        "completion": [
+          "the authorized plan marked NOT EXECUTED, with stop conditions.",
+          "Authorized cloud path and physical START/RUNNING evidence.",
+          "End-to-end HC-05/Android/Supabase evidence."
+        ]
+      }
+    }
+  ],
+  "misfiledReports": [
+    {
+      "id": "R-mvuclz61hgzq",
+      "outerTaskId": "OCT26:HW-01",
+      "bodyTaskId": "CURRENT:HW-IMP-01",
+      "outerStatus": "Completed"
+    },
+    {
+      "id": "R-mvucw1mbzn44",
+      "outerTaskId": "OCT26:HW-02",
+      "bodyTaskId": "CURRENT:HW-IMP-02",
+      "outerStatus": "Completed"
+    }
+  ],
+  "latestAttemptCaution": "Latest flags compare outer task IDs only; misfiled reports must not supersede actual RTC/Bluetooth identification evidence.",
+  "referencedFiles": [
+    {
+      "path": "docs/a01_firmware_audit.md",
+      "presentInChaCheckout": false
+    },
+    {
+      "path": "docs/oct26_a02_firmware_interface.md",
+      "presentInChaCheckout": false
+    },
+    {
+      "path": "docs/oct26_a03_a01_findings_for_cha.md",
+      "presentInChaCheckout": false
+    },
+    {
+      "path": "docs/oct26_a04_final_ndjson_format_decision.md",
+      "presentInChaCheckout": false
+    },
+    {
+      "path": "docs/evidence/oct26-a04/2026-10-30/format_decisions.csv",
+      "presentInChaCheckout": false
+    },
+    {
+      "path": "docs/hwimp01_source_patch_start_stop_status.md",
+      "presentInChaCheckout": false
+    },
+    {
+      "path": "docs/hwimp02_durable_recovery_design.md",
+      "presentInChaCheckout": false
+    }
+  ],
+  "localSourceComparison": {
+    "combinedSha256": "a466a868e6c148cf4f9c3230378d5033d81db89dfb77a3e0fa53891d847a9598",
+    "reportedPatchedCombinedSha256": "7106ebfe01d037c95766cd51c43b43fa02f92b922fc5a180770fd27b3822c5ec",
+    "localUnoSketchPresent": true,
+    "note": "Different source snapshots. No branch switch/fetch/merge or source adoption performed."
+  }
+}

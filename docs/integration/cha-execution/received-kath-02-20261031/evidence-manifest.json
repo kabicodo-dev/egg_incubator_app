@@ -1,0 +1,68 @@
+﻿{
+    "scope":  "0.2 delta review only; new directly captured process logs",
+    "date":  "2026-10-31",
+    "inputZipSha256":  "983be83c12aa3550c69e8f17bd0a5642b1a92e5ea9d667368c6b0e2a75ad6772",
+    "exitCodes":  {
+                      "inputVerification":  0,
+                      "node":  1,
+                      "dart":  0,
+                      "dartVersion":  0
+                  },
+    "files":  [
+                  {
+                      "file":  "dart-version.stderr.txt",
+                      "bytes":  0,
+                      "sha256":  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+                  },
+                  {
+                      "file":  "dart-version.stdout.txt",
+                      "bytes":  84,
+                      "sha256":  "ec311d60ac82411553348b5995b2f09e0fbf926df824102f12c35ba83c2788e5"
+                  },
+                  {
+                      "file":  "dart.stderr.txt",
+                      "bytes":  0,
+                      "sha256":  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+                  },
+                  {
+                      "file":  "dart.stdout.txt",
+                      "bytes":  5384,
+                      "sha256":  "deaa0cf482cbf7a85a7def464a117fe9bbd2fea8a9a6db3e733c3dd828b1536a"
+                  },
+                  {
+                      "file":  "dart_manual_result_02_review.dart",
+                      "bytes":  11562,
+                      "sha256":  "a7f3744a19905651f6562350d92fa373401506a79990f85630c0b028178ff269"
+                  },
+                  {
+                      "file":  "inputs.stderr.txt",
+                      "bytes":  0,
+                      "sha256":  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+                  },
+                  {
+                      "file":  "inputs.stdout.txt",
+                      "bytes":  3383,
+                      "sha256":  "8b444c7dd119d99a6ba59ac931dbc6795b1a2149ad4b5d182f600d5801dd8df0"
+                  },
+                  {
+                      "file":  "node.stderr.txt",
+                      "bytes":  0,
+                      "sha256":  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+                  },
+                  {
+                      "file":  "node.stdout.txt",
+                      "bytes":  2070,
+                      "sha256":  "487616b5779f36305be41eacf536212f65d18ab05e0d1b186d56a28bc66c2eca"
+                  },
+                  {
+                      "file":  "RESPONSE.md",
+                      "bytes":  8254,
+                      "sha256":  "0286f8ed0b32047eb4685b891d103417592f18fa443f54e06ca12970c3f789d0"
+                  },
+                  {
+                      "file":  "verify_inputs.ps1",
+                      "bytes":  1768,
+                      "sha256":  "bb8814207722b03f8136859f9de52f541ac65694cd917c216091ab2ff79ce010"
+                  }
+              ]
+}

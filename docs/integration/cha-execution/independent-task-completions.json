@@ -1,0 +1,18 @@
+{
+  "scope": "Individually verified independent local tasks; not bulk completion of blocked work",
+  "tasks": [
+    {
+      "id": "OCT26:C-03",
+      "owner": "Mary Charlyn",
+      "priority": "P0",
+      "initialStatus": "Not started",
+      "status": "Completed",
+      "kind": "Architecture alignment review with local regression evidence",
+      "reportFile": "OCT26_C03_ARCHITECTURE_ALIGNMENT.md",
+      "reportId": "R-CHA-OCT26-C03-ALIGNMENT-01",
+      "targetedLog": "oct26-c03-architecture-targeted.tap",
+      "regressionLog": "oct26-c03-backend-regression.tap",
+      "boundary": "Does not complete live ingestion, authorization, source mapping, Flutter/firmware compatibility, remote SQL changes, STOP-independent completion or hardware testing."
+    }
+  ]
+}

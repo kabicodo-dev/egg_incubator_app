@@ -1,0 +1,53 @@
+{
+  "browser": "Chrome headless isolated profile",
+  "url": "file:///C:/EggIncubator/egg_incubator_app/SmartHatch_Cha_Backend_Updated.html",
+  "profile": "C:\\Users\\Mary Charlyn\\AppData\\Local\\Temp\\opencode\\completed-archive-browser-9iMWez",
+  "checks": [
+    {
+      "name": "portal boot has 136 tasks, eight tabs, seven archive task groups and seven jump links",
+      "result": "PASSED"
+    },
+    {
+      "name": "all remaining-task preparation cards/requests render without changing task counts or claiming acceptance",
+      "result": "PASSED"
+    },
+    {
+      "name": "review and independent verification render Partial; completed archive and dependencies unchanged",
+      "result": "PASSED"
+    },
+    {
+      "name": "all full embedded bodies and links match publication data byte for byte",
+      "result": "PASSED"
+    },
+    {
+      "name": "type owner task and text filters work independently",
+      "result": "PASSED"
+    },
+    {
+      "name": "expand collapse and overview/task anchors route to Reports",
+      "result": "PASSED"
+    },
+    {
+      "name": "global search routes a full-body match to Reports",
+      "result": "PASSED"
+    },
+    {
+      "name": "snapshot export contains exactly seven unchanged Cha records and no Ally/design summaries",
+      "result": "PASSED"
+    },
+    {
+      "name": "320/390/768/1440 viewport archive controls and expanded cards fit horizontally",
+      "result": "PASSED"
+    },
+    {
+      "name": "reload byte-preserves existing reports status evidence and export markers",
+      "result": "PASSED"
+    },
+    {
+      "name": "original report editor can still save without importing archive or changing task statuses",
+      "result": "PASSED"
+    }
+  ],
+  "runtimeErrors": [],
+  "scope": "Local HTML UI only; no cloud or hardware verification"
+}

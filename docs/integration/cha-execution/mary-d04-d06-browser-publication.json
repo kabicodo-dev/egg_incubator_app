@@ -1,0 +1,16 @@
+{
+  "scope": "Targeted portal publication check after local answer recording; not a backend, JWT or hardware runtime test",
+  "origin": "http://localhost:8876",
+  "method": "OpenCode Chromium reload and browser.evaluate; report JSON fetched read-only, not imported",
+  "records": 136,
+  "tabs": 8,
+  "chaCounts": {"Completed":6,"Partial":7,"Not started":28,"Superseded":1},
+  "latestPersonalReplyNoteRendered": true,
+  "reportCount": 7,
+  "independentCompletionSelectionPreserved": true,
+  "newReportTaskId": "CURRENT:DB-IMP-01",
+  "newReportTaskStatus": "Partial",
+  "storageKeysAfterPublication": [],
+  "fullJointApprovals": 0,
+  "limits": "No storage writes/import, user file-tab access, remote Supabase action, contract implementation or new task completion. Previous full mobile/import checks not rerun."
+}

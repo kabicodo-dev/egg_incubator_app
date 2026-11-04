@@ -10,6 +10,16 @@ const addFormats = require('ajv-formats');
 
 const schema = JSON.parse(fs.readFileSync(path.join(__dirname, 'C02-provisional.schema.json'), 'utf8'));
 const fixtures = JSON.parse(fs.readFileSync(path.join(__dirname, 'C02-provisional.examples.json'), 'utf8'));
+const isolationSources = [
+  {file: '../test/fixtures/integration/hw02_batch_review.ndjson', count: 14},
+  {file: '../test/fixtures/integration/hw02_corrected_review.ndjson', count: 6}
+];
+const protectedInputs = [
+  'C02-provisional-communication-contract.md', 'C02-provisional.schema.json',
+  'C02-provisional.examples.json', ...isolationSources.map(source => source.file)
+].map(file => ({file: path.join(__dirname, file), bytes: fs.readFileSync(path.join(__dirname, file))}));
+const originalSchema = structuredClone(schema);
+const originalFixtures = structuredClone(fixtures);
 assert.equal(fixtures.draft, '0.1.0-provisional');
 assert.match(fixtures.notice, /SYNTHETIC TEST FIXTURES ONLY/);
 const ajv = new Ajv({allErrors: true, strict: true, strictTypes: false, strictRequired: false});
@@ -46,7 +56,10 @@ function parseFrame(line) {
       }
     }
   }
-  assert.ok(validate(message), JSON.stringify(validate.errors));
+  const originalMessage = structuredClone(message);
+  const accepted = validate(message);
+  assert.deepEqual(message, originalMessage, 'frame validation must not mutate input');
+  assert.ok(accepted, JSON.stringify(validate.errors));
   return message;
 }
 
@@ -151,9 +164,46 @@ clockUnknown.measured_at = null;
 clockUnknown.timestamp_valid = false;
 assert.ok(validate(clockUnknown), JSON.stringify(validate.errors));
 
+// These are incompatible historical SYNTHETIC review families, not a selected
+// source contract. Validate literal frames without adding aliases/defaults or
+// translating identities. In particular, never serialize parsed uint64 values
+// back into fixtures: JSON.parse alone does not preserve unsafe integer digits.
+const isolationResults = [];
+for (const source of isolationSources) {
+  const file = path.join(__dirname, source.file);
+  const bytes = protectedInputs.find(input => input.file === file).bytes;
+  const lines = bytes.toString('utf8').match(/[^\n]*\n|[^\n]+$/g) || [];
+  assert.equal(lines.length, source.count, 'expected complete historical fixture corpus');
+  for (const [index, line] of lines.entries()) {
+    assert.ok(line.endsWith('\n'), 'existing fixture must already be LF terminated');
+    const message = JSON.parse(line);
+    const originalMessage = structuredClone(message);
+    for (let attempt = 0; attempt < 2; attempt++) {
+      assert.equal(validate(message), false, 'foreign family must not match provisional schema');
+      assert.ok(validate.errors.some(error => ['required', 'additionalProperties'].includes(error.keyword)),
+        'rejection must include an envelope/schema mismatch');
+      assert.deepEqual(message, originalMessage, 'rejected object must remain unchanged');
+      assert.throws(() => parseFrame(line), assert.AssertionError,
+        'literal foreign frame must fail documentation schema validation');
+      assert.deepEqual(message, originalMessage, 'repeated validation must not translate input');
+    }
+    isolationResults.push(`${path.basename(file)}:${index + 1} ${message.t || message.type}`);
+  }
+}
+assert.deepEqual(schema, originalSchema, 'schema object must remain unchanged');
+assert.deepEqual(fixtures, originalFixtures, 'original positive examples must remain unchanged');
+for (const input of protectedInputs) {
+  assert.ok(fs.readFileSync(input.file).equals(input.bytes),
+    `protected file bytes changed: ${path.basename(input.file)}`);
+}
+
 console.log('PASS: draft 2020-12 schema meta-validation and compilation');
 console.log(`PASS: ${fixtures.examples.length} labeled synthetic messages accepted`);
 console.log(`PASS: ${negativeChecks} schema-negative mutations rejected`);
 console.log(`PASS: ${framingChecks} malformed/unsafe frame fixtures rejected`);
 console.log('PASS: CRLF, trailing whitespace, and 2 status/time edge cases');
+for (const result of isolationResults) console.log(`PASS: isolation rejection and no-mutation ${result}`);
+console.log(`PASS: ${isolationResults.length} incompatible literal frames rejected, each checked twice`);
+console.log('PASS: schema/example objects and all 5 protected contract/fixture files unchanged');
+console.log('LIMITATION: isolation checks prove documentation-validator rejection only; not a live parser, lossless uint64 decoder, protocol selection or reviewer approval.');
 console.log('NOT TESTED: firmware, physical Start/Stop, clocks, identity persistence, authentication, RLS, network, or hardware.');

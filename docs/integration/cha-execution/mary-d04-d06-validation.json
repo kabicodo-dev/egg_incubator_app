@@ -1,0 +1,36 @@
+{
+  "scope": "Offline decision-record verification; no backend/remote/runtime test",
+  "checks": [
+    {
+      "name": "exact four user selections preserved",
+      "result": "PASSED"
+    },
+    {
+      "name": "three personal acceptances and one pending change request only",
+      "result": "PASSED"
+    },
+    {
+      "name": "no Kath/Ally sign-off or full freeze invented",
+      "result": "PASSED"
+    },
+    {
+      "name": "joint D04/D06 gates remain blocked/pending",
+      "result": "PASSED"
+    },
+    {
+      "name": "all operation permissions remain false for this decision update",
+      "result": "PASSED"
+    },
+    {
+      "name": "three original candidate documents remain byte-identical to reviewed context",
+      "result": "PASSED"
+    },
+    {
+      "name": "completion conflict and unsafe new-batch inference explicitly disclosed",
+      "result": "PASSED"
+    }
+  ],
+  "personalSelections": 4,
+  "fullJointApprovals": 0,
+  "newTaskCompletions": 0
+}

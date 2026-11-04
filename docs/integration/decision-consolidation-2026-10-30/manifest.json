@@ -1,0 +1,72 @@
+{
+  "date": "2026-10-30",
+  "status": "Prepared for circulation; NOT delivered or approved",
+  "files": [
+    {
+      "file": "CONTRACT-FREEZE-01_Team_Decisions.md",
+      "sha256": "1d500806e2c0d90d49f3e06b5710ba0648ebb61d94e78a6a24c19309ede13129",
+      "bytes": 23615,
+      "origin": "Current repository documentation"
+    },
+    {
+      "file": "D04_D06_Mary_Backend_Position.md",
+      "sha256": "94877d61fe7b5ed8a49ececc5a17eb5609b45b5b658c635aab331b127d53a93d",
+      "bytes": 8154,
+      "origin": "Current repository documentation"
+    },
+    {
+      "file": "DB-02_30Oct_Consolidated_Alignment.md",
+      "sha256": "ff08bdabc5ce01124e431db5fec7c1547e4b3a24aadc91931b3a9865d5d26777",
+      "bytes": 15410,
+      "origin": "Current repository documentation"
+    },
+    {
+      "file": "DB-02_Exact_Bridge_Sync_API.md",
+      "sha256": "5678de5b6c6c1bcd7de827a4a28ad80b6f6d51454663f73118c6b12229a681ab",
+      "bytes": 45838,
+      "origin": "Current repository documentation"
+    },
+    {
+      "file": "DB-02_Proposed_Schema_And_Security.md",
+      "sha256": "6322985031a82d25184bd0ebefc7e1a9016d74c22b7e8d587e94dafb16d3f230",
+      "bytes": 24629,
+      "origin": "Current repository documentation"
+    },
+    {
+      "file": "DB-02_Conflict_Receipt_And_Recovery.md",
+      "sha256": "08e6f97c7c320769e223218fbea7ce52a1d4a1b0ec5d117a83965d5678f39f06",
+      "bytes": 20559,
+      "origin": "Current repository documentation"
+    },
+    {
+      "file": "INTEGRATION-CONTRACT-03_Shared_Decision_Register.md",
+      "sha256": "9ff4344b72c6005053ce0221212ca09806fc45466b0f9acbfc85f6d63643d2ec",
+      "bytes": 51365,
+      "origin": "Current repository documentation"
+    },
+    {
+      "file": "SmartHatch_Shared_Communication_Contract_v1.3_DECISION_READY_DRAFT.md",
+      "sha256": "70987831890edb16daaccfb47f7188061b41c5ea66658ac45fe4866cd1074f66",
+      "bytes": 21453,
+      "origin": "User-supplied Downloads input; byte-identical copy"
+    },
+    {
+      "file": "Ally-2026-10-30-Packet-Review.md",
+      "sha256": "939cc95c4ddcf831c9fbbb3c1ee01724e98ee641fe761c71c219db5fb2449f3a",
+      "bytes": 10853,
+      "origin": "User-supplied Downloads input; byte-identical copy"
+    },
+    {
+      "file": "ORIGINAL-C-02-Flutter-Compatibility-Review.md",
+      "sha256": "ca179502cbb54414bed7ee8ab36753cbb6523a0f3c6532192601b0a38ba0398b",
+      "bytes": 12823,
+      "origin": "User-supplied Downloads input; byte-identical copy"
+    },
+    {
+      "file": "README.md",
+      "sha256": "4e372238dd6255d278b6973f05c89e035bbb8d9dc5a228ff9a6d2317ad737f8a",
+      "bytes": 2037,
+      "origin": "Generated circulation cover"
+    }
+  ]
+}

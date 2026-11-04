@@ -1,0 +1,35 @@
+{
+  "checks": [
+    {
+      "name": "all ten supplied review files are copied byte-identically",
+      "result": "PASSED"
+    },
+    {
+      "name": "v1.3 remains the original unfrozen decision-ready input",
+      "result": "PASSED"
+    },
+    {
+      "name": "three DB-02 historical candidate snapshots remain unchanged",
+      "result": "PASSED"
+    },
+    {
+      "name": "six existing decision rows record received answers instead of no-reply defaults",
+      "result": "PASSED"
+    },
+    {
+      "name": "protocol supersession and full four conditions are explicitly unresolved",
+      "result": "PASSED"
+    },
+    {
+      "name": "result storage lifecycle and physical admission are distinct proposed decisions",
+      "result": "PASSED"
+    },
+    {
+      "name": "reported software evidence is not presented as reproduced or physical readiness",
+      "result": "PASSED"
+    }
+  ],
+  "files": 11,
+  "scope": "Documentation/hash checks only; no build/cloud/hardware tests",
+  "recordedAt": "2026-10-30T07:55:50.025Z"
+}

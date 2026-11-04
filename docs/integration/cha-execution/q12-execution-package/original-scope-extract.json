@@ -1,0 +1,37 @@
+{
+  "observedAtUtc": "2026-10-31T14:38:33.310Z",
+  "decisionSource": "docs/integration/remaining-task-workqueue/decision-index.json",
+  "decisionSourceSha256": "0098ea33d1b48d8ca6abe6b72351b27ba3da540ca4b8120da01acf82c8115f9e",
+  "decision": {
+    "id": "Q12",
+    "owners": [
+      "Mary / authorized test-project owner",
+      "Kath"
+    ],
+    "kind": "Separately scoped database/security implementation permission",
+    "alreadyAnswered": "Isolated target smarthatch-test zbwntspdecngnicllwlw; prior narrow role probe allowed. Main-project protection and existing data preservation remain.",
+    "needed": "After exact choices, explicitly approve only the named test identity/fixture/migration/RLS/RPC/endpoint operations actually needed, with rollback/cleanup and readback proof. Existing narrow probe permission does not authorize schema changes, new account provisioning, enabling ingestion or production access. Until then use local tests/plans only.",
+    "newApprovalRequired": true,
+    "affectedTasks": [
+      "ORIGINAL:C-03",
+      "ORIGINAL:C-04",
+      "ORIGINAL:C-05",
+      "ORIGINAL:C-08",
+      "OCT26:C-04",
+      "OCT26:C-05",
+      "OCT26:C-06",
+      "OCT26:C-07",
+      "OCT26:C-10",
+      "OCT26:C-11",
+      "OCT26:TEST-02",
+      "OCT26:TEST-09",
+      "CURRENT:DB-IMP-01",
+      "CURRENT:INT-IMP-01"
+    ]
+  },
+  "portalSource": "SmartHatch_Cha_Backend_Updated.html",
+  "portalSha256": "f57ba0408f054ab198400b6e3047c642a34c2c322b3aa8f2b7ac59f4af5f0e74",
+  "selector": "details[data-workqueue-decision=\"Q12\"]",
+  "portalDecisionText": "Q12 — Separately scoped database/security implementation permission Owners: Mary / authorized test-project owner / Kath Already answered: Isolated target smarthatch-test zbwntspdecngnicllwlw; prior narrow role probe allowed. Main-project protection and existing data preservation remain. Only needed now: After exact choices, explicitly approve only the named test identity/fixture/migration/RLS/RPC/endpoint operations actually needed, with rollback/cleanup and readback proof. Existing narrow probe permission does not authorize schema changes, new account provisioning, enabling ingestion or production access. Until then use local tests/plans only. Affects: ORIGINAL:C-03, ORIGINAL:C-04, ORIGINAL:C-05, ORIGINAL:C-08, OCT26:C-04, OCT26:C-05, OCT26:C-06, OCT26:C-07, OCT26:C-10, OCT26:C-11, OCT26:TEST-02, OCT26:TEST-09, CURRENT:DB-IMP-01, CURRENT:INT-IMP-01",
+  "finding": "Shared permission decision; no separate standalone Q12 implementation issue located. No portal changes."
+}

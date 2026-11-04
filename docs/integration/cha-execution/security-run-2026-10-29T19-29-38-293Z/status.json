@@ -1,0 +1,13 @@
+{
+  "status": "SECURITY_GAPS_OBSERVED",
+  "count": 8,
+  "allowedOnFixtures": 4,
+  "denied": 0,
+  "zeroRows": 4,
+  "unexpectedErrors": 0,
+  "rollbackCleanupVerified": true,
+  "remainingFixtureRows": 0,
+  "authUsersCreated": 0,
+  "scope": "Actual PostgreSQL roles/RLS on synthetic sensor fixtures; not Auth/JWT, approved installation, other tables, RPC behavior or end-to-end certification",
+  "stop": "Shared identity/source decisions and missing RPC implementation remain blocked. No grants/policies changed."
+}

@@ -1,0 +1,41 @@
+{
+  "scope": "Offline report/decision review only; attributed software results not rerun",
+  "checks": [
+    {
+      "name": "original export unchanged, valid marker/schema and 26 unique reports indexed",
+      "result": "PASSED"
+    },
+    {
+      "name": "every complete source body indexed with exact hash and attributed owner",
+      "result": "PASSED"
+    },
+    {
+      "name": "two misfiled HW-IMP reports identified without rewriting original task IDs",
+      "result": "PASSED"
+    },
+    {
+      "name": "all six shared decisions explicitly assessed, not blanket rejected/approved",
+      "result": "PASSED"
+    },
+    {
+      "name": "latest source hash distinct from local source; seven named packet files absent",
+      "result": "PASSED"
+    },
+    {
+      "name": "receipt of progress distinguished from formal Ally answer and joint approval",
+      "result": "PASSED"
+    }
+  ],
+  "allQuestionsAnswered": false,
+  "decisionAssessment": {
+    "D01": "PARTIAL_SOURCE_CONTEXT",
+    "D02": "PARTIAL_HOST_EVIDENCE",
+    "D03": "BUILD_REPORTED_BOUNDS_PENDING",
+    "D04": "AUTHORIZATION_AND_RETENTION_UNAPPROVED",
+    "D05": "RTC_PROFILE_TIME_BLOCKED",
+    "D06": "MAPPING_AND_INDEPENDENT_COMPLETION_ACCEPTANCE_PENDING"
+  },
+  "fullJointApprovals": 0,
+  "newTaskCompletions": 0,
+  "rawReportsImported": 0
+}

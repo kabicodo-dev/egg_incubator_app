@@ -1,0 +1,30 @@
+{
+  "contract": "DB02-MANUAL-RESULT-0.1-review",
+  "scope": "Future implementation/acceptance tests; all NOT RUN. Pure local vector/reference tests are separate and do not satisfy these gates.",
+  "cases": [
+    {"id":"MR-01","owner":"Mary + Kath","scenario":"Manual result before any Stop","expected":"Validated original manifest/mapping/count permits result only; Active/end_date/admission unchanged","status":"NOT RUN"},
+    {"id":"MR-02","owner":"Mary","scenario":"Zero and original quantity count boundaries","expected":"Both accepted in actual result transaction; negative/fractional/over-quantity rejected","status":"NOT RUN"},
+    {"id":"MR-03","owner":"Mary + Kath","scenario":"Missing original manifest/quantity/mapping","expected":"Local Pending validation; no dummy session, fake Stop or guessed current settings","status":"NOT RUN"},
+    {"id":"MR-04","owner":"Mary","scenario":"Exact duplicate submission","expected":"Same canonical content, stable original receipt and mapping; no second result","status":"NOT RUN"},
+    {"id":"MR-05","owner":"Mary","scenario":"Same original identity with changed count/time/manifest","expected":"409 original unchanged; no last-writer overwrite","status":"NOT RUN"},
+    {"id":"MR-06","owner":"Mary","scenario":"Concurrent different action IDs for one batch","expected":"One accepted immutable result; singleton constraint resolves race; loser gets safe conflict","status":"NOT RUN"},
+    {"id":"MR-07","owner":"Mary + Kath","scenario":"Lost HTTP response or uncertain commit","expected":"Read-only original identity lookup and identical retry; no new result ID or physical Start","status":"NOT RUN"},
+    {"id":"MR-08","owner":"Mary + Kath","scenario":"Lookup absent while original request still in flight","expected":"Identical retry safe under real transactional singleton/idempotency constraints","status":"NOT RUN"},
+    {"id":"MR-09","owner":"Kath","scenario":"Crash/disk-full during local result freeze/outbox transaction","expected":"No false Saved locally; all-or-nothing result/outbox; recover same committed action","status":"NOT RUN"},
+    {"id":"MR-10","owner":"Kath","scenario":"Crash/disk-full while storing verified receipt/mapping/outbox state","expected":"Atomic T4, pending retained on failure; reconcile without false success","status":"NOT RUN"},
+    {"id":"MR-11","owner":"Kath","scenario":"No internet cold start, restart and login recovery","expected":"Protected local recovery available per approved policy; no physical command replay","status":"NOT RUN"},
+    {"id":"MR-12","owner":"Mary + Kath","scenario":"Anonymous, other installation/controller/actor or revoked credentials","expected":"Real signed-token and scope checks deny protected lookup/submission without record leakage","status":"NOT RUN"},
+    {"id":"MR-13","owner":"Mary + Kath","scenario":"Expired token and authorized replacement uploader","expected":"Controlled reauth/recovery; original actor/hash unchanged; knowing IDs is not permission","status":"NOT RUN"},
+    {"id":"MR-14","owner":"Mary + Kath","scenario":"Logout or reinstall/replacement with committed pending evidence","expected":"Approved protected preservation/recovery; no STOP/RESET/START; no secret in backup/log","status":"NOT RUN"},
+    {"id":"MR-15","owner":"Mary + Kath","scenario":"Dart/server canonical serialization parity","expected":"Both exact published vector UTF-8 bytes/digests match; unknown time stays null","status":"NOT RUN"},
+    {"id":"MR-16","owner":"Mary","scenario":"Duplicate JSON keys, invalid UTF-8, nonfinite/coerced values and unknown fields","expected":"Actual strict HTTP parser rejects before persistence, no raw-input echo","status":"NOT RUN"},
+    {"id":"MR-17","owner":"Mary + Kath","scenario":"Wrong receipt identity/hash/quantity/session/effect, replay metadata changes","expected":"Do not mark synced; retain evidence and reconcile/escalate","status":"NOT RUN"},
+    {"id":"MR-18","owner":"Mary + Kath + Ally","scenario":"Result save versus concurrent lifecycle finalization/new-batch attempt","expected":"Result alone cannot release Active/admission; any future finalization rule separately approved and race-tested","status":"NOT RUN"},
+    {"id":"MR-19","owner":"Mary","scenario":"New result on non-Active historical session and retry of previously committed result","expected":"New request conflicts; authorized identical prior result still reconciles without reopening lifecycle","status":"NOT RUN"},
+    {"id":"MR-20","owner":"Mary + Kath","scenario":"Wrong batch/device/manifest and late foreign result","expected":"No reassignment to latest Active; no changed mapping; safe conflict/pending response","status":"NOT RUN"},
+    {"id":"MR-21","owner":"Mary","scenario":"Real transaction fault between result singleton binding and receipt commit","expected":"Atomic rollback or correct unknown-commit reconciliation; no partial false receipt","status":"NOT RUN"},
+    {"id":"MR-22","owner":"Mary + Kath","scenario":"Bigint session beyond JS safe integer range","expected":"Lossless decimal string through HTTP/local persistence/readback","status":"NOT RUN"},
+    {"id":"MR-23","owner":"Mary + Kath","scenario":"Old/new API version or contract mismatch","expected":"Fail closed; no old farmer_completed fallback or Stop synthesis","status":"NOT RUN"},
+    {"id":"MR-24","owner":"Mary + Kath + Ally","scenario":"Controller boundary and source evidence release","expected":"No result/receipt path dispatches commands, invents physical evidence or authenticates journal erasure","status":"NOT RUN"}
+  ]
+}

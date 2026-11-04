@@ -1,0 +1,25 @@
+{
+  "originalSha256": "06feb8b430c40438df8ba301f466eef5657807345fba49cc943875619ad428e4",
+  "workingSha256": "f57ba0408f054ab198400b6e3047c642a34c2c322b3aa8f2b7ac59f4af5f0e74",
+  "records": 136,
+  "uniqueTaskIds": 136,
+  "chaRecords": 42,
+  "effectivePublishedStatuses": {
+    "Completed": 7,
+    "Not started": 25,
+    "Partial": 9,
+    "Superseded": 1
+  },
+  "sources": {
+    "ORIGINAL": 32,
+    "OCT26": 92,
+    "CURRENT": 7,
+    "NEW": 5
+  },
+  "tabs": 8,
+  "javascriptSyntax": "PASSED",
+  "originalUnchanged": true,
+  "sourceLiteralUnchanged": true,
+  "preservation": "Original HTML retained except additive sections/evidence/links/scoped wrapping, two import-safety edits, and two read-only embedded-report display/search hooks in working copy only.",
+  "browser": "Separate browser results required; static checks do not prove interactive or mobile behavior."
+}

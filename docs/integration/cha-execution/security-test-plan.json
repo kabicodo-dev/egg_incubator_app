@@ -1,0 +1,84 @@
+{
+  "taskId": "OCT26:C-01",
+  "status": "LOCAL_PREPARATION_ONLY",
+  "authorization": {
+    "remoteQueries": false,
+    "remoteWrites": false,
+    "authProvisioning": false,
+    "migrations": false,
+    "rlsChanges": false,
+    "rpcActivation": false,
+    "fixtureCleanup": false,
+    "productionAccess": false
+  },
+  "target": {
+    "name": "smarthatch-test",
+    "ref": "zbwntspdecngnicllwlw",
+    "url": "https://zbwntspdecngnicllwlw.supabase.co",
+    "requireFreshVerificationBeforeRemoteUse": true,
+    "forbiddenRef": "suopuhgtwyqkpupzvdng"
+  },
+  "inputs": [
+    "docs/integration/cha-execution/2026-10-30-test-catalog.json",
+    "supabase/functions/_shared/bridge-sync-supabase.mjs",
+    "test/fixtures/integration/db_imp_01_closed_gate.json"
+  ],
+  "rpcNames": [
+    "bridge_sync_authorize_v1",
+    "bridge_sync_ingest_v1",
+    "bridge_sync_reconcile_v1"
+  ],
+  "identityLabels": ["no_session", "anonymous_auth_session", "other_authenticated", "revoked_installation", "candidate_authorized_installation"],
+  "cases": [
+    {
+      "id": "AUDIT-ACL-01",
+      "scope": "Existing catalog evidence",
+      "status": "LOCAL_EVIDENCE_REVIEW_ONLY",
+      "expectedSecureBehavior": "All client table grants and RLS policies must be reviewed together; installation ownership must not be inferred from authenticated role membership.",
+      "observed": "Prior test catalog has permissive policies and broad client grants. This is a security finding, not a passed permission test."
+    },
+    {
+      "id": "AUDIT-READ-01",
+      "scope": "SELECT isolation for each identity label",
+      "status": "NOT_RUN",
+      "expectedSecureBehavior": "No access to another installation's fixture rows; missing/anonymous/unapproved identity must not gain pilot ownership.",
+      "gates": ["Explicit remote test approval", "Approved identity fixtures", "Reviewed ownership rules and fixture-only row selection"]
+    },
+    {
+      "id": "AUDIT-WRITE-01",
+      "scope": "Direct INSERT/UPDATE/DELETE boundaries for each identity label",
+      "status": "NOT_RUN",
+      "expectedSecureBehavior": "Unauthorized writes denied; no forged source/session mutation through direct tables. Exact allowed client operations require compatibility review.",
+      "gates": ["Explicit test-write approval", "Kath review of direct-table compatibility", "Approved fixture rows and cleanup plan"]
+    },
+    {
+      "id": "AUDIT-RPC-01",
+      "scope": "Exact RPC availability and missing/anonymous/other/revoked identity denial",
+      "status": "NOT_RUN",
+      "expectedSecureBehavior": "Fail closed with sanitized errors; no ingestion while source/authorization gates are disabled.",
+      "gates": ["Explicit remote test approval", "Separately reviewed implementation if RPCs are absent", "Approved identity fixtures"]
+    },
+    {
+      "id": "AUDIT-ALLOW-01",
+      "scope": "Candidate authorized installation positive path",
+      "status": "BLOCKED_BY_TEAM_DECISIONS",
+      "expectedSecureBehavior": "A genuine provisioned non-anonymous installation succeeds only after agreed scope and all security/source gates pass; do not weaken disabled checks to create a positive result.",
+      "gates": ["D04 authorization agreement", "D06 identity/API mapping", "Explicit provisioning and enablement approval"]
+    },
+    {
+      "id": "AUDIT-TXN-01",
+      "scope": "Write rollback, same-content duplicates, changed-content conflict, concurrent submissions and lost response",
+      "status": "BLOCKED_BY_TEAM_DECISIONS",
+      "expectedSecureBehavior": "One immutable source identity/content and stable receipt; atomic projection and rollback with no duplicate session or fabricated physical Start.",
+      "gates": ["D01/D02 canonical source contract", "D06 receipt/lifecycle mapping", "Implemented reviewed ledger/RPCs", "Explicit test-write approval"]
+    }
+  ],
+  "futureCleanupConstraints": [
+    "No cleanup is authorized by this local plan.",
+    "If later approved, capture exact IDs returned by this run; never delete by broad title/date/species predicates.",
+    "Use a transaction for rollback-only table tests; sequence advancement is not rolled back.",
+    "Auth provisioning and HTTP commits are not undone by a SQL rollback; they need separately approved cleanup.",
+    "Do not assume session fixtures are harmless: the existing global one-active index can interfere with other test work.",
+    "Stop on unknown existing objects, concurrent activity, or inability to scope verification to this run's fixture IDs."
+  ]
+}

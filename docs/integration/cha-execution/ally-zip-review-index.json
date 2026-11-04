@@ -1,0 +1,358 @@
+{
+  "zip": "C:/Users/Mary Charlyn/Downloads/01-20261030T075957Z-1-001.zip",
+  "zipSha256": "d7657d191f11d18d4e87f803c1314719157bbe7b9f56a184b56e0cde31d15eb2",
+  "files": [
+    {
+      "file": "a01_firmware_audit.md",
+      "bytes": 15829,
+      "sha256": "4d93dfa7a55da1de64c7fbfdc60b58417aa00d720ed9f3ae929f6942588e6c00",
+      "title": "# A-01 — Current Arduino firmware audit",
+      "status": "**Status:** **AUDITED WITH CRITICAL SOURCE GAP.** The current main-repo firmware (`SmartHatch_Combined`) is buildable and host-verified. The app-facing `SmartHatch_Uno` sketch referenced by the README is **absent from the current main repository**, so it cannot be built or serial-sampled as current firmware. No physical hardware validation was performed."
+    },
+    {
+      "file": "a02_ndjson_serial_protocol.md",
+      "bytes": 8675,
+      "sha256": "04ab56ec92f9c6d6346f6129eb8b4a323e0fdb680129a4d131799f313399476c",
+      "title": "# A-02 — NDJSON serial output contract",
+      "status": "**Status:** Firmware output implemented and host-verified; **not flashed**, not hardware-verified."
+    },
+    {
+      "file": "a03_local_control_failsafe.md",
+      "bytes": 17063,
+      "sha256": "ef6e8a7f69c83c5d10a178049399cf483251d4dcf79b5882378e7e2399650379",
+      "title": "# A-03 — Local regulation and fail-safe test record",
+      "status": "**Status:** Control/fail-safe changes implemented and host-verified; **not flashed**, **no load energised**, **no physical incubation test performed**."
+    },
+    {
+      "file": "a06_start_ack_running.md",
+      "bytes": 17455,
+      "sha256": "db5611f0de5315f9e6e5501c52c9dd0c6ae1139c1f88b91519c3be968d5e6b18",
+      "title": "# A-06 — START ACK / RUNNING separation and hardware confirmation",
+      "status": "**Status:** Firmware START handshake implemented and host-verified; **not flashed**, **no load energised**, **no physical START/RUNNING test**. The app start handler and cloud `Active` state are not yet wired to this handshake."
+    },
+    {
+      "file": "a08_hardware_test_log.md",
+      "bytes": 17838,
+      "sha256": "9204568a9ce60d50b48342bc22dfbd64f517983ff03bd895ad56d9e1442a62ff",
+      "title": "# A-08 — Dated hardware test log and entry format",
+      "status": "**Status:** Entry format and a dated **software-only** evidence bundle prepared. No physical hardware row has been filled; no board was flashed and no load was energised. **Awaiting Cla review and authorized physical results.**"
+    },
+    {
+      "file": "ally_d02_d04_d06_response.md",
+      "bytes": 18102,
+      "sha256": "fa4294421c24a40a259cb2cc8cb6a68463777ed440a6c677f06d9321141787e6",
+      "title": "# Ally — D02 / D04 / D06 response (firmware and source position)",
+      "status": "See disposition in document"
+    },
+    {
+      "file": "hardware_readiness.md",
+      "bytes": 7013,
+      "sha256": "8a1b36526d7e0f5da55396fc81a82762c0f2f8901e44a81f0737482287ce2e43",
+      "title": "# SmartHatch HW-01 — Connection and readiness protocol",
+      "status": "**Status:** Code + tests implemented; firmware changes NOT implemented (pending contract approval)"
+    },
+    {
+      "file": "hardware_sensor_validation.md",
+      "bytes": 5220,
+      "sha256": "de33d2a63ccb21c99393800119600bd0e93b061b423c67e4899ad02d4e484814",
+      "title": "# SmartHatch HW-02 — Real Sensor Validation (Physical Validation Checklist)",
+      "status": "See disposition in document"
+    },
+    {
+      "file": "hw01_rtc_identification.md",
+      "bytes": 11321,
+      "sha256": "7e5dc741e95e03ed0355bcbad0e3e5ecd794df1492f532beb1064dfec886b089",
+      "title": "# HW-01 — Tiny RTC I²C board: exact chip/model identification",
+      "status": "**Status:** **UNCONFIRMED — PENDING PHYSICAL EVIDENCE.** No exact RTC chip/model can be stated from the repository. No board was available for marking inspection or I²C probing in this pass."
+    },
+    {
+      "file": "hw02_bluetooth_module_identification.md",
+      "bytes": 12789,
+      "sha256": "219dbbddf5af021594ef049edf1e22b8940103f83ded413a13993dae0c419f05",
+      "title": "# HW-02 — ZS-040 Bluetooth carrier: exact module and firmware identification",
+      "status": "**Status:** **UNCONFIRMED — PENDING PHYSICAL EVIDENCE.** The carrier is reported as **ZS-040**, but the exact RF module model and firmware are not confirmed. No board was available for marking inspection, AT-mode readback or Bluetooth scanning in this pass."
+    },
+    {
+      "file": "hw03_rtc_wiring_battery_libraries.md",
+      "bytes": 13595,
+      "sha256": "0e3a770dbe0b39d9a11d9fc547f0297dd996fff6eb6cb6e819bba4058d261f3e",
+      "title": "# HW-03 — RTC pin connections, interface, battery and supported libraries",
+      "status": "**Status:** **PARTIALLY DOCUMENTED — MODULE-SPECIFIC ITEMS PENDING.** The Uno I²C side is source-verified. The RTC module-side pin order, bus voltage/pull-ups, battery requirements and supported library set cannot be finalized because **HW-01 has not confirmed the exact RTC chip/model**."
+    },
+    {
+      "file": "hw04_bluetooth_wiring_power_settings.md",
+      "bytes": 14487,
+      "sha256": "78cd15659a420cdcdead55dc6f6a505d0c598b5aeb8d640b442f1b07f2d5f768",
+      "title": "# HW-04 — Bluetooth pins, power, logic voltage and communication settings",
+      "status": "**Status:** **PARTIALLY DOCUMENTED — MODULE-SPECIFIC ITEMS PENDING.** The project-selected UART settings are source-verified. The physical module pin order, power supply, logic voltage and actual module communication settings are **UNCONFIRMED** because HW-02 has not confirmed the exact module/firmware and no board was accessed."
+    },
+    {
+      "file": "hw05_uno_module_compatibility.md",
+      "bytes": 14280,
+      "sha256": "80b68efca4cea155964aac972afe52a11dd35a26d40b8ef7ea0f7870b5ed145b",
+      "title": "# HW-05 — Arduino Uno compatibility with the RTC and Bluetooth modules",
+      "status": "**Status:** **PARTIALLY VERIFIED (design/software) — MODULE-SPECIFIC COMPATIBILITY PENDING.** The current firmware compile/link and the Uno pin map are source-verified. Physical compatibility with the RTC and Bluetooth modules cannot be claimed because HW-01/HW-02 have not confirmed the exact modules and no power/logic/address measurements were taken."
+    },
+    {
+      "file": "hw06_safe_wiring_electrical_review.md",
+      "bytes": 15294,
+      "sha256": "4fe1f94ea5e5fe44afb7aa0f338fd4512b19ca363817c6856f96d14f79a61b36",
+      "title": "# HW-06 — Safe wiring and electrical requirements before hardware integration",
+      "status": "**Status:** **NOT VERIFIED — SAFETY CLEARANCE PENDING.** This is a design/source safety review only. No powered load, mains connection, battery test, flashing, egg test or physical integration was performed. No signed electrical safety clearance exists."
+    },
+    {
+      "file": "hw07_rtc_timekeeping_test_record.md",
+      "bytes": 12200,
+      "sha256": "93f7127ac2bdfbbb20472ddf344fe9b136d6f7301c160781e730bbdce9a7ba80",
+      "title": "# HW-07 — RTC timekeeping and time-retention test record",
+      "status": "**Status:** **NOT TESTED / BLOCKED.** No physical RTC board, confirmed RTC chip/model, battery record, RTC library or safety clearance is available. No timekeeping or retention test has been run."
+    },
+    {
+      "file": "hw08_hc05_spp_android_test_record.md",
+      "bytes": 14139,
+      "sha256": "ed23e9330328016ad5afec9a1dc60b6f61ab748234b8b6cdb50d6eba67197ae0",
+      "title": "# HW-08 — HC-05 Classic SPP pairing, communication and lifecycle on Android",
+      "status": "**Status:** **NOT TESTED / BLOCKED.** No HC-05, Android device, pairing, RFCOMM/SPP session, telemetry, lifecycle test or end-to-end run was performed."
+    },
+    {
+      "file": "hw09_actual_results_markings_limitations.md",
+      "bytes": 13237,
+      "sha256": "4d9ca7fb9599e4cf7fc91cb8be6151c459f47899c156ad363945c1b86ed7b6b5",
+      "title": "# HW-09 — Actual results, module markings, photos and limitations",
+      "status": "**Status:** **RECORDED — SOFTWARE EVIDENCE ONLY.** Actual software results and the evidence index are recorded. **No physical module markings, datasheets or photos were supplied**, and no physical hardware/end-to-end result was produced. All hardware-dependent rows remain unconfirmed/pending."
+    },
+    {
+      "file": "hw10_electrical_safety_clearance_request.md",
+      "bytes": 11988,
+      "sha256": "e515f2b4b27dea32aaee82a950be30fd7a0976443633375f14e3b9f3dee486b1",
+      "title": "# HW-10 — Electrical safety clearance request/record",
+      "status": "**Status:** **NO CLEARANCE GRANTED — REQUEST PREPARED; NOT SIGNED.** No powered-load or egg test is authorized by this record."
+    },
+    {
+      "file": "hwimp01_source_patch_start_stop_status.md",
+      "bytes": 13588,
+      "sha256": "3e586ccc805eb12c2c6183a803b898dee6f220825b87d132d568eb953b6fa30d",
+      "title": "# HW-IMP-01 — Explicit START/STOP/STATUS seam and parser fail-closed patch",
+      "status": "**Status:** **PARTIAL — PARSER DRAIN + HOST FIXTURES IMPLEMENTED; STOP NOT IMPLEMENTED; LIVE ADMISSION/AUTH/RTC/STOP SEMANTICS BLOCKED.** The existing explicit START and read-only STATUS paths are host-tested (40/40), but no D01–D06 record exists in the repository, so STOP semantics and authorization admission were **not invented**."
+    },
+    {
+      "file": "hwimp02_durable_recovery_design.md",
+      "bytes": 14740,
+      "sha256": "e31d41869eebdc1f261a2557a7ff5da47b5f3ce1e284443e269c018bee06693a",
+      "title": "# HW-IMP-02 — Durable batch/command/transition record and recovery design",
+      "status": "**Status:** **DESIGN + HOST MODEL ONLY — NOT WIRED INTO FIRMWARE — NO PHYSICAL RELIABILITY CLAIM.** A proposed non-overlapping EEPROM journal, integrity/commit phases, torn-write/power-cut simulation and boot reconciliation pass 31/31 host checks. The production sketch still has no CRC, journal, write-error detection, RTC or watchdog."
+    },
+    {
+      "file": "k03b02_chicken_profile_confirmation.md",
+      "bytes": 41686,
+      "sha256": "a24c51afc20cd5e6cfaca7ff945ffd39ce990ea6e76bfd74913b5dd4ee7643b3",
+      "title": "# K-03B-02 — Chicken Profile Confirmation",
+      "status": "**Status:** Documentation/clarification only. This record confirms the Chicken profile; it does **not** authorize loading eggs, flashing hardware, energizing a load, or changing code/database/firmware.  "
+    },
+    {
+      "file": "k03b02_message_to_ally_cha_2026-10-30.md",
+      "bytes": 4386,
+      "sha256": "3ac04f7405e2dbec1c9ce7f6b2123b239b6b9eecdbd4c89143f462b21e4549f9",
+      "title": "# K-03B-02 — message to Cha and Ally (2026-10-30)",
+      "status": "See disposition in document"
+    },
+    {
+      "file": "k04_input_contract_and_evidence_status.md",
+      "bytes": 10625,
+      "sha256": "0b6add020bb58ba92af97ba23d7d2cd4b362bbabc1d765b77b6985bd0eab32c0",
+      "title": "# K-04 — required inputs, evidence in hand, and why it cannot resume yet",
+      "status": "**Status:** **BLOCKED — 2 of 2 required inputs absent.**"
+    },
+    {
+      "file": "oct26_a02_firmware_interface.md",
+      "bytes": 15225,
+      "sha256": "a08f0871a82abf2f41ec53ed99798192288d37b36c1774cb9604c488a67bd25c",
+      "title": "# OCT26:A-02 — Firmware interface: sensors, commands, actuators and serial format",
+      "status": "**Status:** **DOCUMENTED FROM THE CURRENT MAIN SKETCH — SOFTWARE/BUILD EVIDENCE ONLY.** The current `SmartHatch_Combined` firmware is documented and host-sampled. No physical sensor/actuator/HC-05 behavior was tested."
+    },
+    {
+      "file": "oct26_a03_a01_findings_for_cha.md",
+      "bytes": 10409,
+      "sha256": "e5d9a6bf4c93b753a97a3da4096c87853a3931e5588f1de43a462dcaf53689df",
+      "title": "# OCT26:A-03 — A-01 findings for Cha / C-02 compatibility review",
+      "status": "**Status:** **HANDOFF PREPARED — DELIVERY PENDING.** This memo is ready to send to Cha. No external messaging/email channel is available in this environment. This memo has not been transmitted. No C-02 approval is implied."
+    },
+    {
+      "file": "oct26_a04_final_ndjson_format_decision.md",
+      "bytes": 12683,
+      "sha256": "94b5be5c49a76bf1782c33aab5d729eadff101acbefff8512757da9362d73f35",
+      "title": "# OCT26:A-04 — Final JSON/NDJSON format decision record",
+      "status": "**Status:** **PROPOSED — CHA AGREEMENT PENDING.** The current **v1** NDJSON format is frozen as the implemented baseline. Any v2 change is a proposal only; it is not implemented or approved. No external message has been sent."
+    },
+    {
+      "file": "oct26_a05_physical_start_confirmation.md",
+      "bytes": 11715,
+      "sha256": "2302204260d1168e341e90f9e8eba236985648da87c1fe5ae524470c983b0229",
+      "title": "# OCT26:A-05 — Physical Start confirmation from real Arduino status evidence",
+      "status": "**Status:** **NOT VERIFIED PHYSICALLY — HOST/SOURCE EVIDENCE ONLY.** The START"
+    },
+    {
+      "file": "oct26_a06_local_autonomy.md",
+      "bytes": 10544,
+      "sha256": "f405c195f984b6508b629e02fbc9a9c021412d5db2a7df5b17ad62c84a718bb0",
+      "title": "# OCT26:A-06 — Arduino local autonomy from Flutter, Bluetooth/Wi-Fi and Supabase",
+      "status": "**Status:** **HOST/SOURCE VERIFIED — PHYSICAL/BENCH NOT RUN.** The current"
+    },
+    {
+      "file": "oct26_a07_rtc_restart_recovery.md",
+      "bytes": 12655,
+      "sha256": "4be59c244c048d94bbe1c023178448c7da531acd6a70dd427ca9115fc64061db",
+      "title": "# OCT26:A-07 — RTC timing and safe restart/recovery",
+      "status": "**Status:** **HOST/SOURCE VERIFIED — RTC AND PHYSICAL RESTART NOT VERIFIED.** Restart/recovery cases were simulated against the real sketch; no RTC, physical power-cycle, EEPROM tearing, relay or empty-incubator test was performed."
+    },
+    {
+      "file": "oct26_a08_egg_turning.md",
+      "bytes": 10865,
+      "sha256": "ac5b1e4e7661ed652bda998b1d730bc201d0ff3a7cf03f939cc599bce2689662",
+      "title": "# OCT26:A-08 — Egg-turning interval, angle and mechanical limits",
+      "status": "**Status:** **HOST/SOURCE VERIFIED — PHYSICAL/MECHANICAL NOT VERIFIED.** The current"
+    },
+    {
+      "file": "oct26_a09_control_behavior.md",
+      "bytes": 16929,
+      "sha256": "92363724d754230485021475b1fb651a44286d4d30f77582b94c36c54bf1b66d",
+      "title": "# OCT26:A-09 — Temperature and humidity control behaviour",
+      "status": "**Status:** **HOST/SOURCE VERIFIED — APPROVED LIMITS NOT VERIFIED — PHYSICAL"
+    },
+    {
+      "file": "oct26_a10_hardware_comm_safety.md",
+      "bytes": 15902,
+      "sha256": "586c5b29d6e650dc980a225ec11e8037db38dea2157f5d8f66c0b9ae0cc37cc9",
+      "title": "# OCT26:A-10 — Hardware communication and safety tests (clearance-gated)",
+      "status": "**Status:** **NO CLEARANCE — NO PHYSICAL COMMUNICATION OR SAFETY TEST"
+    },
+    {
+      "file": "pilot_gate_01_readiness.md",
+      "bytes": 14768,
+      "sha256": "3ae3df821d088416087fe107e7eb0087b33acf50074a64021cfd6c69a705aacc",
+      "title": "# PILOT-GATE-01 — Supervised empty-incubator readiness gate",
+      "status": "**Status:** **NO-GO — EMPTY-INCUBATOR RUN NOT RUN — EGG LOADING POSTPONED.** HW-10 clearance is unsigned, the Chicken profile is not approved, and every physical/integration gate is **NOT RUN** or **BLOCKED**. Only the software/build gate passes."
+    },
+    {
+      "file": "tracker_consolidated_completion_plan.md",
+      "bytes": 22221,
+      "sha256": "73c26a5619e514fc9d9b5f93349e95d0940fbd9b570532f9c826ff40cb27cd56",
+      "title": "# SmartHatch — consolidated tracker completion plan",
+      "status": "**Status:** the tracker remains **open**. This plan replaces per-task isolated"
+    }
+  ],
+  "dispositions": [
+    {
+      "id": "D02-1",
+      "heading": "### D02-1 Source identity — **BLOCKED (design) / CHANGE (shape)**",
+      "primary": "BLOCKED"
+    },
+    {
+      "id": "D02-2",
+      "heading": "### D02-2 Explicit START / STOP — **CHANGE**",
+      "primary": "CHANGE"
+    },
+    {
+      "id": "D02-3",
+      "heading": "### D02-3 ACK vs current state vs cloud Active — **ACCEPT (principle)**",
+      "primary": "ACCEPT"
+    },
+    {
+      "id": "D02-4",
+      "heading": "### D02-4 Read-only recovery query — **CHANGE**",
+      "primary": "CHANGE"
+    },
+    {
+      "id": "D02-5",
+      "heading": "### D02-5 Retained replay — **BLOCKED (capacity decision)**",
+      "primary": "BLOCKED"
+    },
+    {
+      "id": "D02-6",
+      "heading": "### D02-6 Capacity claim — **CHANGE**",
+      "primary": "CHANGE"
+    },
+    {
+      "id": "D04-1",
+      "heading": "### D04-1 Offline command authorization — **BLOCKED**",
+      "primary": "BLOCKED"
+    },
+    {
+      "id": "D04-2",
+      "heading": "### D04-2 Bounded retention — **CHANGE** (same choice as D02-5)",
+      "primary": "CHANGE"
+    },
+    {
+      "id": "D04-3",
+      "heading": "### D04-3 Journal full / corrupt — **ACCEPT (principle), unimplemented**",
+      "primary": "ACCEPT"
+    },
+    {
+      "id": "D04-4",
+      "heading": "### D04-4 `retention_ack` and release — **ACCEPT fail-closed**",
+      "primary": "ACCEPT"
+    },
+    {
+      "id": "D04-5",
+      "heading": "### D04-5 Revocation and clock — **ACCEPT (limits)**",
+      "primary": "ACCEPT"
+    },
+    {
+      "id": "D06-1",
+      "heading": "### D06-1 Names and idempotency — **ACCEPT**",
+      "primary": "ACCEPT"
+    },
+    {
+      "id": "D06-2",
+      "heading": "### D06-2 Completion independent of Stop — **ACCEPT WITH CONDITIONS**",
+      "primary": "ACCEPT"
+    }
+  ],
+  "counts": {
+    "BLOCKED": 3,
+    "CHANGE": 4,
+    "ACCEPT": 6
+  },
+  "verbatimCompletionConditions": "1. Completion never commands, implies or records a physical Stop.\n2. Completion does not by itself clear the single-Active guard or authorize\n   another hardware batch. Whether a new batch may be admitted is a lifecycle\n   decision, not a completion side effect.\n3. An unknown original completion time stays `NULL`; server receipt time is not\n   substituted for it.\n4. Hatch counts stay manual, integer, `0..original egg_quantity`, never derived\n   from sensors.",
+  "checks": [
+    {
+      "name": "immutable ZIP fingerprint matches supplied bytes; 34 Markdown-only extracted entries",
+      "result": "PASSED"
+    },
+    {
+      "name": "all thirteen directly received positions retained with correct primary counts",
+      "result": "PASSED"
+    },
+    {
+      "name": "all four original completion conditions present in received response and review",
+      "result": "PASSED"
+    },
+    {
+      "name": "all ten A-01 findings and A-03 question responses are covered",
+      "result": "PASSED"
+    },
+    {
+      "name": "task dependencies and acceptance are preserved, not bypassed for completion",
+      "result": "PASSED"
+    },
+    {
+      "name": "source claims remain attributed and do not select another branch or hardware",
+      "result": "PASSED"
+    },
+    {
+      "name": "known input contradictions are retained, not copied as accepted constraints",
+      "result": "PASSED"
+    },
+    {
+      "name": "old API schema remains byte-identical and production source gate remains closed",
+      "result": "PASSED"
+    }
+  ],
+  "task": {
+    "id": "OCT26:C-02B",
+    "status": "Partial",
+    "completedNow": [],
+    "reason": "C-02A schema-review prerequisite open; selected source/catalog absent"
+  },
+  "boundary": "Document/hash checks only. Markdown reports are not supplied build/firmware/model artifacts; no reported test rerun."
+}

@@ -1,5 +1,7 @@
 # Bridge sync — local implementation slice
 
+[Backend directory guide](../../README.md) · [Supporting tools](../../dev/README.md) · [SQL draft index](../../drafts/README.md)
+
 **Owner:** Mary Charlyn (Cha / Mary) — backend and integration.
 **Status:** real handler/adapters implemented locally; NOT DEPLOYED; source
 acceptance disabled; PostgreSQL persistence RPCs NOT IMPLEMENTED/TESTED yet.

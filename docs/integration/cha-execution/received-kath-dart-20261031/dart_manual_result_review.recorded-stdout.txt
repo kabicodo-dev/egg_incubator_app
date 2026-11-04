@@ -1,0 +1,44 @@
+PASS unknown_time_zero canonical bytes
+PASS unknown_time_zero byte length
+PASS unknown_time_zero SHA-256
+VECTOR unknown_time_zero: 422 cf269394b7cd7bb037116a8ce7a2f3f56b821e17ef59a836d225ba866f4cd1ac
+PASS phone_time_upper canonical bytes
+PASS phone_time_upper byte length
+PASS phone_time_upper SHA-256
+VECTOR phone_time_upper: 445 61e883f2826e65a1d41715a4f8ea226845e06be3dc3070ed4dae02f21b902bf5
+PASS uploader excluded from immutable hash
+PASS eggs_hatched changes immutable hash
+PASS actor_installation_id changes immutable hash
+PASS original_manifest_sha256 changes immutable hash
+PASS action_time changes immutable hash
+PASS valid lookup and nested receipt
+PASS valid absent lookup
+PASS reject outer device_id mismatch
+PASS reject nested device_id mismatch
+PASS reject outer batch_id mismatch
+PASS reject nested batch_id mismatch
+PASS reject outer actor_installation_id mismatch
+PASS reject nested actor_installation_id mismatch
+PASS reject outer result_id mismatch
+PASS reject nested result_id mismatch
+PASS reject receipt outcome
+PASS reject receipt receipt_revision
+PASS reject receipt session_id
+PASS reject receipt lifecycle_effect
+PASS reject receipt physical_admission_effect
+PASS reject receipt content_sha256
+PASS reject automatic retry for INVALID_REQUEST
+PASS reject automatic retry for AUTHENTICATION_REQUIRED
+PASS reject automatic retry for NOT_AUTHORIZED
+PASS reject automatic retry for MANIFEST_REQUIRED
+PASS reject automatic retry for BATCH_MAPPING_REQUIRED
+PASS reject automatic retry for COUNT_OUT_OF_RANGE
+PASS reject automatic retry for MANIFEST_CONFLICT
+PASS reject automatic retry for LIFECYCLE_CONFLICT
+PASS reject automatic retry for IDENTITY_CONTENT_CONFLICT
+PASS reject automatic retry for RESULT_ALREADY_RECORDED
+PASS reject automatic retry for CONTRACT_NOT_ENABLED
+PASS service retry allowed
+PASS unknown commit requires reconcile
+PASS reject false no-commit claim
+REVIEW-ONLY PASS checks=41; vectors=2; no application/DB/security integration

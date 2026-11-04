@@ -1,0 +1,88 @@
+TAP version 13
+# Subtest: architecture: cloud control/settings operations cannot become actuator commands
+ok 1 - architecture: cloud control/settings operations cannot become actuator commands
+  ---
+  duration_ms: 93.9267
+  type: 'test'
+  ...
+# Subtest: architecture: default source remains closed for started despite accepted boundary stubs
+ok 2 - architecture: default source remains closed for started despite accepted boundary stubs
+  ---
+  duration_ms: 18.1785
+  type: 'test'
+  ...
+# Subtest: architecture: default source remains closed for stopped despite accepted boundary stubs
+ok 3 - architecture: default source remains closed for stopped despite accepted boundary stubs
+  ---
+  duration_ms: 1.8299
+  type: 'test'
+  ...
+# Subtest: architecture: default source remains closed for completion despite accepted boundary stubs
+ok 4 - architecture: default source remains closed for completion despite accepted boundary stubs
+  ---
+  duration_ms: 1.6094
+  type: 'test'
+  ...
+# Subtest: architecture: default source remains closed for reading despite accepted boundary stubs
+ok 5 - architecture: default source remains closed for reading despite accepted boundary stubs
+  ---
+  duration_ms: 1.9541
+  type: 'test'
+  ...
+# Subtest: architecture: default source remains closed for conflicting_count despite accepted boundary stubs
+ok 6 - architecture: default source remains closed for conflicting_count despite accepted boundary stubs
+  ---
+  duration_ms: 1.6088
+  type: 'test'
+  ...
+# Subtest: architecture: default source remains closed for status despite accepted boundary stubs
+ok 7 - architecture: default source remains closed for status despite accepted boundary stubs
+  ---
+  duration_ms: 1.1116
+  type: 'test'
+  ...
+# Subtest: architecture: the application project cannot be selected even using its own ref as a pin
+ok 8 - architecture: the application project cannot be selected even using its own ref as a pin
+  ---
+  duration_ms: 1.4297
+  type: 'test'
+  ...
+# Subtest: architecture: hosted endpoints require an exact HTTPS isolated-project origin without credentials/path
+ok 9 - architecture: hosted endpoints require an exact HTTPS isolated-project origin without credentials/path
+  ---
+  duration_ms: 1.558
+  type: 'test'
+  ...
+# Subtest: architecture: Supabase boundary calls only the three candidate RPCs, never legacy direct table writes
+ok 10 - architecture: Supabase boundary calls only the three candidate RPCs, never legacy direct table writes
+  ---
+  duration_ms: 2.362
+  type: 'test'
+  ...
+# Subtest: architecture: a cloud receipt cannot smuggle a controller evidence-release artifact
+ok 11 - architecture: a cloud receipt cannot smuggle a controller evidence-release artifact
+  ---
+  duration_ms: 1.9019
+  type: 'test'
+  ...
+# Subtest: architecture: phone receipt time never fills unknown source Start time in immutable evidence
+ok 12 - architecture: phone receipt time never fills unknown source Start time in immutable evidence
+  ---
+  duration_ms: 0.5825
+  type: 'test'
+  ...
+# Subtest: architecture: cloud authentication failure returns an upload error, not physical Stop state
+ok 13 - architecture: cloud authentication failure returns an upload error, not physical Stop state
+  ---
+  duration_ms: 1.2863
+  type: 'test'
+  ...
+1..13
+# tests 13
+# suites 0
+# pass 13
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 486.7923
