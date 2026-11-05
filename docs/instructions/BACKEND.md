@@ -1,4 +1,33 @@
-# SmartHatch backend working instructions — Cha/Mary
+# SmartHatch backend working instructions
+
+## Current ownership and policy precedence — 2026-11-05
+
+Kath explicitly accepted future Flutter and Supabase backend development
+responsibility on 2026-11-04 so Cha can focus on the paper. Preserve Cha/Mary's
+backend contributions and dated reviews; Ally retains firmware/hardware ownership.
+See `docs/handoff/2026-11-04/backend-responsibility-acceptance.md`. This resolves
+future responsibility acknowledgment only, not blanket acceptance of every PR,
+contract, risk or operational action. Do not ask for renewed Cha approval merely
+because an older record names her as backend owner.
+
+Read the shared GLOBAL, PROJECT_CONTEXT, DECISIONS and ARCHITECTURE guides in
+`docs/instructions/` when present, then the exact linked backend records below.
+The historical review and candidate-implementation facts are retained, not
+reclassified as current implementation permission.
+
+Q07 revision 0.2 P1–P6 account-based planning is already approved by Kath:
+self-service signup, one-time email verification, ordinary email/password login,
+one-time authorized assignment of correct records, no approved-phone gate or
+routine session reapproval, protected logout/local isolation and account-scoped
+History. See `docs/contract-review/Q07_Provider_Session_Binding_Policy_0.2.md`
+and `docs/backend-handover/16-P1-P6-APPROVAL-ATTRIBUTION-CLARIFICATION.md`.
+Do not reopen this unchanged approval. Existing installation/session-bound code
+and SQL remain historical candidates requiring explicit compatibility work; they
+do not implement the newer policy. Stable actor/installation evidence identities
+must not be silently rewritten to remove an old authorization restriction.
+
+No production/Auth/RLS/RPC/schema change, deployment, source activation or
+occupied-controller operation follows from ownership or local validation.
 
 Reviewed: 2026-11-01, against `cha-branch2` / `2d2622e` plus existing working-tree
 records. This is maintained backend working guidance, not joint contract adoption,
@@ -78,10 +107,12 @@ Sources: [Mary's D04/M07 position](../contract-review/D04_D06_Mary_Backend_Posit
 [DB-02 0.1 API §§2–3/5](../contract-review/DB-02_Exact_Bridge_Sync_API.md), and actual
 `supabase/functions/_shared/bridge-sync-supabase.mjs`.
 
-- One designated installation is scope, not authentication, hardware attestation
-  or public self-registration. Protected operations require verified non-anonymous
-  Auth and current authorized installation/controller/session scope on each operation
-  and replay, including receipt/reconciliation reads. IDs are not credentials.
+- In the historical v1 candidate, protected operations require verified
+  non-anonymous Auth plus authorized installation/controller/session scope on
+  each operation and replay, including receipt/reconciliation reads. This
+  describes the old implementation boundary, not the selected Q07 0.2 account
+  experience above. IDs are not credentials; do not bypass the old gate without
+  implementing and testing the explicitly scoped replacement authorization.
 - Controller, installation, original actor, current uploader, batch, command/query,
   event/sample and cloud session are distinct. Never guess associations from latest
   Active, a Bluetooth name, upload order or a global latest-reading query.
@@ -145,13 +176,14 @@ Older pending-Q05 wording is historical; do not request another unchanged review
 
 ## Coordinate changes, not competing contracts
 
-- Mary owns backend; Kath owns Flutter; Ally owns firmware/hardware. Before a
+- Kath owns future backend and Flutter work; Ally owns firmware/hardware.
+  Preserve Mary's prior backend attribution and source references. Before a
   schema/API change, identify exact source/catalog/contract hashes, affected fields,
   compatibility/version behavior, original manifest trust, authorization and time
   semantics. No implicit translation between incompatible messages called `v:1`.
 - Ally supplies actual source/identity/time/retention evidence; Kath validates the
-  matching decoder, durable intent/outbox/receipt behavior and truthful UI; Mary
-  validates scoped storage, idempotency, mappings and bypass protection. A report's
+  matching decoder, durable intent/outbox/receipt behavior, truthful UI, scoped
+  storage, idempotency, mappings and bypass protection. A report's
   source hash is not proof of running-image identity. Do not request answered votes.
 - Preserve [existing Q06/Q07 proposal 0.1](../contract-review/Q06_Q07_Kath_Mary_Decision_Proposal_0.1.md)
   as a proposal, not selected package/SDK/enrollment/session policy. Native storage,

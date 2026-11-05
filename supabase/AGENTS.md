@@ -1,7 +1,8 @@
 # Backend instruction entry point
 
-Read and follow [the maintained backend instructions](../docs/instructions/BACKEND.md)
-before changing anything under `supabase/`. Paths in that guide are repository-relative.
+Read and follow `docs/instructions/GLOBAL.md` when present, then
+[the maintained backend instructions](../docs/instructions/BACKEND.md) before
+changing anything under `supabase/`. Paths are relative to the repository root.
 
 When the shared instruction layer is present, also read `docs/instructions/GLOBAL.md`,
 `PROJECT_CONTEXT.md`, `DECISIONS.md` and `ARCHITECTURE.md` in that directory, plus
