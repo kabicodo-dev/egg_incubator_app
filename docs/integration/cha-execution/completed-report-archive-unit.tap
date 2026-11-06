@@ -1,0 +1,70 @@
+TAP version 13
+# Subtest: archive covers seven completed tasks without fabricating design execution reports
+ok 1 - archive covers seven completed tasks without fabricating design execution reports
+  ---
+  duration_ms: 4.8504
+  type: 'test'
+  ...
+# Subtest: all available actual Cha report bodies and evidence links are embedded in full
+ok 2 - all available actual Cha report bodies and evidence links are embedded in full
+  ---
+  duration_ms: 3.4529
+  type: 'test'
+  ...
+# Subtest: Ally supplied Completed labels stay unverified, misfiled IDs retained and flagged
+ok 3 - Ally supplied Completed labels stay unverified, misfiled IDs retained and flagged
+  ---
+  duration_ms: 0.6003
+  type: 'test'
+  ...
+# Subtest: default/type/owner/task/text filters preserve clear evidence categories
+ok 4 - default/type/owner/task/text filters preserve clear evidence categories
+  ---
+  duration_ms: 73.2017
+  type: 'test'
+  ...
+# Subtest: identical saved records are hidden from archive display only, with no input mutation
+ok 5 - identical saved records are hidden from archive display only, with no input mutation
+  ---
+  duration_ms: 1.5885
+  type: 'test'
+  ...
+# Subtest: newer/different saved versions are never overwritten or treated as identical
+ok 6 - newer/different saved versions are never overwritten or treated as identical
+  ---
+  duration_ms: 0.9662
+  type: 'test'
+  ...
+# Subtest: an existing identical conflict copy prevents duplicate display without altering the newer original
+ok 7 - an existing identical conflict copy prevents duplicate display without altering the newer original
+  ---
+  duration_ms: 1.0864
+  type: 'test'
+  ...
+# Subtest: legacy task aliases deduplicate only their correct source-qualified task
+ok 8 - legacy task aliases deduplicate only their correct source-qualified task
+  ---
+  duration_ms: 1.1628
+  type: 'test'
+  ...
+# Subtest: untrusted report markup is escaped in HTML and cannot close the JavaScript payload
+ok 9 - untrusted report markup is escaped in HTML and cannot close the JavaScript payload
+  ---
+  duration_ms: 1.7339
+  type: 'test'
+  ...
+# Subtest: embedded bundle is a report-only snapshot and archive does not require new dependencies
+ok 10 - embedded bundle is a report-only snapshot and archive does not require new dependencies
+  ---
+  duration_ms: 4.6201
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 330.072

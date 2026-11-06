@@ -1,0 +1,48 @@
+﻿{
+    "observedAtUtc":  "2026-10-31T14:36:22.8931773Z",
+    "status":  "PASS",
+    "scope":  "OFFLINE ONLY",
+    "v1OriginalInputHashesMatch":  true,
+    "v1HistoricalTests":  52,
+    "productionSubsetCompilation":  "PASS: three runtime units, without test assemblies; no NativePq instance/connection",
+    "compilerInputReceipts":  [
+                                  {
+                                      "source":  "ModelPolicy.cs",
+                                      "capturedSourceSha256":  "d94cb03cb1d61a5251d7b6e3c211288553cd3688d7a93fe859352c531dfb9fd8",
+                                      "compilerInput":  "C:\\EggIncubator\\egg_incubator_app\\docs\\integration\\cha-execution\\q12-execution-package\\production-subset-compiler-inputs\\r3rngxf1.0.cs",
+                                      "exactCompilerFileSha256":  "0f484796be10314137296f165cf647c187d95ee5d62fff5886f58f1f0700489d",
+                                      "decodedCompilerTextSha256":  "d94cb03cb1d61a5251d7b6e3c211288553cd3688d7a93fe859352c531dfb9fd8"
+                                  },
+                                  {
+                                      "source":  "NativeBoundary.cs",
+                                      "capturedSourceSha256":  "381f705c0892d7b8f93278e14da545ba013e0afce77642d10e2b4f9b044b5268",
+                                      "compilerInput":  "C:\\EggIncubator\\egg_incubator_app\\docs\\integration\\cha-execution\\q12-execution-package\\production-subset-compiler-inputs\\r3rngxf1.1.cs",
+                                      "exactCompilerFileSha256":  "c6b62533b22b4466fc99a7f227cdf88f9b2f440564701fbfe4c563f386520194",
+                                      "decodedCompilerTextSha256":  "381f705c0892d7b8f93278e14da545ba013e0afce77642d10e2b4f9b044b5268"
+                                  },
+                                  {
+                                      "source":  "DurableController.cs",
+                                      "capturedSourceSha256":  "a9ffb06222e53f31f1cda4fc848dc646257b83790ffd067ae87473790fb4bcb9",
+                                      "compilerInput":  "C:\\EggIncubator\\egg_incubator_app\\docs\\integration\\cha-execution\\q12-execution-package\\production-subset-compiler-inputs\\r3rngxf1.2.cs",
+                                      "exactCompilerFileSha256":  "a65f941eb6236859a21fc12aa7c8138f54b7a9e0bd550fe01cc60fa0f3bab32b",
+                                      "decodedCompilerTextSha256":  "a9ffb06222e53f31f1cda4fc848dc646257b83790ffd067ae87473790fb4bcb9"
+                                  }
+                              ],
+    "sourceHashes":  {
+                         "ModelPolicy.cs":  "d94cb03cb1d61a5251d7b6e3c211288553cd3688d7a93fe859352c531dfb9fd8",
+                         "NativeBoundary.cs":  "381f705c0892d7b8f93278e14da545ba013e0afce77642d10e2b4f9b044b5268",
+                         "DurableController.cs":  "a9ffb06222e53f31f1cda4fc848dc646257b83790ffd067ae87473790fb4bcb9",
+                         "Invoke-Q12PhaseA-V3.ps1":  "004b5468b3e0fda8c52cd4efe1edd70fefd33de9424b8ce516c21dd28b761ae9",
+                         "Correction.Tests.cs":  "dd8e5a6fd0d2e286ddfc91701187d930ad59719fb12aad48fe46509656b1d113",
+                         "Followup.Tests.cs":  "dd012010cb1f6fb86c98dfc1c10a973c13e355455841466096561b8de1ff8fc1",
+                         "Test-Corrections.ps1":  "b6838eb5942fe96ae7dc2684e9f2bc8f57b54b5429274f34ebf6ab98881eeba4",
+                         "SourceSnapshot.psm1":  "8998819dbf1458e83d80c537066cd7c5ab16d044e5954a823b61c8b4c26a9be2"
+                     },
+    "parameterStatusReference":  {
+                                     "path":  "C:\\Program Files\\PostgreSQL\\17\\doc\\src\\sgml\\html\\libpq-status.html",
+                                     "sha256":  "ebeecd1233983fab2f043c95fb116477bb68c07d982b5796d2e9f23209412db6",
+                                     "line":  176,
+                                     "interpretation":  "Installed PostgreSQL 17 manual lists default_transaction_read_only as reported parameter. Actual remote response NOT RUN."
+                                 },
+    "remoteExecuted":  false
+}

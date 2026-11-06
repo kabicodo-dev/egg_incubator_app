@@ -1,0 +1,3 @@
+BEGIN TRANSACTION READ ONLY;
+SELECT count(*)::int AS remaining_fixture_rows FROM public.sensor_readings WHERE id IN (-10550452058665,-10550452058666,-10550452058667);
+ROLLBACK;

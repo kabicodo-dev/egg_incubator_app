@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:smarthatch:proposal:manual-result:0.1",
+  "title": "PROPOSED manual-result request/response shapes — NOT an enabled API",
+  "description": "Shape only; does not prove authentication, manifest truth, relational validation, persistence or physical admission.",
+  "oneOf": [
+    {"$ref":"#/$defs/submit"}, {"$ref":"#/$defs/lookup"},
+    {"$ref":"#/$defs/receipt"}, {"$ref":"#/$defs/reconciliation"}, {"$ref":"#/$defs/errorResponse"}
+  ],
+  "$defs": {
+    "uuid":{"type":"string","pattern":"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"},
+    "v4":{"type":"string","pattern":"^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"},
+    "hash":{"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "utc":{"type":"string","format":"date-time","pattern":"^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"},
+    "count":{"type":"integer","minimum":0,"maximum":2147483647},
+    "actionTime":{"oneOf":[
+      {"type":"object","additionalProperties":false,"required":["value","provenance"],"properties":{"value":{"type":"null"},"provenance":{"const":"unknown"}}},
+      {"type":"object","additionalProperties":false,"required":["value","provenance"],"properties":{"value":{"$ref":"#/$defs/utc"},"provenance":{"const":"phone_clock"}}}
+    ]},
+    "base":{"type":"object","required":["api_version","contract"],"properties":{"api_version":{"const":2},"contract":{"const":"DB02-MANUAL-RESULT-0.1-review"}}},
+    "scope":{"type":"object","required":["installation_id","device_id","batch_id","actor_installation_id","result_id"],"properties":{
+      "installation_id":{"$ref":"#/$defs/uuid"},"device_id":{"$ref":"#/$defs/uuid"},"batch_id":{"$ref":"#/$defs/v4"},"actor_installation_id":{"$ref":"#/$defs/uuid"},"result_id":{"$ref":"#/$defs/v4"}
+    }},
+    "submit":{"allOf":[{"$ref":"#/$defs/base"},{"$ref":"#/$defs/scope"},{"type":"object","required":["operation","original_manifest_sha256","eggs_hatched","action_time"],"properties":{
+      "operation":{"const":"submit_manual_result"},"original_manifest_sha256":{"$ref":"#/$defs/hash"},"eggs_hatched":{"$ref":"#/$defs/count"},"action_time":{"$ref":"#/$defs/actionTime"}
+    }}],"unevaluatedProperties":false},
+    "lookup":{"allOf":[{"$ref":"#/$defs/base"},{"$ref":"#/$defs/scope"},{"type":"object","required":["operation"],"properties":{"operation":{"const":"get_manual_result"}}}],"unevaluatedProperties":false},
+    "receipt":{"allOf":[{"$ref":"#/$defs/base"},{"type":"object","required":["receipt_id","receipt_revision","device_id","batch_id","actor_installation_id","result_id","original_manifest_sha256","content_sha256","egg_quantity","eggs_hatched","session_id","received_at","outcome","lifecycle_effect","physical_admission_effect","retention_ack"],"properties":{
+      "receipt_id":{"$ref":"#/$defs/uuid"},"receipt_revision":{"const":1},"device_id":{"$ref":"#/$defs/uuid"},"batch_id":{"$ref":"#/$defs/v4"},"actor_installation_id":{"$ref":"#/$defs/uuid"},"result_id":{"$ref":"#/$defs/v4"},
+      "original_manifest_sha256":{"$ref":"#/$defs/hash"},"content_sha256":{"$ref":"#/$defs/hash"},"egg_quantity":{"type":"integer","minimum":1,"maximum":2147483647},"eggs_hatched":{"$ref":"#/$defs/count"},
+      "session_id":{"type":"string","pattern":"^[1-9][0-9]{0,18}$"},"received_at":{"$ref":"#/$defs/utc"},"outcome":{"const":"result_recorded"},"lifecycle_effect":{"const":"none"},"physical_admission_effect":{"const":"none"},"retention_ack":{"type":"null"}
+    }}],"unevaluatedProperties":false},
+    "reconciliation":{"allOf":[{"$ref":"#/$defs/base"},{"type":"object","required":["request_id","device_id","batch_id","actor_installation_id","result_id","found","receipt"],"properties":{
+      "request_id":{"$ref":"#/$defs/uuid"},"device_id":{"$ref":"#/$defs/uuid"},"batch_id":{"$ref":"#/$defs/v4"},"actor_installation_id":{"$ref":"#/$defs/uuid"},"result_id":{"$ref":"#/$defs/v4"},"found":{"type":"boolean"},"receipt":{"anyOf":[{"$ref":"#/$defs/receipt"},{"type":"null"}]}
+    },"allOf":[{"if":{"properties":{"found":{"const":true}}},"then":{"properties":{"receipt":{"$ref":"#/$defs/receipt"}}},"else":{"properties":{"receipt":{"type":"null"}}}}]}],"unevaluatedProperties":false},
+    "errorResponse":{"allOf":[{"$ref":"#/$defs/base"},{"type":"object","required":["request_id","error"],"properties":{
+      "request_id":{"$ref":"#/$defs/uuid"},"error":{"type":"object","additionalProperties":false,"required":["code","retryable","commit_status"],"properties":{
+        "code":{"enum":["INVALID_REQUEST","AUTHENTICATION_REQUIRED","NOT_AUTHORIZED","MANIFEST_REQUIRED","BATCH_MAPPING_REQUIRED","COUNT_OUT_OF_RANGE","MANIFEST_CONFLICT","LIFECYCLE_CONFLICT","IDENTITY_CONTENT_CONFLICT","RESULT_ALREADY_RECORDED","CONTRACT_NOT_ENABLED","SERVICE_UNAVAILABLE","COMMIT_UNKNOWN"]},
+        "retryable":{"type":"boolean"},"commit_status":{"enum":["not_persisted","unknown"]}
+      },"allOf":[{"if":{"properties":{"code":{"const":"COMMIT_UNKNOWN"}}},"then":{"properties":{"commit_status":{"const":"unknown"},"retryable":{"const":true}}},"else":{"properties":{"commit_status":{"const":"not_persisted"}}}}]}
+    }}],"unevaluatedProperties":false}
+  }
+}

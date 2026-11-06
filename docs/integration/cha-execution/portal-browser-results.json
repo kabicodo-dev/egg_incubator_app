@@ -1,0 +1,38 @@
+{
+  "date": "2026-10-30",
+  "engine": "OpenCode desktop Chromium tools: browser.evaluate and browser.reload",
+  "origin": "http://127.0.0.1:8876",
+  "initialStorage": "Verified empty before synthetic seeding; existing user portal storage was not accessed",
+  "result": "PASSED after scoped portal fixes",
+  "checks": [
+    "136 runtime tasks and unique task IDs; 42 Mary Charlyn tasks; effective statuses 4 Completed, 9 Partial, 28 Not started, 1 Superseded",
+    "Runtime DOM IDs unique and all internal hash links resolve",
+    "All eight tabs activate and show the corresponding panel",
+    "Startup/reload preserves synthetic newer own/team statuses, notes, legacy sh_status and saved reports",
+    "Owner filter shows 42 Cha tasks with Hide finished off; priority filter and selected-task search work",
+    "All 136 Copy Prompt handlers return the matching task ID; superseded TEST-12 returns historical notice",
+    "Report editor saves a synthetic report without changing task status; editing a report preserves identity",
+    "JSON file input preview and Merge import the generated report; repeated identical import skips it",
+    "Newer local report with conflicting stable ID preserved; one imported copy retained; repeated conflict import does not duplicate it",
+    "After fix, reports-only merge leaves sh_state_v2, sh_status, sh_ev, sh_readiness_final_v1 and sh_last_export byte-identical",
+    "Full-backup Blob payload has expected app/type/version, reports, state/notes, evidence and readiness",
+    "Reload retains the three synthetic test reports without startup duplication",
+    "All eight tabs at 320, 390, 768 and 1440 CSS-pixel iframe widths: 32/32 synchronous layout measurements with no page-wide overflow after scoped wrapping fix"
+  ],
+  "errorsAndCorrections": [
+    "First owner-filter assertion expected 42 while default Hide finished was on; observed 37 (4 Completed and 1 Superseded hidden). Harness corrected to disable Hide finished; 42 observed. Not an application defect.",
+    "Initial reports-only import rewrote sh_state_v2 by persisting existing in-memory legacy alias normalization. Existing statuses/notes were not overwritten, but byte-identical check failed. Working copy now persists state/evidence only when incoming payload includes those fields; retest passed.",
+    "Existing conflict-import logic could add another copy on each repeat. Working copy now recognizes a matching copyOf report and skips repeated identical conflict content; actual import/edit/reimport tests passed.",
+    "requestAnimationFrame-based iframe harness timed out at 60 seconds. Its page was inspected, then reloaded to abandon pending harness; synchronous forced-layout checks used instead.",
+    "Initial 320px evidence tab overflowed by 7px due to new unbroken queue-summary content. Scoped overflow-wrap:anywhere added to new execution section; all 32 width/tab checks passed afterward."
+  ],
+  "limits": [
+    "DOM-driven browser interaction, not a physical Android or real-phone usability test",
+    "Clipboard handler payload captured, not OS clipboard persistence",
+    "Export Blob payload inspected, not an operating-system download test",
+    "Destructive Replace and report deletion deliberately not exercised",
+    "No real user's browser storage inspected, cleared, imported into or changed",
+    "Synthetic data retained on the isolated origin; no storage.clear or deletion used",
+    "No backend Node/Flutter suites, SQL drafts, real JWT/RLS negative tests, migrations or hardware tests executed by these portal checks"
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "received": "2026-10-31",
+  "zip": "C:/Users/Mary Charlyn/Downloads/Kath-Existing-Dart-Review-Evidence-2026-10-31.zip",
+  "zipSha256": "36b8bd63ad57de090ea6a22480028a22c7d57f4b088c18db57b1999c14105961",
+  "mappingSha256": "14138ff36db64ac393ac74e817206a3518e5177e35940b76f86e4615d0996314",
+  "checks": [
+    {
+      "name": "all four declared file hashes/sizes match supplied bytes",
+      "result": "PASSED"
+    },
+    {
+      "name": "delivered Dart script matches exact hash previously reported by Kath",
+      "result": "PASSED"
+    },
+    {
+      "name": "standalone task mapping is byte-identical to ZIP copy",
+      "result": "PASSED"
+    },
+    {
+      "name": "recorded console export consistently contains 41 PASS lines and both known vectors",
+      "result": "PASSED"
+    },
+    {
+      "name": "stdout provenance is expressly a retained-console export, not an original captured log or rerun",
+      "result": "PASSED"
+    },
+    {
+      "name": "review receipt clears task-card availability but does not claim adoption/acceptance execution",
+      "result": "PASSED"
+    }
+  ],
+  "snapshots": [
+    {
+      "file": "docs/integration/cha-execution/received-kath-dart-20261031/dart_manual_result_review.dart",
+      "bytes": 5964,
+      "sha256": "bcb7ab832eabd97092e6d22a983910cd4e32288e5777f3cd79adbbd1ee57b45e"
+    },
+    {
+      "file": "docs/integration/cha-execution/received-kath-dart-20261031/dart_manual_result_review.recorded-stdout.txt",
+      "bytes": 1974,
+      "sha256": "4eb32381e37ba6b345302773898b0f7f240ad3d96c39d3122df7267fc3231704"
+    },
+    {
+      "file": "docs/integration/cha-execution/received-kath-dart-20261031/manifest.json",
+      "bytes": 1259,
+      "sha256": "fa94355ddc6c755ea40fbd624eb06d23e2ff1b217314e529bfb349c88c26c6ca"
+    },
+    {
+      "file": "docs/integration/cha-execution/received-kath-dart-20261031/README.md",
+      "bytes": 2437,
+      "sha256": "5895bbe5703337543794f40c36b4375997cfc1fbc41ad6943870d468c0742536"
+    },
+    {
+      "file": "docs/integration/cha-execution/received-kath-dart-20261031/TASK_CARD_MAPPING.md",
+      "bytes": 8136,
+      "sha256": "14138ff36db64ac393ac74e817206a3518e5177e35940b76f86e4615d0996314"
+    }
+  ],
+  "scriptStatus": "DELIVERED and hash verified; not executed by this verification",
+  "stdoutStatus": "DELIVERED export from original session console; NOT independently captured original stdout and NOT rerun here",
+  "deliveryStatus": "Kath acknowledges actual full 79-file packet, all 34 task cards, 102 NOT RUN cases and architecture amendment availability; not other-recipient distribution/adoption",
+  "newFullTaskCompletions": [],
+  "taskStatusChanges": []
+}

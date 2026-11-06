@@ -1,0 +1,140 @@
+﻿{
+    "observedAtUtc":  "2026-10-31T14:34:01.3213845Z",
+    "scope":  "OFFLINE LOCAL REVIEW ONLY",
+    "checks":  [
+                   {
+                       "check":  "v2 historical inventory",
+                       "files":  48,
+                       "status":  "PASS",
+                       "inventorySha256":  "c1ff03b2787271dd416b3148bad75f14228e8496ddd7f94af8ccf1f22991c924"
+                   },
+                   {
+                       "check":  "v3 historical inventory",
+                       "files":  156,
+                       "status":  "PASS",
+                       "inventorySha256":  "6f8adf82413ca2f5188fc1fef91a3171b9d71f0c58c12d042852e800617ced0d"
+                   },
+                   {
+                       "check":  "211 cases, eight sources, five compiler receipts, emergency-only recovery",
+                       "runId":  "fdf7956c5ace4af7bd47605d80d44f9d",
+                       "status":  "PASS"
+                   },
+                   {
+                       "check":  "211 cases, eight sources, five compiler receipts, emergency-only recovery",
+                       "runId":  "d7b25ad8655a47318783ec987cee2859",
+                       "status":  "PASS"
+                   }
+               ],
+    "approvedSqlSha256":  "9cac281d9ecca2dda46c93de85f2b26b01f9b762d2def67a5efa5ad578242fdc",
+    "freshTestRun":  "d7b25ad8655a47318783ec987cee2859",
+    "categories":  [
+                       {
+                           "category":  "controller",
+                           "count":  9
+                       },
+                       {
+                           "category":  "shape",
+                           "count":  74
+                       },
+                       {
+                           "category":  "native-api-mock",
+                           "count":  39
+                       },
+                       {
+                           "category":  "evidence-policy",
+                           "count":  11
+                       },
+                       {
+                           "category":  "durability",
+                           "count":  7
+                       },
+                       {
+                           "category":  "provenance",
+                           "count":  13
+                       },
+                       {
+                           "category":  "local-native-no-connection",
+                           "count":  3
+                       },
+                       {
+                           "category":  "independent-pg17-reference",
+                           "count":  1
+                       },
+                       {
+                           "category":  "independent-schema",
+                           "count":  10
+                       },
+                       {
+                           "category":  "constraint-full-identity",
+                           "count":  18
+                       },
+                       {
+                           "category":  "server-version",
+                           "count":  18
+                       },
+                       {
+                           "category":  "emergency-file-only",
+                           "count":  3
+                       },
+                       {
+                           "category":  "source-snapshot",
+                           "count":  5
+                       }
+                   ],
+    "sourceHashes":  {
+                         "ModelPolicy.cs":  "d94cb03cb1d61a5251d7b6e3c211288553cd3688d7a93fe859352c531dfb9fd8",
+                         "NativeBoundary.cs":  "381f705c0892d7b8f93278e14da545ba013e0afce77642d10e2b4f9b044b5268",
+                         "DurableController.cs":  "a9ffb06222e53f31f1cda4fc848dc646257b83790ffd067ae87473790fb4bcb9",
+                         "Invoke-Q12PhaseA-V3.ps1":  "004b5468b3e0fda8c52cd4efe1edd70fefd33de9424b8ce516c21dd28b761ae9",
+                         "Correction.Tests.cs":  "dd8e5a6fd0d2e286ddfc91701187d930ad59719fb12aad48fe46509656b1d113",
+                         "Followup.Tests.cs":  "dd012010cb1f6fb86c98dfc1c10a973c13e355455841466096561b8de1ff8fc1",
+                         "Test-Corrections.ps1":  "b6838eb5942fe96ae7dc2684e9f2bc8f57b54b5429274f34ebf6ab98881eeba4",
+                         "SourceSnapshot.psm1":  "8998819dbf1458e83d80c537066cd7c5ab16d044e5954a823b61c8b4c26a9be2"
+                     },
+    "syntheticSecretScan":  {
+                                "status":  "PASS",
+                                "files":  61,
+                                "limitation":  "Known synthetic markers only; not proof that arbitrary secrets cannot exist."
+                            },
+    "certificateObservation":  {
+                                   "path":  "C:\\Users\\Mary Charlyn\\Downloads\\prod-ca-2021.crt",
+                                   "fileSha256":  "700723581420dd1ac98fd7e9ac529f0ef210eadcaf87fc868a3ad7d114c2f3b7",
+                                   "derSha256":  "807025ad50d4ed219d2c9c7d299c004f824eb00cf7f65afef607d07b72e6cafa",
+                                   "subject":  "CN=Supabase Root 2021 CA, O=Supabase Inc, L=New Castle, S=Delware, C=US",
+                                   "issuer":  "CN=Supabase Root 2021 CA, O=Supabase Inc, L=New Castle, S=Delware, C=US",
+                                   "serialNumber":  "6CBC4CA1DEB63F692D0A2024C67289C2D13D54F6",
+                                   "notBeforeUtc":  "2021-04-28T10:56:53.0000000Z",
+                                   "notAfterUtc":  "2031-04-26T10:56:53.0000000Z",
+                                   "currentlyWithinValidity":  true,
+                                   "signatureAlgorithm":  "sha256RSA",
+                                   "extensions":  [
+                                                      {
+                                                          "oid":  "2.5.29.15",
+                                                          "critical":  false,
+                                                          "formatted":  "Certificate Signing, Off-line CRL Signing, CRL Signing (06)"
+                                                      },
+                                                      {
+                                                          "oid":  "2.5.29.14",
+                                                          "critical":  false,
+                                                          "formatted":  "a8d7b97637d82ced9212269e0e3224d52d69462c"
+                                                      },
+                                                      {
+                                                          "oid":  "2.5.29.35",
+                                                          "critical":  false,
+                                                          "formatted":  "KeyID=a8d7b97637d82ced9212269e0e3224d52d69462c"
+                                                      },
+                                                      {
+                                                          "oid":  "2.5.29.19",
+                                                          "critical":  true,
+                                                          "formatted":  "Subject Type=CA, Path Length Constraint=None"
+                                                      }
+                                                  ],
+                                   "trustedOrigin":  "NOT VERIFIED",
+                                   "authoritativeExpectedDerSha256":  "NOT PROVIDED",
+                                   "ownerAttestation":  "NOT PROVIDED",
+                                   "hostnameVerification":  "NOT RUN",
+                                   "method":  "Local X509 parse only. No chain build, revocation fetch, trust-store import or Supabase contact."
+                               },
+    "remoteExecuted":  false,
+    "reviewIndependence":  "Fresh source/evidence review by the same assistant in this workflow; no separate human or external reviewer acceptance is asserted."
+}

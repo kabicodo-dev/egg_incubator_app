@@ -1,0 +1,34 @@
+{
+  "observedAtUtc": "2026-10-31T10:30:06.7693415Z",
+  "targetProjectRef": "zbwntspdecngnicllwlw",
+  "approval": "I am authorized to approve inspection of the smarthatch-test project (`zbwntspdecngnicllwlw`). I approve Q12 Phase A read-only catalog inspection only, using the exact `Q12_Phase_A_Read_Only.sql` file prepared on October 31, 2026. Before execution, verify the target project, secure connection settings, SQL file integrity, and read-only safeguards. Capture sanitized local evidence, query results, and explicit rollback confirmation. No migrations, database writes, role or policy changes, deployments, production access, or later Q12 phases are authorized. Stop and report any errors, unexpected results, or unresolved safety requirements. Do not mark Q12 or DB-IMP-01 Completed based solely on this inspection.",
+  "sql": {
+    "path": "docs/integration/cha-execution/Q12_Phase_A_Read_Only.sql",
+    "expectedSha256": "9cac281d9ecca2dda46c93de85f2b26b01f9b762d2def67a5efa5ad578242fdc",
+    "actualSha256": "9cac281d9ecca2dda46c93de85f2b26b01f9b762d2def67a5efa5ad578242fdc",
+    "integrity": "PASS",
+    "staticGuards": "PASS: explicit REPEATABLE READ READ ONLY transaction, final ROLLBACK, no line-leading mutation/DDL commands",
+    "executed": false
+  },
+  "localClient": {
+    "path": "C:\\Program Files\\PostgreSQL\\17\\bin\\psql.exe",
+    "version": "psql (PostgreSQL) 17.11",
+    "note": "Newly available at standard installation path, not on PATH; only --version executed. No installation performed by this step."
+  },
+  "connectionPrerequisites": {
+    "presenceOnlyChecks": "SUPABASE_DB_URL, DATABASE_URL, PGHOST, PGPORT, PGUSER, PGPASSWORD, PGSERVICE, PGSERVICEFILE, PGSSLMODE, PGSSLROOTCERT all absent from this process environment",
+    "defaultServiceFiles": "Neither %APPDATA%/postgresql/.pg_service.conf nor %APPDATA%/postgresql/pg_service.conf exists",
+    "secretValuesCaptured": false,
+    "remoteTargetVerified": false,
+    "secureConnectionVerified": false,
+    "connectionAttempted": false
+  },
+  "status": "PHASE A APPROVED / BLOCKED BEFORE REMOTE EXECUTION",
+  "blocker": "psql is available, but this process has no configured verified test-project connection or TLS settings. Do not use linked CLI temporary-role setup, guess a connection, or request pasted secrets.",
+  "remoteQueryResults": "NOT RUN",
+  "remoteTransactionOpened": false,
+  "rollbackConfirmation": "NOT APPLICABLE: no remote transaction opened",
+  "databaseChangesAttempted": false,
+  "taskStatusChanges": [],
+  "laterPhasesApproved": false
+}

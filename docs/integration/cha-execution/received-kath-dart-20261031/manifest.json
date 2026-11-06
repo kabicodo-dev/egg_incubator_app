@@ -1,0 +1,27 @@
+﻿{
+    "scope":  "Existing review evidence delivery; no test rerun or implementation",
+    "date":  "2026-10-31",
+    "stdout_provenance":  "Exported from original session console output; not a separately captured original stdout file",
+    "files":  [
+                  {
+                      "file":  "dart_manual_result_review.dart",
+                      "bytes":  5964,
+                      "sha256":  "bcb7ab832eabd97092e6d22a983910cd4e32288e5777f3cd79adbbd1ee57b45e"
+                  },
+                  {
+                      "file":  "dart_manual_result_review.recorded-stdout.txt",
+                      "bytes":  1974,
+                      "sha256":  "4eb32381e37ba6b345302773898b0f7f240ad3d96c39d3122df7267fc3231704"
+                  },
+                  {
+                      "file":  "README.md",
+                      "bytes":  2437,
+                      "sha256":  "5895bbe5703337543794f40c36b4375997cfc1fbc41ad6943870d468c0742536"
+                  },
+                  {
+                      "file":  "TASK_CARD_MAPPING.md",
+                      "bytes":  8136,
+                      "sha256":  "14138ff36db64ac393ac74e817206a3518e5177e35940b76f86e4615d0996314"
+                  }
+              ]
+}

@@ -1,0 +1,172 @@
+TAP version 13
+# Subtest: 0.2 standard 2020-12 schema meta-validates and compiles
+ok 1 - 0.2 standard 2020-12 schema meta-validates and compiles
+  ---
+  duration_ms: 2.687
+  type: 'test'
+  ...
+# Subtest: all nine synthetic request/response shapes pass candidate schema
+ok 2 - all nine synthetic request/response shapes pass candidate schema
+  ---
+  duration_ms: 5.0517
+  type: 'test'
+  ...
+# Subtest: exact generated fixture/core/byte/hash output is deterministic
+ok 3 - exact generated fixture/core/byte/hash output is deterministic
+  ---
+  duration_ms: 7.077
+  type: 'test'
+  ...
+# Subtest: four original 0.1 input fingerprints remain unchanged
+ok 4 - four original 0.1 input fingerprints remain unchanged
+  ---
+  duration_ms: 2.4407
+  type: 'test'
+  ...
+# Subtest: wrong contract/version cannot fall back to 0.1 request or receipt semantics
+ok 5 - wrong contract/version cannot fall back to 0.1 request or receipt semantics
+  ---
+  duration_ms: 3.11
+  type: 'test'
+  ...
+# Subtest: every error code permits only its exact retryability and commit-state combination
+ok 6 - every error code permits only its exact retryability and commit-state combination
+  ---
+  duration_ms: 6.0448
+  type: 'test'
+  ...
+# Subtest: unknown malformed or contradictory error never passes the test-only guard
+ok 7 - unknown malformed or contradictory error never passes the test-only guard
+  ---
+  duration_ms: 1.9263
+  type: 'test'
+  ...
+# Subtest: lookup found/absent passes only with explicit matching receipt presence
+ok 8 - lookup found/absent passes only with explicit matching receipt presence
+  ---
+  duration_ms: 4.7592
+  type: 'test'
+  ...
+# Subtest: outer device_id must match outstanding lookup/original, beyond shape
+ok 9 - outer device_id must match outstanding lookup/original, beyond shape
+  ---
+  duration_ms: 0.8332
+  type: 'test'
+  ...
+# Subtest: nested device_id must match both outer and original tuple, beyond shape
+ok 10 - nested device_id must match both outer and original tuple, beyond shape
+  ---
+  duration_ms: 0.6759
+  type: 'test'
+  ...
+# Subtest: outer batch_id must match outstanding lookup/original, beyond shape
+ok 11 - outer batch_id must match outstanding lookup/original, beyond shape
+  ---
+  duration_ms: 0.5034
+  type: 'test'
+  ...
+# Subtest: nested batch_id must match both outer and original tuple, beyond shape
+ok 12 - nested batch_id must match both outer and original tuple, beyond shape
+  ---
+  duration_ms: 0.4229
+  type: 'test'
+  ...
+# Subtest: outer actor_installation_id must match outstanding lookup/original, beyond shape
+ok 13 - outer actor_installation_id must match outstanding lookup/original, beyond shape
+  ---
+  duration_ms: 0.3804
+  type: 'test'
+  ...
+# Subtest: nested actor_installation_id must match both outer and original tuple, beyond shape
+ok 14 - nested actor_installation_id must match both outer and original tuple, beyond shape
+  ---
+  duration_ms: 0.368
+  type: 'test'
+  ...
+# Subtest: outer result_id must match outstanding lookup/original, beyond shape
+ok 15 - outer result_id must match outstanding lookup/original, beyond shape
+  ---
+  duration_ms: 0.378
+  type: 'test'
+  ...
+# Subtest: nested result_id must match both outer and original tuple, beyond shape
+ok 16 - nested result_id must match both outer and original tuple, beyond shape
+  ---
+  duration_ms: 0.4059
+  type: 'test'
+  ...
+# Subtest: lookup cannot be matched to a different locally retained original action
+ok 17 - lookup cannot be matched to a different locally retained original action
+  ---
+  duration_ms: 0.3726
+  type: 'test'
+  ...
+# Subtest: hash manifest count and original quantity mismatches cannot mark result recorded
+ok 18 - hash manifest count and original quantity mismatches cannot mark result recorded
+  ---
+  duration_ms: 1.458
+  type: 'test'
+  ...
+# Subtest: session mapping remains lossless and bounded, rejecting wrong/null/numeric/overflow values
+ok 19 - session mapping remains lossless and bounded, rejecting wrong/null/numeric/overflow values
+  ---
+  duration_ms: 1.2254
+  type: 'test'
+  ...
+# Subtest: retained receipt ID and first receive-time are immutable across lookup replies
+ok 20 - retained receipt ID and first receive-time are immutable across lookup replies
+  ---
+  duration_ms: 3.3368
+  type: 'test'
+  ...
+# Subtest: missing receipt identity/time or unapproved lifecycle/admission/release fields fail
+ok 21 - missing receipt identity/time or unapproved lifecycle/admission/release fields fail
+  ---
+  duration_ms: 2.6065
+  type: 'test'
+  ...
+# Subtest: closed schema, original count and strict original time rules remain in effect
+ok 22 - closed schema, original count and strict original time rules remain in effect
+  ---
+  duration_ms: 1.2814
+  type: 'test'
+  ...
+# Subtest: alternative same-identity vectors differ in content, not two sequential accepted results
+ok 23 - alternative same-identity vectors differ in content, not two sequential accepted results
+  ---
+  duration_ms: 0.4656
+  type: 'test'
+  ...
+# Subtest: draft reservation example reuses original identity; no durable transaction is claimed
+ok 24 - draft reservation example reuses original identity; no durable transaction is claimed
+  ---
+  duration_ms: 0.8932
+  type: 'test'
+  ...
+# Subtest: new contract produces new digests, not silent migration of reviewed 0.1 evidence
+ok 25 - new contract produces new digests, not silent migration of reviewed 0.1 evidence
+  ---
+  duration_ms: 0.6037
+  type: 'test'
+  ...
+# Subtest: local guards do not mutate input/session or claim authentication and actual-case completion
+ok 26 - local guards do not mutate input/session or claim authentication and actual-case completion
+  ---
+  duration_ms: 0.8251
+  type: 'test'
+  ...
+# Subtest: 0.2 schema closes known authorization-retry gap without rewriting 0.1
+ok 27 - 0.2 schema closes known authorization-retry gap without rewriting 0.1
+  ---
+  duration_ms: 46.3848
+  type: 'test'
+  ...
+1..27
+# tests 27
+# suites 0
+# pass 27
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 569.9313

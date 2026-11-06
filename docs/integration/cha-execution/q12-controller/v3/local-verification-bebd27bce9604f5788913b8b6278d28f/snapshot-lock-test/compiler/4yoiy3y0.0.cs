@@ -1,0 +1,1 @@
+﻿namespace SnapshotTests { public static class Probefa156ebc428a4dedb5b91d82976ad7c1 { public const int Value = 7; } }

@@ -1,0 +1,70 @@
+TAP version 13
+# Subtest: exactly 34 unique Cha-owned unfinished tasks have individual preparation files
+ok 1 - exactly 34 unique Cha-owned unfinished tasks have individual preparation files
+  ---
+  duration_ms: 11.5915
+  type: 'test'
+  ...
+# Subtest: original source and completion counts retained, not bulk-marked Partial or Completed
+ok 2 - original source and completion counts retained, not bulk-marked Partial or Completed
+  ---
+  duration_ms: 4.4016
+  type: 'test'
+  ...
+# Subtest: 102 exact future cases are NOT RUN with no fabricated observed output/log
+ok 3 - 102 exact future cases are NOT RUN with no fabricated observed output/log
+  ---
+  duration_ms: 0.7195
+  type: 'test'
+  ...
+# Subtest: all 14 deduplicated requests have owners actual missing action and affected tasks
+ok 4 - all 14 deduplicated requests have owners actual missing action and affected tasks
+  ---
+  duration_ms: 0.4744
+  type: 'test'
+  ...
+# Subtest: evidence paths and source observations still match actual retained bytes
+ok 5 - evidence paths and source observations still match actual retained bytes
+  ---
+  duration_ms: 10.7133
+  type: 'test'
+  ...
+# Subtest: actual task dependencies remain original, not removed to simulate eligibility
+ok 6 - actual task dependencies remain original, not removed to simulate eligibility
+  ---
+  duration_ms: 9.1123
+  type: 'test'
+  ...
+# Subtest: actual formal adoption response and pilot/research limits are not reopened or inferred passed
+ok 7 - actual formal adoption response and pilot/research limits are not reopened or inferred passed
+  ---
+  duration_ms: 0.3183
+  type: 'test'
+  ...
+# Subtest: security and physical/research forms contain no actual roles/users/participants/results
+ok 8 - security and physical/research forms contain no actual roles/users/participants/results
+  ---
+  duration_ms: 2.0655
+  type: 'test'
+  ...
+# Subtest: fresh backend log is 110 passes without treating planned cases as executed
+ok 9 - fresh backend log is 110 passes without treating planned cases as executed
+  ---
+  duration_ms: 1.2711
+  type: 'test'
+  ...
+# Subtest: documentation source inspection is not Flutter execution or production remediation
+ok 10 - documentation source inspection is not Flutter execution or production remediation
+  ---
+  duration_ms: 1.0907
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 222.281

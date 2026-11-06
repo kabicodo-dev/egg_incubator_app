@@ -1,0 +1,41 @@
+{
+  "recordedAt": "2026-10-30T15:21:58.492Z",
+  "node": "v26.4.0",
+  "validatorVersions": {
+    "ajv": "8.17.1",
+    "ajv-formats": "3.0.1"
+  },
+  "dependencies": "Reused approved-temp installation; no package installs or application dependency edits",
+  "inputHashes": {
+    "docs/validate-c02-provisional.cjs": "5d7d6185c1802923901770090f5537ba196f063f8a663c24a4faeae113373c1c",
+    "docs/C02-provisional-communication-contract.md": "3559b60ace2b2d12e0a52304ed4ff1d9831a416b9a4edb5478d7ec359a69ddb7",
+    "docs/C02-provisional.schema.json": "9e95d34ca160cae8600548c5c4919ece26953d892d77bd786198d9e9e15461dd",
+    "docs/C02-provisional.examples.json": "155a44ed24f2c0627481822569c008b1ee332d315d72abe3bf9f09fc584275b5",
+    "docs/contract-review/manual-result-0.1.schema.json": "c8a17ad20cc1bc6656ef2f4029c725916fb9fab4bb0b5085850f75f8c7909125",
+    "docs/contract-review/manual-result-0.1.fixtures.json": "a92cba4f788eb844bd04824db3fa14c8c963dc57397299a7ae4d624bc8952f77",
+    "docs/contract-review/manual-result-0.1.closure-matrix.json": "55c66ae00782dfdd4c255e2bfb9c2c984fdf0b2655cc42610f744ad9e31efbf2"
+  },
+  "inputBytesUnchanged": true,
+  "c02": {
+    "schemaMetaValidation": "PASSED",
+    "positiveFixtures": 14,
+    "negativeSchemaMutations": 65,
+    "malformedFrames": 11,
+    "additional": "CRLF/trailing whitespace and two status/time edges passed"
+  },
+  "manualResult": {
+    "ajvTestGroups": 13,
+    "referenceTests": 21,
+    "failures": 0,
+    "implementationClosureCases": 24,
+    "implementationClosureStatus": "ALL NOT RUN"
+  },
+  "limitations": [
+    "No selected-protocol compatibility or approval inferred",
+    "No Auth/database/durable storage/Dart/raw HTTP/physical tests",
+    "Schema alone cannot enforce receipt identity, trusted original quantity or signed-bigint range",
+    "Current proposal admits outer/nested lookup mismatch and retryable:true on authorization errors as shapes; exact runtime guards/future schema hardening required"
+  ],
+  "taskStatusChanges": [],
+  "newFullTaskCompletions": []
+}

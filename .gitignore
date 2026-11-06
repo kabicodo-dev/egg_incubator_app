@@ -1,5 +1,13 @@
 # Environment variables
 .env
+.env.*
+!.env.example
+
+# Secrets and credentials
+*.pem
+*.p12
+*.jks
+key.properties
 
 # Miscellaneous
 *.class

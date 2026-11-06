@@ -1,0 +1,59 @@
+{
+  "recordedAt": "2026-10-30T15:06:20.244Z",
+  "checks": [
+    {
+      "name": "SmartHatch_K06_Consolidated_17_Decision_Contract_v0.3.md byte-identical repository placement, original unchanged",
+      "result": "PASSED"
+    },
+    {
+      "name": "SmartHatch_K06_Consolidated_17_Decision_Contract_v0.3.md retains exactly 17 original decision IDs",
+      "result": "PASSED"
+    },
+    {
+      "name": "SmartHatch_K06_Consolidated_17_Decision_Contract_v0.4_Bluetooth_Android_Bridge.md byte-identical repository placement, original unchanged",
+      "result": "PASSED"
+    },
+    {
+      "name": "SmartHatch_K06_Consolidated_17_Decision_Contract_v0.4_Bluetooth_Android_Bridge.md retains exactly 17 original decision IDs",
+      "result": "PASSED"
+    },
+    {
+      "name": "all 17 decisions mapped without replacing IDs",
+      "result": "PASSED"
+    },
+    {
+      "name": "actual source requires formal adoption and record does not fabricate it",
+      "result": "PASSED"
+    },
+    {
+      "name": "existing architecture and unchanged implementation/security/safety gates explicit",
+      "result": "PASSED"
+    },
+    {
+      "name": "new record links to the actual placed baseline sources",
+      "result": "PASSED"
+    }
+  ],
+  "taskId": "OCT26:ARCH-05",
+  "sources": [
+    {
+      "file": "docs/SmartHatch_K06_Consolidated_17_Decision_Contract_v0.3.md",
+      "original": "C:\\Users\\Mary Charlyn\\Downloads\\SmartHatch_K06_Consolidated_17_Decision_Contract_v0.3.md",
+      "sha256": "4c30bf58390fccfa94356fb7a285dd9284d642946582b5ab8fe7be958ee02176",
+      "bytes": 36434
+    },
+    {
+      "file": "docs/SmartHatch_K06_Consolidated_17_Decision_Contract_v0.4_Bluetooth_Android_Bridge.md",
+      "original": "C:\\Users\\Mary Charlyn\\Downloads\\SmartHatch_K06_Consolidated_17_Decision_Contract_v0.4_Bluetooth_Android_Bridge.md",
+      "sha256": "28311c53ed9675232ee6a25e9e481f8af26a10182de8f765edbf884e6fb1eed2",
+      "bytes": 41609
+    }
+  ],
+  "record": {
+    "file": "docs/contract-review/ARCH-05_K06_Architecture_Amendment_Record.md",
+    "sha256": "8a4c29c79e4980f439ea599c98cd979a0c117fc61822f5c6f03a0992f2e89ebc"
+  },
+  "adoption": "NOT YET ADOPTED — user explicitly confirmed 2026-10-30; no team signatures inferred",
+  "taskStatus": "Partial",
+  "newFullTaskCompletions": []
+}

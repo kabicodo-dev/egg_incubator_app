@@ -1,0 +1,1 @@
+{"sequence":1,"event":{"Kind":"EVIDENCE_DESTINATION_READY","Utc":"2026-10-31T11:20:20.8816673Z","Status":null,"SqlState":null,"CommandTag":null,"Statement":0,"Rows":0,"TransactionState":4,"ElapsedMilliseconds":0,"Columns":null,"Catalog":null,"Summary":null,"Preflight":null,"ApprovalReference":null,"PreparationSourceHashes":null}}

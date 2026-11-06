@@ -1,0 +1,172 @@
+TAP version 13
+# Subtest: freshness boundary: synthetic age 0 ms gives fresh
+ok 1 - freshness boundary: synthetic age 0 ms gives fresh
+  ---
+  duration_ms: 3.0063
+  type: 'test'
+  ...
+# Subtest: freshness boundary: synthetic age 4999 ms gives fresh
+ok 2 - freshness boundary: synthetic age 4999 ms gives fresh
+  ---
+  duration_ms: 0.4649
+  type: 'test'
+  ...
+# Subtest: freshness boundary: synthetic age 5000 ms gives fresh
+ok 3 - freshness boundary: synthetic age 5000 ms gives fresh
+  ---
+  duration_ms: 0.2967
+  type: 'test'
+  ...
+# Subtest: freshness boundary: synthetic age 5001 ms gives stale
+ok 4 - freshness boundary: synthetic age 5001 ms gives stale
+  ---
+  duration_ms: 0.2961
+  type: 'test'
+  ...
+# Subtest: zero synthetic freshness budget has exact-age behavior, not a configured default
+ok 5 - zero synthetic freshness budget has exact-age behavior, not a configured default
+  ---
+  duration_ms: 0.4326
+  type: 'test'
+  ...
+# Subtest: independent validity: invalid temperature cannot hide the other valid metric
+ok 6 - independent validity: invalid temperature cannot hide the other valid metric
+  ---
+  duration_ms: 3.9587
+  type: 'test'
+  ...
+# Subtest: strict temperature: no numeric/Boolean/string coercion and no nonfinite live value
+ok 7 - strict temperature: no numeric/Boolean/string coercion and no nonfinite live value
+  ---
+  duration_ms: 0.6986
+  type: 'test'
+  ...
+# Subtest: independent validity: invalid humidity cannot hide the other valid metric
+ok 8 - independent validity: invalid humidity cannot hide the other valid metric
+  ---
+  duration_ms: 0.3408
+  type: 'test'
+  ...
+# Subtest: strict humidity: no numeric/Boolean/string coercion and no nonfinite live value
+ok 9 - strict humidity: no numeric/Boolean/string coercion and no nonfinite live value
+  ---
+  duration_ms: 0.4349
+  type: 'test'
+  ...
+# Subtest: missing metrics never become zero or a profile/setpoint fallback
+ok 10 - missing metrics never become zero or a profile/setpoint fallback
+  ---
+  duration_ms: 0.7789
+  type: 'test'
+  ...
+# Subtest: invalid takes precedence over age unknown or stale without keeping a pretend last valid value
+ok 11 - invalid takes precedence over age unknown or stale without keeping a pretend last valid value
+  ---
+  duration_ms: 0.6397
+  type: 'test'
+  ...
+# Subtest: valid zero-valued synthetic metric is not treated as missing
+ok 12 - valid zero-valued synthetic metric is not treated as missing
+  ---
+  duration_ms: 0.3527
+  type: 'test'
+  ...
+# Subtest: unknown source timestamp or untrusted validity never becomes live from phone/server receipt
+ok 13 - unknown source timestamp or untrusted validity never becomes live from phone/server receipt
+  ---
+  duration_ms: 0.5211
+  type: 'test'
+  ...
+# Subtest: unconfigured policy never supplies a default threshold or live value
+ok 14 - unconfigured policy never supplies a default threshold or live value
+  ---
+  duration_ms: 0.3684
+  type: 'test'
+  ...
+# Subtest: policy nowMs must be a finite number, never coerced
+ok 15 - policy nowMs must be a finite number, never coerced
+  ---
+  duration_ms: 0.2962
+  type: 'test'
+  ...
+# Subtest: policy staleAfterMs must be a finite number, never coerced
+ok 16 - policy staleAfterMs must be a finite number, never coerced
+  ---
+  duration_ms: 3.3577
+  type: 'test'
+  ...
+# Subtest: policy futureSkewMs must be a finite number, never coerced
+ok 17 - policy futureSkewMs must be a finite number, never coerced
+  ---
+  duration_ms: 0.3938
+  type: 'test'
+  ...
+# Subtest: negative freshness/skew budgets do not enable live data
+ok 18 - negative freshness/skew budgets do not enable live data
+  ---
+  duration_ms: 0.2529
+  type: 'test'
+  ...
+# Subtest: future source time beyond explicit synthetic skew budget stays unknown age
+ok 19 - future source time beyond explicit synthetic skew budget stays unknown age
+  ---
+  duration_ms: 0.2616
+  type: 'test'
+  ...
+# Subtest: recent receipts cannot refresh an old acquisition
+ok 20 - recent receipts cannot refresh an old acquisition
+  ---
+  duration_ms: 2.251
+  type: 'test'
+  ...
+# Subtest: changing cloud status, source stage or relay diagnostics does not make an invalid metric valid
+ok 21 - changing cloud status, source stage or relay diagnostics does not make an invalid metric valid
+  ---
+  duration_ms: 0.3341
+  type: 'test'
+  ...
+# Subtest: transport disconnect/reconnect cannot substitute a new acquisition timestamp
+ok 22 - transport disconnect/reconnect cannot substitute a new acquisition timestamp
+  ---
+  duration_ms: 5.3559
+  type: 'test'
+  ...
+# Subtest: metric classification never claims controller Stop/Start, cloud completion or admission
+ok 23 - metric classification never claims controller Stop/Start, cloud completion or admission
+  ---
+  duration_ms: 0.5424
+  type: 'test'
+  ...
+# Subtest: duplicate local classification is stable and neither input nor policy is mutated
+ok 24 - duplicate local classification is stable and neither input nor policy is mutated
+  ---
+  duration_ms: 0.7044
+  type: 'test'
+  ...
+# Subtest: no automatic fallback from source time to ordinary phone-receipt fields
+ok 25 - no automatic fallback from source time to ordinary phone-receipt fields
+  ---
+  duration_ms: 0.9042
+  type: 'test'
+  ...
+# Subtest: existing submission validator rejects impossible source date before helper use
+ok 26 - existing submission validator rejects impossible source date before helper use
+  ---
+  duration_ms: 2.8916
+  type: 'test'
+  ...
+# Subtest: existing submission validator rejects missing original batch association
+ok 27 - existing submission validator rejects missing original batch association
+  ---
+  duration_ms: 1.4121
+  type: 'test'
+  ...
+1..27
+# tests 27
+# suites 0
+# pass 27
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 274.872

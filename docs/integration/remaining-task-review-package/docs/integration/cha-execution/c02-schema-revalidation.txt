@@ -1,0 +1,6 @@
+PASS: draft 2020-12 schema meta-validation and compilation
+PASS: 14 labeled synthetic messages accepted
+PASS: 65 schema-negative mutations rejected
+PASS: 11 malformed/unsafe frame fixtures rejected
+PASS: CRLF, trailing whitespace, and 2 status/time edge cases
+NOT TESTED: firmware, physical Start/Stop, clocks, identity persistence, authentication, RLS, network, or hardware.

@@ -1,0 +1,80 @@
+# SmartHatch — remaining Kath/Mary decisions
+
+**Date:** 2026-10-30  
+**Disposition:** Proposals for Kath and Mary to confirm; not signatures, joint approval, or implementation authorization.
+
+This is the requested focused decision response, not another general C-02 review or a competing API. Preserve independent manual results, bounded integer counts, unknown original time as null, the Active/admission guards, no automatic physical Start replay, and separate local/cloud/controller states.
+
+## Reviewed input revisions
+
+Source ZIP: `Mary decisions-20261030T090931Z-1-001.zip`.
+
+- `CONTRACT-FREEZE-01_Team_Decisions.md`: SHA-256 `6197a2b78fe173a9ff3bf08427903bbc2b28bbe35bd6d4959ab7f4411826c604`.
+- `DB-02_30Oct_Consolidated_Alignment.md`: SHA-256 `01bce400e1519ee798dbfd5dcc94ef74923f21c2ddcdec95a2efa046cd93c8bd`.
+- `Kath-C02-Provisional-Focused-Review-2026-10-30.md`: SHA-256 `4473813552ef21a77fe57296f89fb7843a3b4f1ad19990c3e596b70f66e162e0`.
+
+The amended versioned result API, selected firmware catalog and proposed dependency native-build evidence are not supplied. Their contents/compatibility are not assumed. ACCEPT below indicates a recommended scoped design disposition, not an actual recorded vote.
+
+## Decision table
+
+| Item | Recommended exact choice | ACCEPT / CHANGE / BLOCKED | Mary's required answer | Ally dependency | Closure test |
+|---|---|---|---|---|---|
+| **1. Local result workflow** | Separate editing, validation and synchronization dimensions. **Draft:** editable, possibly unsaved. **Durably saved:** SQLite commit succeeded. **Pending validation:** committed draft lacks trusted original manifest; cannot submit. **Waiting to sync:** validated result sealed immutably with outbox entry. **Server-recorded:** matching applied receipt committed locally. **Conflict:** preserve evidence and pause automatic submission. Disable repeated taps and enforce database uniqueness. Failed saves retain form input without success/navigation. Restart restores committed state only. Lost response reconciles original identity, not a replacement result or Start. | **CHANGE** — adopt as explicit proposed workflow. | Confirm labels and that server-recorded means applied result, not Completed lifecycle. | None for draft saving; source evidence for manifest validation. | T1–T5. |
+| **2. Original manifest** | Before Start dispatch, retain immutable versioned snapshot: offline batch UUID, controller/installation IDs, original actor, original positive egg quantity, species, approved profile reference/version and canonical manifest fingerprint. Profile changes never rewrite it. Allocate farmer-action UUID once with draft creation; freeze submitted content on sealing. Retrieve locally by original batch ID; authorized backend recovery must match identity/fingerprint and original provenance. Missing/conflicting fields remain pending, never filled from current settings/current Active row. | **CHANGE** | Confirm authoritative retrieval, fingerprint definition and replacement-phone recovery scope. | Controller binding/admission evidence and original-manifest recovery capabilities. | Missing/foreign/changed manifests cannot validate; quantity survives profile changes/restart. |
+| **3. Submitted-result corrections** | **Defer corrections for prototype.** Draft editable before sealing. Sealed content immutable, including after timeout. Offer contact-administrator guidance, not overwrite/delete/new identity. Future corrections require separately versioned audited superseding records. | **ACCEPT** — recommended prototype restriction. | Confirm no correction endpoint/UI is enabled and identify support recipient. | None. | Editing sealed content cannot change hash or create second initial result. |
+| **4. Cloud lifecycle finalization** | Result alone leaves Active unchanged. Propose **administrator-only explicit finalization** after applied validated result, accepted matching-batch terminal Stop evidence, and no unresolved lifecycle conflict. Check expected result/session revision transactionally. Before clearing the Active index, establish a **separate durable per-controller admission hold**; finalization must not release it. Without accepted Stop evidence, finalization remains blocked; no fabricated Stop. Administrative finalized-at is separate from original completion time, which remains null when unknown. Ordinary farmer finalization deferred. | **CHANGE** — proposed policy; execution blocked by missing dependencies. | Confirm administrator-only scope, hold representation and atomic finalization rules. | Define terminal Stop evidence and separate controller admission/release rules. Cloud finalization never authorizes Start. | T6: concurrent result/finalization/admission cannot bypass guards. |
+| **5. Durable storage and transactions** | Propose exact pins **sqflite_sqlcipher 3.4.1 + flutter_secure_storage 11.2.0**; Android pilot **API 30+**; Dart **>=3.11 <4**; Flutter **>=3.35** with compatible bundled Dart. Initial validation target: installed **Flutter 3.47.3 / Dart 3.13.3**, Java 17. Encrypted app-private SQLite, separate protected evidence key/session secrets, foreign keys ON, rollback journal, synchronous FULL. Local schema/commit details below. Restart reconciles interrupted uploads, never replays physical Start. Disk/key/corruption failures block writes, preserve files and report failure; no reset/delete fallback. | **CHANGE** — concrete candidate, not build/security acceptance. | Confirm pilot floor, key/encryption policy, schema constraints; separately approve compatibility-test scope later. | Approved command/evidence serialization only; storage tests can use fakes. | T4–T5; release-build, encryption/key-loss, backup-exclusion and migration checks. |
+| **6. Backend information requirements** | Request needs version, immutable action/batch/controller/original-actor IDs, manifest reference/fingerprint, manual count, nullable original action time with validity/provenance, canonical immutable content. Current uploader/enrollment is authorization context, not rewritten authorship. Receipt needs exact entity/action/batch/controller IDs/hash, stable receipt UUID, monotonic revision, disposition/reason, first server receipt time and nullable lossless session-ID string. Reconciliation returns found/not-found per original identity, current receipt, manifest/session mapping and separately versioned lifecycle/admission information. Absence says nothing about hardware. Validate identity/hash/revision/mapping before success. Retry original content; retention_ack remains null. | **CHANGE** — requirements, not a finalized API. | Draft versioned fields, canonical preimage/fixtures, dependency behavior and authorization/error semantics. Result recording has no Stop dependency. | Source evidence mapping; no invented controller fields. | T1–T3; bigint boundary and mismatched/regressing receipt checks. |
+| **7. Enrollment/session lifecycle** | Administrator-provisioned non-anonymous account; supervised single-use activation/password setup with **proposed 30-minute expiry**, subject to supported configuration. Separate approved subject/session/installation/controller enrollment. Reviewed secure session persistence replaces plain/default preferences. Refresh preserves enrollment only for verified unchanged scope; new session/login needs controlled reapproval. Expired credentials stop protected sync. Open protected recovery before network login. Logout immediately blocks new commands/sync, locks evidence access, disconnects Bluetooth without Stop/Reset, removes local session credentials but preserves separate evidence key. Offline read-only recovery requires device authentication for previously enrolled local owner; another account cannot adopt the namespace. Revocation denies new protected operations, with explicit offline limits. Replacement needs new enrollment and scoped historical recovery. No recovery promise after uninstall/key loss. | **CHANGE** — controller authority separately **BLOCKED**. | Confirm activation/session semantics, local-owner offline-access threat boundary and recovery/replacement permissions. | Controller provisioning, expiry/revocation and replacement enforcement; app enrollment cannot supply them. | Expired/revoked/other-account denial, offline recovery, logout during upload, replacement/key loss; no automatic commands. |
+
+### Proposed local schema and commit rules for item 5
+
+These are local application design names, not a new backend contract or executable migration:
+
+- `manifests`: `batch_id TEXT PRIMARY KEY`, immutable versioned original snapshot and fingerprint.
+- `drafts`: `action_id TEXT PRIMARY KEY`, original batch/actor references, optimistic `revision`, editable entered count/time. Missing manifest is explicitly permitted for a pending draft; it is not a validated result.
+- `results`: `action_id TEXT PRIMARY KEY`, valid manifest reference, immutable canonical core/hash. One initial result per original batch/actor namespace; prevent aliases from bypassing one-result-per-batch server rules.
+- `outbox`: `action_id PRIMARY KEY REFERENCES results`, immutable request/version plus mutable retry/lease state. Contains cloud submissions, not replayable actuator commands.
+- `receipts`: `action_id PRIMARY KEY REFERENCES results`, stable receipt identity, revision, hash, disposition and first server receipt time.
+- `mappings`: `batch_id TEXT PRIMARY KEY`, `session_id TEXT` checked as canonical positive signed-bigint decimal string; no floating-point intermediary.
+- Separate original command-intent/dispatch-marker and captured-source-evidence records, plus enrollment/recovery references. Credentials and evidence encryption keys are not ordinary table data.
+
+**Atomic sealing:** validate against immutable original manifest and commit result + outbox + draft-sealed transition together. Validation-pending drafts cannot enter the uploadable-result outbox.
+
+**Atomic evidence capture:** commit accepted controller evidence, corresponding local projection and its evidence outbox together. This is separate from manual-result sealing.
+
+**Atomic receipt handling:** validate identity/content/hash/allowed revision and mapping first; then commit receipt + stable mapping + outbox disposition together. Server waiting/conflict receipts are preserved but do not show result applied or lifecycle complete. An older response cannot regress state; same-revision inconsistent metadata is an error.
+
+Use a single serialized writer. At startup, recover expired in-flight upload leases as outcome-unknown and reconcile stable identities before identical submission retry. Do not infer missing server commitment or hardware failure. After an ambiguous local commit, read original identity/revision before repeating the write; if storage is unreadable, retain the unknown state rather than replacing it.
+
+Create/read-back the protected random evidence key before creating its encrypted database; never replace a key when an existing database cannot be opened. Keep session-key deletion separate from evidence-key retention. SQLCipher/open/pragma/key lifecycle and migration durability require native device validation before acceptance.
+
+## Minimum acceptance tests
+
+- **T1 — Result before Stop:** valid manual zero and upper-bound count save/upload without Stop; invalid/noninteger/out-of-range count rejected; unknown manifest remains pending. Result does not change lifecycle, release guards or dispatch commands.
+- **T2 — Duplicate/conflicting submissions:** double taps, concurrent screens/uploads and identical retries produce one logical initial result and stable receipt. Same identity/different content conflicts; a new identity cannot bypass the server's one-initial-result-per-batch rule.
+- **T3 — Lost receipts:** drop response after server commit; reconcile original identity and recover same receipt/mapping. Test absent while original request is still resolving; identical retry remains idempotent. Reject mismatched hashes/IDs/mappings and illegal/regressing revisions.
+- **T4 — Restart recovery:** terminate before/after result/outbox and receipt/mapping transaction boundaries. Restore all-or-nothing committed state, original identities and pending validation. No automatic physical Start from cold start, login, reconnect or cloud retry.
+- **T5 — Failed saves:** disk-full, write/commit error, database lock/corruption and unavailable key. No false success/navigation, partial outbox or destructive recovery. Preserve input in the running form; only committed edits survive process death. Reconcile ambiguous commits by original identity/revision.
+- **T6 — Lifecycle/admission races:** race manual result, administrator finalization, revocation and new-batch admission. Enforce expected revisions/authorization under shared locking. Result alone cannot clear Active; finalization cannot release the separate admission hold; cloud Completed never becomes a physical Start permit. Missing Stop or unresolved controller outcome blocks finalization/admission as specified.
+
+Additional storage/session closure: Android release build on the actual target; SQLCipher native library/ABI/16-KB-page compatibility; database and journal encryption; rollback and migration crash boundaries; backup/device-transfer exclusion for database, keys and sessions; device-authenticated offline access; other-account denial; refresh rotation; logout/revocation during uploads; replacement and key invalidation. Hardware tests remain separately authorized.
+
+## Existing implementation versus proposed work
+
+- `pubspec.yaml:7–17` declares Dart `>=3.11.0 <4.0.0` and no direct SQLCipher, sqflite or secure-storage dependency. The proposed storage schema and transactions do not exist as this feature in the inspected project.
+- `android/app/build.gradle.kts:9,22–23` delegates compile/minimum/target SDK to Flutter; API 30 is a proposed explicit pilot floor, not an existing resolved minimum.
+- `android/app/src/main/AndroidManifest.xml` has no explicit database/key backup-exclusion policy.
+- `lib/main.dart:40–55` initializes Supabase and signs in anonymously before runApp when no session exists. Protected offline-first recovery and administrator enrollment require future changes.
+- `flutter --version --machine` reports Flutter 3.47.3 / Dart 3.13.3. This version query is not an app or dependency compatibility build.
+
+## Package evidence and limits
+
+Read-only metadata/source inspection on 2026-10-30:
+
+- [sqflite_sqlcipher 3.4.1](https://pub.dev/packages/sqflite_sqlcipher/versions/3.4.1): published package declares Dart >=3.9 and Flutter >=3.35. Published Android build source uses Java 17, minSdk 21 and SQLCipher Android 4.10.0. That is not a tested project-native minimum or final transitive support guarantee.
+- [flutter_secure_storage 11.2.0](https://pub.dev/packages/flutter_secure_storage/versions/11.2.0): metadata declares Dart >=3.8 and Flutter >=3.19. **Published Android build source specifies minSdk 24**, despite README text saying 23. The proposed API-30 pilot floor also avoids older device-credential biometric-prompt limitations. Require strict device-authentication enforcement for evidence unlock; no silent fallback when unavailable. Session storage and evidence-key access may use separate reviewed policies.
+- [sqflite 2.4.5 metadata](https://pub.dev/api/packages/sqflite): requires Dart >=3.12 / Flutter >=3.44 and does not alone supply database encryption. It was not selected as this proposal's storage package.
+- SQLCipher fork publisher/native-library/maintenance review, dependency resolution and actual Android release/device tests are outstanding. Package selection is a concrete candidate, not certification of its security or compatibility.
+
+The package archives were read in memory to inspect published Android configuration; nothing was installed or extracted into application dependencies. No application/firmware changes, dependency installation, database operation, deployment, flashing, powered test or new test execution was performed. Only this decision-proposal document was created.

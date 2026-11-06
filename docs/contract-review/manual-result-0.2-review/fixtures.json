@@ -1,0 +1,209 @@
+{
+  "notice": "0.2 REVIEW ONLY. Never upload. Alternative synthetic scenarios, not two accepted results. No durable/Auth/database/device proof.",
+  "context": {
+    "classification": "SYNTHETIC preconditions, not verified source/registry/profile or real DB records",
+    "manifest": {
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "device_id": "11111111-1111-4111-8111-111111111111",
+      "batch_id": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+      "actor_installation_id": "22222222-2222-4222-8222-222222222222",
+      "egg_quantity": 12,
+      "profile_ref": "TEST_ONLY_NOT_APPROVED"
+    },
+    "session": {
+      "id": "9007199254740993",
+      "status": "Active"
+    }
+  },
+  "requests": {
+    "unknown_time_zero": {
+      "api_version": 2,
+      "contract": "DB02-MANUAL-RESULT-0.2-review",
+      "operation": "submit_manual_result",
+      "installation_id": "22222222-2222-4222-8222-222222222222",
+      "device_id": "11111111-1111-4111-8111-111111111111",
+      "batch_id": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+      "actor_installation_id": "22222222-2222-4222-8222-222222222222",
+      "result_id": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+      "original_manifest_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "eggs_hatched": 0,
+      "action_time": {
+        "value": null,
+        "provenance": "unknown"
+      }
+    },
+    "phone_time_upper": {
+      "api_version": 2,
+      "contract": "DB02-MANUAL-RESULT-0.2-review",
+      "operation": "submit_manual_result",
+      "installation_id": "22222222-2222-4222-8222-222222222222",
+      "device_id": "11111111-1111-4111-8111-111111111111",
+      "batch_id": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+      "actor_installation_id": "22222222-2222-4222-8222-222222222222",
+      "result_id": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+      "original_manifest_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "eggs_hatched": 12,
+      "action_time": {
+        "value": "2026-10-29T23:59:59Z",
+        "provenance": "phone_clock"
+      }
+    },
+    "lookup": {
+      "api_version": 2,
+      "contract": "DB02-MANUAL-RESULT-0.2-review",
+      "installation_id": "22222222-2222-4222-8222-222222222222",
+      "device_id": "11111111-1111-4111-8111-111111111111",
+      "batch_id": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+      "actor_installation_id": "22222222-2222-4222-8222-222222222222",
+      "result_id": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+      "operation": "get_manual_result"
+    }
+  },
+  "responses": {
+    "recorded": {
+      "api_version": 2,
+      "contract": "DB02-MANUAL-RESULT-0.2-review",
+      "receipt_id": "dddddddd-dddd-4ddd-8ddd-dddddddddddd",
+      "receipt_revision": 1,
+      "device_id": "11111111-1111-4111-8111-111111111111",
+      "batch_id": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+      "actor_installation_id": "22222222-2222-4222-8222-222222222222",
+      "result_id": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+      "original_manifest_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "content_sha256": "799cb58d64b2db57c950eefb8c16ddbc8fd88cd75252ffe1693ed121ecc8b078",
+      "egg_quantity": 12,
+      "eggs_hatched": 0,
+      "session_id": "9007199254740993",
+      "received_at": "2026-10-30T00:00:00Z",
+      "outcome": "result_recorded",
+      "lifecycle_effect": "none",
+      "physical_admission_effect": "none",
+      "retention_ack": null
+    },
+    "found": {
+      "api_version": 2,
+      "contract": "DB02-MANUAL-RESULT-0.2-review",
+      "request_id": "eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee",
+      "device_id": "11111111-1111-4111-8111-111111111111",
+      "batch_id": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+      "actor_installation_id": "22222222-2222-4222-8222-222222222222",
+      "result_id": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+      "found": true,
+      "receipt": {
+        "api_version": 2,
+        "contract": "DB02-MANUAL-RESULT-0.2-review",
+        "receipt_id": "dddddddd-dddd-4ddd-8ddd-dddddddddddd",
+        "receipt_revision": 1,
+        "device_id": "11111111-1111-4111-8111-111111111111",
+        "batch_id": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+        "actor_installation_id": "22222222-2222-4222-8222-222222222222",
+        "result_id": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+        "original_manifest_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "content_sha256": "799cb58d64b2db57c950eefb8c16ddbc8fd88cd75252ffe1693ed121ecc8b078",
+        "egg_quantity": 12,
+        "eggs_hatched": 0,
+        "session_id": "9007199254740993",
+        "received_at": "2026-10-30T00:00:00Z",
+        "outcome": "result_recorded",
+        "lifecycle_effect": "none",
+        "physical_admission_effect": "none",
+        "retention_ack": null
+      }
+    },
+    "absent": {
+      "api_version": 2,
+      "contract": "DB02-MANUAL-RESULT-0.2-review",
+      "request_id": "eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee",
+      "device_id": "11111111-1111-4111-8111-111111111111",
+      "batch_id": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+      "actor_installation_id": "22222222-2222-4222-8222-222222222222",
+      "result_id": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+      "found": false,
+      "receipt": null
+    },
+    "unknown_commit": {
+      "api_version": 2,
+      "contract": "DB02-MANUAL-RESULT-0.2-review",
+      "request_id": "eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee",
+      "error": {
+        "code": "COMMIT_UNKNOWN",
+        "retryable": true,
+        "commit_status": "unknown"
+      }
+    },
+    "service_unavailable": {
+      "api_version": 2,
+      "contract": "DB02-MANUAL-RESULT-0.2-review",
+      "request_id": "eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee",
+      "error": {
+        "code": "SERVICE_UNAVAILABLE",
+        "retryable": true,
+        "commit_status": "not_persisted"
+      }
+    },
+    "not_authorized": {
+      "api_version": 2,
+      "contract": "DB02-MANUAL-RESULT-0.2-review",
+      "request_id": "eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee",
+      "error": {
+        "code": "NOT_AUTHORIZED",
+        "retryable": false,
+        "commit_status": "not_persisted"
+      }
+    }
+  },
+  "hashVectors": [
+    {
+      "name": "unknown_time_zero",
+      "core": {
+        "contract": "DB02-MANUAL-RESULT-0.2-review",
+        "device_id": "11111111-1111-4111-8111-111111111111",
+        "batch_id": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+        "actor_installation_id": "22222222-2222-4222-8222-222222222222",
+        "result_id": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+        "original_manifest_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "eggs_hatched": 0,
+        "action_time": {
+          "value": null,
+          "provenance": "unknown"
+        }
+      },
+      "canonical": "{\"action_time\":{\"provenance\":\"unknown\",\"value\":null},\"actor_installation_id\":\"22222222-2222-4222-8222-222222222222\",\"batch_id\":\"aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa\",\"contract\":\"DB02-MANUAL-RESULT-0.2-review\",\"device_id\":\"11111111-1111-4111-8111-111111111111\",\"eggs_hatched\":0,\"original_manifest_sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"result_id\":\"bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb\"}",
+      "utf8Bytes": 422,
+      "sha256": "799cb58d64b2db57c950eefb8c16ddbc8fd88cd75252ffe1693ed121ecc8b078"
+    },
+    {
+      "name": "phone_time_upper",
+      "core": {
+        "contract": "DB02-MANUAL-RESULT-0.2-review",
+        "device_id": "11111111-1111-4111-8111-111111111111",
+        "batch_id": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+        "actor_installation_id": "22222222-2222-4222-8222-222222222222",
+        "result_id": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+        "original_manifest_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "eggs_hatched": 12,
+        "action_time": {
+          "value": "2026-10-29T23:59:59Z",
+          "provenance": "phone_clock"
+        }
+      },
+      "canonical": "{\"action_time\":{\"provenance\":\"phone_clock\",\"value\":\"2026-10-29T23:59:59Z\"},\"actor_installation_id\":\"22222222-2222-4222-8222-222222222222\",\"batch_id\":\"aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa\",\"contract\":\"DB02-MANUAL-RESULT-0.2-review\",\"device_id\":\"11111111-1111-4111-8111-111111111111\",\"eggs_hatched\":12,\"original_manifest_sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"result_id\":\"bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb\"}",
+      "utf8Bytes": 445,
+      "sha256": "9ac45d31b8981342f8c13b2d4d9334e1d3f22cca2ff25086399e065ce326356c"
+    }
+  ],
+  "scenarioRelationship": {
+    "names": [
+      "unknown_time_zero",
+      "phone_time_upper"
+    ],
+    "independentAlternatives": true,
+    "sameActionIdentity": true,
+    "sequentialChangedContentExpected": "IDENTITY_CONTENT_CONFLICT"
+  },
+  "draftIdentity": {
+    "classification": "SYNTHETIC reservation correspondence only; not a durable transaction",
+    "reservedAtFirstDurableDraft": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+    "reusedAtSeal": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb"
+  }
+}

@@ -1,0 +1,1118 @@
+{
+  "scope": "All five CSVs read locally. Consistency/interpretation assertions, not live Auth/RLS tests.",
+  "projectContext": "Screenshots visibly show smarthatch-test/main; they do not display the exact project ref or prove all CSVs came from that project. No production state inferred.",
+  "defaultAclCompleteness": "UNKNOWN: export (16) contains exactly 100 rows; original query/result limit is not available. May be truncated or exactly 100; do not call it exhaustive.",
+  "files": [
+    {
+      "name": "Supabase Snippet Untitled query (15).csv",
+      "bytes": 413,
+      "sha256": "1dd7be743052f4a9866ad412ec53c905cb6dcb4b0c7123cb03f5d0039bf9bfef",
+      "rowCount": 4,
+      "rowsReviewed": [
+        {
+          "table_name": "active_settings",
+          "column_name": "id",
+          "sequence_name": "active_settings_id_seq",
+          "sequence_owner": "postgres",
+          "anon_usage": "true",
+          "anon_select": "true",
+          "authenticated_usage": "true",
+          "authenticated_select": "true"
+        },
+        {
+          "table_name": "incubator_presets",
+          "column_name": "id",
+          "sequence_name": "incubator_presets_id_seq",
+          "sequence_owner": "postgres",
+          "anon_usage": "true",
+          "anon_select": "true",
+          "authenticated_usage": "true",
+          "authenticated_select": "true"
+        },
+        {
+          "table_name": "incubator_sessions",
+          "column_name": "id",
+          "sequence_name": "incubator_sessions_id_seq",
+          "sequence_owner": "postgres",
+          "anon_usage": "true",
+          "anon_select": "true",
+          "authenticated_usage": "true",
+          "authenticated_select": "true"
+        },
+        {
+          "table_name": "sensor_readings",
+          "column_name": "id",
+          "sequence_name": "sensor_readings_id_seq",
+          "sequence_owner": "postgres",
+          "anon_usage": "true",
+          "anon_select": "true",
+          "authenticated_usage": "true",
+          "authenticated_select": "true"
+        }
+      ]
+    },
+    {
+      "name": "Supabase Snippet Untitled query (16).csv",
+      "bytes": 5056,
+      "sha256": "869b16d73120f9a6d03a94f7e8cb74fe98093b91a5dc18cc23a8f4e3cbdae3f0",
+      "rowCount": 100,
+      "rowsReviewed": [
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "public",
+          "object_type": "FUNCTIONS",
+          "grantee": "anon",
+          "privilege_type": "EXECUTE",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "public",
+          "object_type": "FUNCTIONS",
+          "grantee": "authenticated",
+          "privilege_type": "EXECUTE",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "public",
+          "object_type": "FUNCTIONS",
+          "grantee": "postgres",
+          "privilege_type": "EXECUTE",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "public",
+          "object_type": "FUNCTIONS",
+          "grantee": "service_role",
+          "privilege_type": "EXECUTE",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "public",
+          "object_type": "SEQUENCES",
+          "grantee": "anon",
+          "privilege_type": "SELECT",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "public",
+          "object_type": "SEQUENCES",
+          "grantee": "anon",
+          "privilege_type": "UPDATE",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "public",
+          "object_type": "SEQUENCES",
+          "grantee": "anon",
+          "privilege_type": "USAGE",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "public",
+          "object_type": "SEQUENCES",
+          "grantee": "authenticated",
+          "privilege_type": "SELECT",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "public",
+          "object_type": "SEQUENCES",
+          "grantee": "authenticated",
+          "privilege_type": "UPDATE",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "public",
+          "object_type": "SEQUENCES",
+          "grantee": "authenticated",
+          "privilege_type": "USAGE",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "public",
+          "object_type": "SEQUENCES",
+          "grantee": "postgres",
+          "privilege_type": "SELECT",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "public",
+          "object_type": "SEQUENCES",
+          "grantee": "postgres",
+          "privilege_type": "UPDATE",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "public",
+          "object_type": "SEQUENCES",
+          "grantee": "postgres",
+          "privilege_type": "USAGE",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "public",
+          "object_type": "SEQUENCES",
+          "grantee": "service_role",
+          "privilege_type": "SELECT",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "public",
+          "object_type": "SEQUENCES",
+          "grantee": "service_role",
+          "privilege_type": "UPDATE",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "public",
+          "object_type": "SEQUENCES",
+          "grantee": "service_role",
+          "privilege_type": "USAGE",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "public",
+          "object_type": "TABLES",
+          "grantee": "anon",
+          "privilege_type": "DELETE",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "public",
+          "object_type": "TABLES",
+          "grantee": "anon",
+          "privilege_type": "INSERT",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "public",
+          "object_type": "TABLES",
+          "grantee": "anon",
+          "privilege_type": "MAINTAIN",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "public",
+          "object_type": "TABLES",
+          "grantee": "anon",
+          "privilege_type": "REFERENCES",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "public",
+          "object_type": "TABLES",
+          "grantee": "anon",
+          "privilege_type": "SELECT",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "public",
+          "object_type": "TABLES",
+          "grantee": "anon",
+          "privilege_type": "TRIGGER",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "public",
+          "object_type": "TABLES",
+          "grantee": "anon",
+          "privilege_type": "TRUNCATE",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "public",
+          "object_type": "TABLES",
+          "grantee": "anon",
+          "privilege_type": "UPDATE",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "public",
+          "object_type": "TABLES",
+          "grantee": "authenticated",
+          "privilege_type": "DELETE",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "public",
+          "object_type": "TABLES",
+          "grantee": "authenticated",
+          "privilege_type": "INSERT",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "public",
+          "object_type": "TABLES",
+          "grantee": "authenticated",
+          "privilege_type": "MAINTAIN",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "public",
+          "object_type": "TABLES",
+          "grantee": "authenticated",
+          "privilege_type": "REFERENCES",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "public",
+          "object_type": "TABLES",
+          "grantee": "authenticated",
+          "privilege_type": "SELECT",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "public",
+          "object_type": "TABLES",
+          "grantee": "authenticated",
+          "privilege_type": "TRIGGER",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "public",
+          "object_type": "TABLES",
+          "grantee": "authenticated",
+          "privilege_type": "TRUNCATE",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "public",
+          "object_type": "TABLES",
+          "grantee": "authenticated",
+          "privilege_type": "UPDATE",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "public",
+          "object_type": "TABLES",
+          "grantee": "postgres",
+          "privilege_type": "DELETE",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "public",
+          "object_type": "TABLES",
+          "grantee": "postgres",
+          "privilege_type": "INSERT",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "public",
+          "object_type": "TABLES",
+          "grantee": "postgres",
+          "privilege_type": "MAINTAIN",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "public",
+          "object_type": "TABLES",
+          "grantee": "postgres",
+          "privilege_type": "REFERENCES",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "public",
+          "object_type": "TABLES",
+          "grantee": "postgres",
+          "privilege_type": "SELECT",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "public",
+          "object_type": "TABLES",
+          "grantee": "postgres",
+          "privilege_type": "TRIGGER",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "public",
+          "object_type": "TABLES",
+          "grantee": "postgres",
+          "privilege_type": "TRUNCATE",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "public",
+          "object_type": "TABLES",
+          "grantee": "postgres",
+          "privilege_type": "UPDATE",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "public",
+          "object_type": "TABLES",
+          "grantee": "service_role",
+          "privilege_type": "DELETE",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "public",
+          "object_type": "TABLES",
+          "grantee": "service_role",
+          "privilege_type": "INSERT",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "public",
+          "object_type": "TABLES",
+          "grantee": "service_role",
+          "privilege_type": "MAINTAIN",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "public",
+          "object_type": "TABLES",
+          "grantee": "service_role",
+          "privilege_type": "REFERENCES",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "public",
+          "object_type": "TABLES",
+          "grantee": "service_role",
+          "privilege_type": "SELECT",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "public",
+          "object_type": "TABLES",
+          "grantee": "service_role",
+          "privilege_type": "TRIGGER",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "public",
+          "object_type": "TABLES",
+          "grantee": "service_role",
+          "privilege_type": "TRUNCATE",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "public",
+          "object_type": "TABLES",
+          "grantee": "service_role",
+          "privilege_type": "UPDATE",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "storage",
+          "object_type": "FUNCTIONS",
+          "grantee": "anon",
+          "privilege_type": "EXECUTE",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "storage",
+          "object_type": "FUNCTIONS",
+          "grantee": "authenticated",
+          "privilege_type": "EXECUTE",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "storage",
+          "object_type": "FUNCTIONS",
+          "grantee": "postgres",
+          "privilege_type": "EXECUTE",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "storage",
+          "object_type": "FUNCTIONS",
+          "grantee": "service_role",
+          "privilege_type": "EXECUTE",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "storage",
+          "object_type": "SEQUENCES",
+          "grantee": "anon",
+          "privilege_type": "SELECT",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "storage",
+          "object_type": "SEQUENCES",
+          "grantee": "anon",
+          "privilege_type": "UPDATE",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "storage",
+          "object_type": "SEQUENCES",
+          "grantee": "anon",
+          "privilege_type": "USAGE",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "storage",
+          "object_type": "SEQUENCES",
+          "grantee": "authenticated",
+          "privilege_type": "SELECT",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "storage",
+          "object_type": "SEQUENCES",
+          "grantee": "authenticated",
+          "privilege_type": "UPDATE",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "storage",
+          "object_type": "SEQUENCES",
+          "grantee": "authenticated",
+          "privilege_type": "USAGE",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "storage",
+          "object_type": "SEQUENCES",
+          "grantee": "postgres",
+          "privilege_type": "SELECT",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "storage",
+          "object_type": "SEQUENCES",
+          "grantee": "postgres",
+          "privilege_type": "UPDATE",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "storage",
+          "object_type": "SEQUENCES",
+          "grantee": "postgres",
+          "privilege_type": "USAGE",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "storage",
+          "object_type": "SEQUENCES",
+          "grantee": "service_role",
+          "privilege_type": "SELECT",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "storage",
+          "object_type": "SEQUENCES",
+          "grantee": "service_role",
+          "privilege_type": "UPDATE",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "storage",
+          "object_type": "SEQUENCES",
+          "grantee": "service_role",
+          "privilege_type": "USAGE",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "storage",
+          "object_type": "TABLES",
+          "grantee": "anon",
+          "privilege_type": "DELETE",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "storage",
+          "object_type": "TABLES",
+          "grantee": "anon",
+          "privilege_type": "INSERT",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "storage",
+          "object_type": "TABLES",
+          "grantee": "anon",
+          "privilege_type": "MAINTAIN",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "storage",
+          "object_type": "TABLES",
+          "grantee": "anon",
+          "privilege_type": "REFERENCES",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "storage",
+          "object_type": "TABLES",
+          "grantee": "anon",
+          "privilege_type": "SELECT",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "storage",
+          "object_type": "TABLES",
+          "grantee": "anon",
+          "privilege_type": "TRIGGER",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "storage",
+          "object_type": "TABLES",
+          "grantee": "anon",
+          "privilege_type": "TRUNCATE",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "storage",
+          "object_type": "TABLES",
+          "grantee": "anon",
+          "privilege_type": "UPDATE",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "storage",
+          "object_type": "TABLES",
+          "grantee": "authenticated",
+          "privilege_type": "DELETE",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "storage",
+          "object_type": "TABLES",
+          "grantee": "authenticated",
+          "privilege_type": "INSERT",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "storage",
+          "object_type": "TABLES",
+          "grantee": "authenticated",
+          "privilege_type": "MAINTAIN",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "storage",
+          "object_type": "TABLES",
+          "grantee": "authenticated",
+          "privilege_type": "REFERENCES",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "storage",
+          "object_type": "TABLES",
+          "grantee": "authenticated",
+          "privilege_type": "SELECT",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "storage",
+          "object_type": "TABLES",
+          "grantee": "authenticated",
+          "privilege_type": "TRIGGER",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "storage",
+          "object_type": "TABLES",
+          "grantee": "authenticated",
+          "privilege_type": "TRUNCATE",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "storage",
+          "object_type": "TABLES",
+          "grantee": "authenticated",
+          "privilege_type": "UPDATE",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "storage",
+          "object_type": "TABLES",
+          "grantee": "postgres",
+          "privilege_type": "DELETE",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "storage",
+          "object_type": "TABLES",
+          "grantee": "postgres",
+          "privilege_type": "INSERT",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "storage",
+          "object_type": "TABLES",
+          "grantee": "postgres",
+          "privilege_type": "MAINTAIN",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "storage",
+          "object_type": "TABLES",
+          "grantee": "postgres",
+          "privilege_type": "REFERENCES",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "storage",
+          "object_type": "TABLES",
+          "grantee": "postgres",
+          "privilege_type": "SELECT",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "storage",
+          "object_type": "TABLES",
+          "grantee": "postgres",
+          "privilege_type": "TRIGGER",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "storage",
+          "object_type": "TABLES",
+          "grantee": "postgres",
+          "privilege_type": "TRUNCATE",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "storage",
+          "object_type": "TABLES",
+          "grantee": "postgres",
+          "privilege_type": "UPDATE",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "storage",
+          "object_type": "TABLES",
+          "grantee": "service_role",
+          "privilege_type": "DELETE",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "storage",
+          "object_type": "TABLES",
+          "grantee": "service_role",
+          "privilege_type": "INSERT",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "storage",
+          "object_type": "TABLES",
+          "grantee": "service_role",
+          "privilege_type": "MAINTAIN",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "storage",
+          "object_type": "TABLES",
+          "grantee": "service_role",
+          "privilege_type": "REFERENCES",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "storage",
+          "object_type": "TABLES",
+          "grantee": "service_role",
+          "privilege_type": "SELECT",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "storage",
+          "object_type": "TABLES",
+          "grantee": "service_role",
+          "privilege_type": "TRIGGER",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "storage",
+          "object_type": "TABLES",
+          "grantee": "service_role",
+          "privilege_type": "TRUNCATE",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "postgres",
+          "schema_scope": "storage",
+          "object_type": "TABLES",
+          "grantee": "service_role",
+          "privilege_type": "UPDATE",
+          "is_grantable": "false"
+        },
+        {
+          "grant_owner": "supabase_admin",
+          "schema_scope": "extensions",
+          "object_type": "FUNCTIONS",
+          "grantee": "postgres",
+          "privilege_type": "EXECUTE",
+          "is_grantable": "true"
+        },
+        {
+          "grant_owner": "supabase_admin",
+          "schema_scope": "extensions",
+          "object_type": "SEQUENCES",
+          "grantee": "postgres",
+          "privilege_type": "SELECT",
+          "is_grantable": "true"
+        },
+        {
+          "grant_owner": "supabase_admin",
+          "schema_scope": "extensions",
+          "object_type": "SEQUENCES",
+          "grantee": "postgres",
+          "privilege_type": "UPDATE",
+          "is_grantable": "true"
+        },
+        {
+          "grant_owner": "supabase_admin",
+          "schema_scope": "extensions",
+          "object_type": "SEQUENCES",
+          "grantee": "postgres",
+          "privilege_type": "USAGE",
+          "is_grantable": "true"
+        }
+      ]
+    },
+    {
+      "name": "Supabase Snippet Untitled query (17).csv",
+      "bytes": 429,
+      "sha256": "559533757de3b8b97365799d191cf1d8dd5c52e2992794d1223eb248bbabcf34",
+      "rowCount": 6,
+      "rowsReviewed": [
+        {
+          "role_name": "anon",
+          "is_superuser": "false",
+          "inherits_privileges": "true",
+          "can_create_roles": "false",
+          "can_create_databases": "false",
+          "can_login": "false",
+          "has_replication": "false",
+          "bypasses_rls": "false"
+        },
+        {
+          "role_name": "authenticated",
+          "is_superuser": "false",
+          "inherits_privileges": "true",
+          "can_create_roles": "false",
+          "can_create_databases": "false",
+          "can_login": "false",
+          "has_replication": "false",
+          "bypasses_rls": "false"
+        },
+        {
+          "role_name": "authenticator",
+          "is_superuser": "false",
+          "inherits_privileges": "false",
+          "can_create_roles": "false",
+          "can_create_databases": "false",
+          "can_login": "true",
+          "has_replication": "false",
+          "bypasses_rls": "false"
+        },
+        {
+          "role_name": "postgres",
+          "is_superuser": "false",
+          "inherits_privileges": "true",
+          "can_create_roles": "true",
+          "can_create_databases": "true",
+          "can_login": "true",
+          "has_replication": "true",
+          "bypasses_rls": "true"
+        },
+        {
+          "role_name": "service_role",
+          "is_superuser": "false",
+          "inherits_privileges": "true",
+          "can_create_roles": "false",
+          "can_create_databases": "false",
+          "can_login": "false",
+          "has_replication": "false",
+          "bypasses_rls": "true"
+        },
+        {
+          "role_name": "supabase_admin",
+          "is_superuser": "true",
+          "inherits_privileges": "true",
+          "can_create_roles": "true",
+          "can_create_databases": "true",
+          "can_login": "true",
+          "has_replication": "true",
+          "bypasses_rls": "true"
+        }
+      ]
+    },
+    {
+      "name": "Supabase Snippet Untitled query (18).csv",
+      "bytes": 452,
+      "sha256": "62e4287ee2a7cc073eaee28594d92e9eb1cde71f3c9342d61b930cd8b2468b27",
+      "rowCount": 9,
+      "rowsReviewed": [
+        {
+          "object_type": "FUNCTION",
+          "schema_name": "public",
+          "object_name": "rls_auto_enable",
+          "object_owner": "postgres"
+        },
+        {
+          "object_type": "SEQUENCE",
+          "schema_name": "public",
+          "object_name": "active_settings_id_seq",
+          "object_owner": "postgres"
+        },
+        {
+          "object_type": "SEQUENCE",
+          "schema_name": "public",
+          "object_name": "incubator_presets_id_seq",
+          "object_owner": "postgres"
+        },
+        {
+          "object_type": "SEQUENCE",
+          "schema_name": "public",
+          "object_name": "incubator_sessions_id_seq",
+          "object_owner": "postgres"
+        },
+        {
+          "object_type": "SEQUENCE",
+          "schema_name": "public",
+          "object_name": "sensor_readings_id_seq",
+          "object_owner": "postgres"
+        },
+        {
+          "object_type": "TABLE",
+          "schema_name": "public",
+          "object_name": "active_settings",
+          "object_owner": "postgres"
+        },
+        {
+          "object_type": "TABLE",
+          "schema_name": "public",
+          "object_name": "incubator_presets",
+          "object_owner": "postgres"
+        },
+        {
+          "object_type": "TABLE",
+          "schema_name": "public",
+          "object_name": "incubator_sessions",
+          "object_owner": "postgres"
+        },
+        {
+          "object_type": "TABLE",
+          "schema_name": "public",
+          "object_name": "sensor_readings",
+          "object_owner": "postgres"
+        }
+      ]
+    },
+    {
+      "name": "Supabase Snippet Untitled query (19).csv",
+      "bytes": 557,
+      "sha256": "4f6cb81b8452ceef3518e3b5bcb6b2e8f5cf5b3bb44b94dbd7bc276914c5ca21",
+      "rowCount": 12,
+      "rowsReviewed": [
+        {
+          "member_role": "authenticator",
+          "granted_role": "anon",
+          "admin_option": "false",
+          "inherit_option": "false",
+          "set_option": "true"
+        },
+        {
+          "member_role": "authenticator",
+          "granted_role": "authenticated",
+          "admin_option": "false",
+          "inherit_option": "false",
+          "set_option": "true"
+        },
+        {
+          "member_role": "authenticator",
+          "granted_role": "service_role",
+          "admin_option": "false",
+          "inherit_option": "false",
+          "set_option": "true"
+        },
+        {
+          "member_role": "postgres",
+          "granted_role": "anon",
+          "admin_option": "true",
+          "inherit_option": "true",
+          "set_option": "true"
+        },
+        {
+          "member_role": "postgres",
+          "granted_role": "authenticated",
+          "admin_option": "true",
+          "inherit_option": "true",
+          "set_option": "true"
+        },
+        {
+          "member_role": "postgres",
+          "granted_role": "authenticator",
+          "admin_option": "true",
+          "inherit_option": "true",
+          "set_option": "true"
+        },
+        {
+          "member_role": "postgres",
+          "granted_role": "pg_create_subscription",
+          "admin_option": "true",
+          "inherit_option": "true",
+          "set_option": "true"
+        },
+        {
+          "member_role": "postgres",
+          "granted_role": "pg_monitor",
+          "admin_option": "true",
+          "inherit_option": "true",
+          "set_option": "true"
+        },
+        {
+          "member_role": "postgres",
+          "granted_role": "pg_read_all_data",
+          "admin_option": "true",
+          "inherit_option": "true",
+          "set_option": "true"
+        },
+        {
+          "member_role": "postgres",
+          "granted_role": "pg_signal_backend",
+          "admin_option": "true",
+          "inherit_option": "true",
+          "set_option": "true"
+        },
+        {
+          "member_role": "postgres",
+          "granted_role": "service_role",
+          "admin_option": "true",
+          "inherit_option": "true",
+          "set_option": "true"
+        },
+        {
+          "member_role": "postgres",
+          "granted_role": "supabase_privileged_role",
+          "admin_option": "false",
+          "inherit_option": "true",
+          "set_option": "true"
+        }
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "name": "four exported sequence owners/usage/select flags match known test sequence ACLs",
+      "result": "PASSED"
+    },
+    {
+      "name": "default-privilege export includes broad public defaults; completeness explicitly unknown",
+      "result": "PASSED"
+    },
+    {
+      "name": "exported role flags distinguish client roles from RLS-bypassing admin/service roles",
+      "result": "PASSED"
+    },
+    {
+      "name": "nine exported public object owners agree with independent catalog",
+      "result": "PASSED"
+    },
+    {
+      "name": "authenticator memberships permit SET ROLE without proving a real signed JWT test",
+      "result": "PASSED"
+    }
+  ],
+  "screenshotObservations": [
+    "information_schema.schemata and pg_namespace private-name lookups show zero rows.",
+    "Four public base tables are shown, matching the known application table names.",
+    "An initial pg_tables query fails with SQLSTATE 42703 for forcerowsecurity; corrected pg_class/pg_namespace query returns relrowsecurity=true and relforcerowsecurity=false for four tables.",
+    "rls_auto_enable metadata shows postgres owner, SECURITY DEFINER, volatile, search_path=pg_catalog and explicit grants NULL. NULL ACL is not proof that nobody can execute.",
+    "A function-definition query returns the event-trigger helper; it is not a bridge-sync function.",
+    "supabase_migrations.schema_migrations lookup fails with 42P01; pg_namespace lookup for supabase_migrations shows zero rows. No tracked history there is established, not proof that no SQL/migrations ever ran.",
+    "Data API UI shows public and graphql_public exposed, 4/4 tables exposed, 0/1 functions exposed, automatic new-table exposure on, extra search path public/extensions, max rows 1000.",
+    "The PRODUCTION badge labels the shown project main branch; it is not proof of accessing the separate egg incubator application project."
+  ],
+  "statusEffect": "No further task completion. Both C-01 audits remain Completed; security/remediation and integration tasks retain their own open criteria."
+}

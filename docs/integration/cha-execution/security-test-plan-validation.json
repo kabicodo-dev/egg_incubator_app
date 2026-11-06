@@ -1,0 +1,34 @@
+{
+  "taskId": "OCT26:C-01",
+  "scope": "Offline plan validation ONLY; no real Auth/RLS/RPC tests run.",
+  "checks": [
+    {
+      "name": "all remote permissions remain false",
+      "result": "PASSED"
+    },
+    {
+      "name": "explicit test target excludes application project",
+      "result": "PASSED"
+    },
+    {
+      "name": "exact existing RPC names only",
+      "result": "PASSED"
+    },
+    {
+      "name": "case IDs unique and results do not fabricate live success",
+      "result": "PASSED"
+    },
+    {
+      "name": "positive and transaction paths explicitly team-gated",
+      "result": "PASSED"
+    },
+    {
+      "name": "fixture inputs exist; prior observation is read-only",
+      "result": "PASSED"
+    },
+    {
+      "name": "cleanup remains unapproved and explicitly ID-scoped",
+      "result": "PASSED"
+    }
+  ]
+}

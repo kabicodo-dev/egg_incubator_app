@@ -1,0 +1,112 @@
+REVIEW ONLY: parsed-object model; no raw parser/schema/Auth/storage/integration proof
+PASS unknown_time_zero canonical
+PASS unknown_time_zero bytes
+PASS unknown_time_zero digest
+CANONICAL unknown_time_zero {"action_time":{"provenance":"unknown","value":null},"actor_installation_id":"22222222-2222-4222-8222-222222222222","batch_id":"aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa","contract":"DB02-MANUAL-RESULT-0.2-review","device_id":"11111111-1111-4111-8111-111111111111","eggs_hatched":0,"original_manifest_sha256":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","result_id":"bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb"}
+VECTOR unknown_time_zero 422 799cb58d64b2db57c950eefb8c16ddbc8fd88cd75252ffe1693ed121ecc8b078
+PASS phone_time_upper canonical
+PASS phone_time_upper bytes
+PASS phone_time_upper digest
+CANONICAL phone_time_upper {"action_time":{"provenance":"phone_clock","value":"2026-10-29T23:59:59Z"},"actor_installation_id":"22222222-2222-4222-8222-222222222222","batch_id":"aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa","contract":"DB02-MANUAL-RESULT-0.2-review","device_id":"11111111-1111-4111-8111-111111111111","eggs_hatched":12,"original_manifest_sha256":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","result_id":"bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb"}
+VECTOR phone_time_upper 445 9ac45d31b8981342f8c13b2d4d9334e1d3f22cca2ff25086399e065ce326356c
+PASS found accepted
+PASS absent accepted observation only
+PASS unchanged receipt continuity
+PASS found outer device_id mismatch
+PASS absent outer device_id mismatch
+PASS nested device_id mismatch
+PASS outstanding device_id mismatch
+PASS original device_id mismatch
+PASS found outer batch_id mismatch
+PASS absent outer batch_id mismatch
+PASS nested batch_id mismatch
+PASS outstanding batch_id mismatch
+PASS original batch_id mismatch
+PASS found outer actor_installation_id mismatch
+PASS absent outer actor_installation_id mismatch
+PASS nested actor_installation_id mismatch
+PASS outstanding actor_installation_id mismatch
+PASS original actor_installation_id mismatch
+PASS found outer result_id mismatch
+PASS absent outer result_id mismatch
+PASS nested result_id mismatch
+PASS outstanding result_id mismatch
+PASS original result_id mismatch
+PASS receipt content_sha256
+PASS receipt original_manifest_sha256
+PASS receipt egg_quantity
+PASS receipt eggs_hatched
+PASS receipt session_id
+PASS receipt outcome
+PASS receipt receipt_revision
+PASS receipt lifecycle_effect
+PASS receipt physical_admission_effect
+PASS receipt retention_ack
+PASS receipt received_at
+PASS receipt receipt_id
+PASS receipt contract
+PASS receipt api_version
+PASS continuity receipt_id
+PASS continuity received_at
+PASS outer extra
+PASS nested extra
+PASS missing receipt
+PASS false receipt
+PASS true null
+PASS found type
+PASS old contract
+PASS bad request_id
+PASS wrong api_version
+PASS signed bigint max lossless
+PASS signed bigint overflow
+PASS valid error INVALID_REQUEST
+PASS contradictory retry INVALID_REQUEST
+PASS contradictory commit INVALID_REQUEST
+PASS valid error AUTHENTICATION_REQUIRED
+PASS contradictory retry AUTHENTICATION_REQUIRED
+PASS contradictory commit AUTHENTICATION_REQUIRED
+PASS valid error NOT_AUTHORIZED
+PASS contradictory retry NOT_AUTHORIZED
+PASS contradictory commit NOT_AUTHORIZED
+PASS valid error MANIFEST_REQUIRED
+PASS contradictory retry MANIFEST_REQUIRED
+PASS contradictory commit MANIFEST_REQUIRED
+PASS valid error BATCH_MAPPING_REQUIRED
+PASS contradictory retry BATCH_MAPPING_REQUIRED
+PASS contradictory commit BATCH_MAPPING_REQUIRED
+PASS valid error COUNT_OUT_OF_RANGE
+PASS contradictory retry COUNT_OUT_OF_RANGE
+PASS contradictory commit COUNT_OUT_OF_RANGE
+PASS valid error MANIFEST_CONFLICT
+PASS contradictory retry MANIFEST_CONFLICT
+PASS contradictory commit MANIFEST_CONFLICT
+PASS valid error LIFECYCLE_CONFLICT
+PASS contradictory retry LIFECYCLE_CONFLICT
+PASS contradictory commit LIFECYCLE_CONFLICT
+PASS valid error IDENTITY_CONTENT_CONFLICT
+PASS contradictory retry IDENTITY_CONTENT_CONFLICT
+PASS contradictory commit IDENTITY_CONTENT_CONFLICT
+PASS valid error RESULT_ALREADY_RECORDED
+PASS contradictory retry RESULT_ALREADY_RECORDED
+PASS contradictory commit RESULT_ALREADY_RECORDED
+PASS valid error CONTRACT_NOT_ENABLED
+PASS contradictory retry CONTRACT_NOT_ENABLED
+PASS contradictory commit CONTRACT_NOT_ENABLED
+PASS valid error SERVICE_UNAVAILABLE
+PASS contradictory retry SERVICE_UNAVAILABLE
+PASS contradictory commit SERVICE_UNAVAILABLE
+PASS valid error COMMIT_UNKNOWN
+PASS contradictory retry COMMIT_UNKNOWN
+PASS contradictory commit COMMIT_UNKNOWN
+PASS malformed error unknown code: no retry/commit inference
+PASS malformed error extra error: no retry/commit inference
+PASS malformed error extra outer: no retry/commit inference
+PASS malformed error missing retry: no retry/commit inference
+PASS malformed error string retry: no retry/commit inference
+PASS malformed error old contract: no retry/commit inference
+PASS malformed error bad request_id: no retry/commit inference
+PASS malformed error wrong api_version: no retry/commit inference
+PASS malformed error null error: no retry/commit inference
+PASS same identity different content requires conflict
+PASS M08 fixture reservation correspondence only
+REVIEW-ONLY PASS checks=106 vectors=2; implementation acceptance NOT RUN

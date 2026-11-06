@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://smarthatch.invalid/contracts/original-c02/candidate-1/schema",
+  "title": "ORIGINAL:C-02 candidate 1 — observed wire and unapproved target semantic records",
+  "description": "PROPOSED / NOT APPROVED / VALIDATION NOT RUN. Observed shapes describe well-formed reference specimens, not complete firmware parser enforcement. Target wrappers are documentation-only, not serial frames or deployed APIs. No final wire limit or future wire version is selected.",
+  "oneOf": [
+    {"$ref": "#/$defs/observedCommand"},
+    {"$ref": "#/$defs/observedAck"},
+    {"$ref": "#/$defs/observedRunning"},
+    {"$ref": "#/$defs/observedTelemetry"},
+    {"$ref": "#/$defs/observedEvent"},
+    {"$ref": "#/$defs/targetRecord"}
+  ],
+  "$defs": {
+    "avrLong": {"type": "integer", "minimum": -2147483648, "maximum": 2147483647, "description": "Nominal AVR signed long specimen domain; actual substring parser does not enforce a strict range/grammar policy."},
+    "positiveAvrLong": {"type": "integer", "minimum": 1, "maximum": 2147483647},
+    "uint32": {"type": "integer", "minimum": 0, "maximum": 4294967295},
+    "species": {"enum": ["chicken", "duck", "quail"]},
+    "observedCommand": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "cmd"],
+      "properties": {
+        "id": {"$ref": "#/$defs/avrLong"},
+        "cmd": {"enum": ["STATUS", "START", "NEW_BATCH", "RESET", "SELECT_CHICKEN", "SELECT_DUCK", "SELECT_QUAIL", "TURN_NOW"]},
+        "batch_id": {"$ref": "#/$defs/positiveAvrLong"}
+      },
+      "allOf": [{"if": {"properties": {"cmd": {"const": "START"}}}, "then": {"required": ["batch_id"]}, "else": {"not": {"required": ["batch_id"]}}}]
+    },
+    "observedError": {
+      "type": "object", "additionalProperties": false, "required": ["code", "message"],
+      "properties": {
+        "code": {"enum": ["unknown_command", "incubator_sensor_invalid", "turning_disabled_for_stage", "line_too_long", "required_id_or_cmd_missing", "invalid_batch_id", "batch_already_running", "batch_already_complete"]},
+        "message": {"type": "string", "minLength": 1}
+      }
+    },
+    "observedAck": {
+      "type": "object", "additionalProperties": false,
+      "required": ["type", "v", "id", "cmd", "status"],
+      "properties": {
+        "type": {"const": "ack"}, "v": {"const": 1, "type": "integer"},
+        "id": {"$ref": "#/$defs/avrLong"}, "cmd": {"type": "string", "minLength": 1},
+        "status": {"enum": ["accepted", "rejected"]},
+        "command_id": {"$ref": "#/$defs/avrLong"}, "batch_id": {"$ref": "#/$defs/avrLong"},
+        "message": {"type": "string", "minLength": 1}, "error": {"$ref": "#/$defs/observedError"}
+      },
+      "allOf": [
+        {"if": {"properties": {"cmd": {"const": "START"}}}, "then": {"required": ["command_id", "batch_id"]}, "else": {"not": {"anyOf": [{"required": ["command_id"]}, {"required": ["batch_id"]}]}}},
+        {"if": {"properties": {"status": {"const": "accepted"}}}, "then": {"required": ["message"], "not": {"required": ["error"]}}, "else": {"required": ["error"], "not": {"required": ["message"]}}},
+        {"if": {"properties": {"cmd": {"const": "START"}, "status": {"const": "accepted"}}}, "then": {"properties": {"batch_id": {"$ref": "#/$defs/positiveAvrLong"}, "message": {"enum": ["start_received", "start_already_running"]}}}}
+      ]
+    },
+    "observedRunning": {
+      "oneOf": [
+        {"type": "object", "additionalProperties": false, "required": ["type", "v", "id", "cmd", "command_id", "batch_id", "status"], "properties": {"type": {"const": "running"}, "v": {"type": "integer", "const": 1}, "id": {"$ref": "#/$defs/avrLong"}, "cmd": {"const": "START"}, "command_id": {"$ref": "#/$defs/avrLong"}, "batch_id": {"$ref": "#/$defs/positiveAvrLong"}, "status": {"const": "running"}}},
+        {"type": "object", "additionalProperties": false, "required": ["type", "v", "id", "cmd"], "properties": {"type": {"const": "running"}, "v": {"type": "integer", "const": 1}, "id": {"$ref": "#/$defs/avrLong"}, "cmd": {"const": "TURN_NOW"}}}
+      ]
+    },
+    "observedRoom": {
+      "type": "object", "required": ["valid", "temperature_c", "humidity_percent", "bulb_on", "humidifier_on"],
+      "properties": {"valid": {"type": "boolean"}, "temperature_c": {"type": ["number", "null"], "minimum": -20, "maximum": 80}, "humidity_percent": {"type": ["number", "null"], "minimum": 0, "maximum": 100}, "bulb_on": {"type": "boolean"}, "humidifier_on": {"type": "boolean"}},
+      "allOf": [{"if": {"properties": {"valid": {"const": true}}}, "then": {"properties": {"temperature_c": {"type": "number"}, "humidity_percent": {"type": "number"}}}, "else": {"properties": {"temperature_c": {"type": "null"}, "humidity_percent": {"type": "null"}}}}]
+    },
+    "observedTelemetry": {
+      "type": "object", "additionalProperties": false,
+      "required": ["type", "v", "uptime_ms", "egg_type", "day", "hatch_day", "elapsed_seconds", "stage", "batch_complete", "incubator", "brooder"],
+      "properties": {
+        "type": {"const": "telemetry"}, "v": {"type": "integer", "const": 1},
+        "uptime_ms": {"$ref": "#/$defs/uint32"}, "egg_type": {"$ref": "#/$defs/species"},
+        "day": {"type": "integer", "minimum": 1}, "hatch_day": {"type": "integer", "minimum": 1},
+        "elapsed_seconds": {"$ref": "#/$defs/uint32"}, "stage": {"enum": ["active", "lockdown", "complete"]}, "batch_complete": {"type": "boolean"},
+        "incubator": {"allOf": [{"$ref": "#/$defs/observedRoom"}, {"type": "object", "required": ["fan_on", "exhaust_fan_on"], "properties": {"fan_on": {"type": "boolean"}, "exhaust_fan_on": {"type": "boolean"}}}], "unevaluatedProperties": false},
+        "brooder": {"$ref": "#/$defs/observedRoom", "unevaluatedProperties": false}
+      }
+    },
+    "observedEvent": {
+      "oneOf": [
+        {"type": "object", "additionalProperties": false, "required": ["type", "v", "event", "egg_type", "day"], "properties": {"type": {"const": "event"}, "v": {"type": "integer", "const": 1}, "event": {"const": "batch_started"}, "egg_type": {"$ref": "#/$defs/species"}, "day": {"const": 1, "type": "integer"}}},
+        {"type": "object", "additionalProperties": false, "required": ["type", "v", "event", "protocol", "baud"], "properties": {"type": {"const": "event"}, "v": {"type": "integer", "const": 1}, "event": {"const": "controller_ready"}, "protocol": {"const": "smarthatch-ndjson-v1"}, "baud": {"type": "integer", "const": 9600}}},
+        {"type": "object", "additionalProperties": false, "required": ["type", "v", "event", "egg_type", "day", "elapsed_seconds"], "properties": {"type": {"const": "event"}, "v": {"type": "integer", "const": 1}, "event": {"const": "batch_state_restored"}, "egg_type": {"$ref": "#/$defs/species"}, "day": {"type": "integer", "minimum": 1}, "elapsed_seconds": {"$ref": "#/$defs/uint32"}}},
+        {"type": "object", "additionalProperties": false, "required": ["type", "v", "event"], "properties": {"type": {"const": "event"}, "v": {"type": "integer", "const": 1}, "event": {"const": "egg_turn_completed"}}}
+      ]
+    },
+    "targetId": {"type": "string", "minLength": 1, "description": "PROPOSED logical identity, not an approved wire alphabet/width/UUID/provisioning or authenticity rule."},
+    "targetNullableId": {"anyOf": [{"$ref": "#/$defs/targetId"}, {"type": "null"}]},
+    "targetUtc": {"type": "string", "format": "date-time", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]+)?Z$", "description": "Proposed logical UTC format; serialized precision/length remains pending."},
+    "targetNullableUtc": {"anyOf": [{"$ref": "#/$defs/targetUtc"}, {"type": "null"}]},
+    "targetMetric": {
+      "type": "object", "additionalProperties": false, "required": ["value", "valid"],
+      "properties": {"value": {"type": ["number", "null"]}, "valid": {"type": "boolean"}},
+      "allOf": [{"if": {"properties": {"valid": {"const": true}}}, "then": {"properties": {"value": {"type": "number"}}}, "else": {"properties": {"value": {"type": "null"}}}}]
+    },
+    "targetBody": {
+      "type": "object", "additionalProperties": false,
+      "required": ["protocol_revision", "device_id", "chamber", "batch_id", "command_id", "boot_id", "sample_id", "seq", "measured_at", "timestamp_valid", "payload"],
+      "properties": {
+        "protocol_revision": {"const": "ORIGINAL:C-02/candidate-1"}, "device_id": {"$ref": "#/$defs/targetId"}, "chamber": {"const": "incubator"},
+        "batch_id": {"$ref": "#/$defs/targetNullableId"}, "command_id": {"$ref": "#/$defs/targetNullableId"}, "boot_id": {"$ref": "#/$defs/targetNullableId"}, "sample_id": {"$ref": "#/$defs/targetNullableId"},
+        "seq": {"anyOf": [{"type": "integer", "minimum": 0, "maximum": 9007199254740991}, {"type": "null"}]},
+        "measured_at": {"$ref": "#/$defs/targetNullableUtc"}, "timestamp_valid": {"type": "boolean"}, "payload": {"type": "object"}
+      },
+      "allOf": [{"if": {"properties": {"timestamp_valid": {"const": true}}}, "then": {"properties": {"measured_at": {"$ref": "#/$defs/targetUtc"}}}, "else": {"properties": {"measured_at": {"type": "null"}}}}]
+    },
+    "targetRecord": {
+      "type": "object", "additionalProperties": false, "required": ["contract_profile", "family", "body"],
+      "properties": {"contract_profile": {"const": "K06-target-semantic-proposal"}, "family": {"enum": ["TELEMETRY", "START", "STOP", "STATUS", "ACK", "STATE", "EVENT", "ERROR"]}, "body": {"$ref": "#/$defs/targetBody"}},
+      "allOf": [
+        {"if": {"properties": {"family": {"enum": ["START", "STOP", "STATUS"]}}}, "then": {"properties": {"body": {"properties": {"command_id": {"$ref": "#/$defs/targetId"}, "boot_id": {"type": "null"}, "sample_id": {"type": "null"}, "seq": {"type": "null"}, "measured_at": {"type": "null"}, "timestamp_valid": {"const": false}}}}}},
+        {"if": {"properties": {"family": {"enum": ["START", "STOP"]}}}, "then": {"properties": {"body": {"properties": {"batch_id": {"$ref": "#/$defs/targetId"}}}}}},
+        {"if": {"properties": {"family": {"enum": ["TELEMETRY", "STATE", "EVENT", "ACK", "ERROR"]}}}, "then": {"properties": {"body": {"properties": {"boot_id": {"$ref": "#/$defs/targetId"}, "seq": {"type": "integer", "minimum": 0, "maximum": 9007199254740991}}}}}},
+        {"if": {"properties": {"family": {"const": "TELEMETRY"}}}, "then": {"properties": {"body": {"properties": {"command_id": {"type": "null"}, "sample_id": {"$ref": "#/$defs/targetId"}, "payload": {"type": "object", "additionalProperties": false, "required": ["temperature_c", "humidity_pct"], "properties": {"temperature_c": {"$ref": "#/$defs/targetMetric"}, "humidity_pct": {"allOf": [{"$ref": "#/$defs/targetMetric"}, {"properties": {"value": {"type": ["number", "null"], "minimum": 0, "maximum": 100}}}]}}}}}}}},
+        {"if": {"properties": {"family": {"enum": ["START", "STOP", "STATUS", "ACK", "STATE", "EVENT", "ERROR"]}}}, "then": {"properties": {"body": {"properties": {"sample_id": {"type": "null"}}}}}},
+        {"if": {"properties": {"family": {"const": "START"}}}, "then": {"properties": {"body": {"properties": {"payload": {"type": "object", "additionalProperties": false, "required": ["profile_id", "profile_version", "egg_quantity"], "properties": {"profile_id": {"$ref": "#/$defs/targetId"}, "profile_version": {"$ref": "#/$defs/targetId"}, "egg_quantity": {"type": "integer", "minimum": 1, "maximum": 9007199254740991, "description": "Structural positive count only; no physical capacity approved."}}}}}}}},
+        {"if": {"properties": {"family": {"const": "STOP"}}}, "then": {"properties": {"body": {"properties": {"payload": {"type": "object", "additionalProperties": false, "required": ["reason"], "properties": {"reason": {"const": "farmer_requested"}}}}}}}},
+        {"if": {"properties": {"family": {"const": "STATUS"}}}, "then": {"properties": {"body": {"properties": {"payload": {"type": "object", "maxProperties": 0}}}}}},
+        {"if": {"properties": {"family": {"const": "ACK"}}}, "then": {"properties": {"body": {"properties": {"command_id": {"$ref": "#/$defs/targetId"}, "payload": {"type": "object", "additionalProperties": false, "required": ["accepted", "code"], "properties": {"accepted": {"type": "boolean"}, "code": {"enum": ["RECEIVED", "REJECTED", "PRIOR_OUTCOME"]}}}}}}}},
+        {"if": {"properties": {"family": {"const": "STATE"}}}, "then": {"properties": {"body": {"properties": {"command_id": {"$ref": "#/$defs/targetId"}, "payload": {"type": "object", "additionalProperties": false, "required": ["query_id", "state", "original_start_at", "original_start_valid", "evidence_scope", "evidence_gap"], "properties": {"query_id": {"$ref": "#/$defs/targetId"}, "state": {"enum": ["IDLE", "STARTING", "RUNNING", "STOPPED", "FAULT", "RECOVERY", "UNKNOWN"]}, "original_start_at": {"$ref": "#/$defs/targetNullableUtc"}, "original_start_valid": {"type": "boolean"}, "evidence_scope": {"const": "controller_report_only"}, "evidence_gap": {"type": "boolean"}}, "allOf": [{"if": {"properties": {"original_start_valid": {"const": true}}}, "then": {"properties": {"original_start_at": {"$ref": "#/$defs/targetUtc"}}}, "else": {"properties": {"original_start_at": {"type": "null"}}}}]}}}}}},
+        {"if": {"properties": {"family": {"const": "EVENT"}}}, "then": {"properties": {"body": {"properties": {"batch_id": {"$ref": "#/$defs/targetId"}, "payload": {"type": "object", "additionalProperties": false, "required": ["event_id", "kind"], "properties": {"event_id": {"$ref": "#/$defs/targetId"}, "kind": {"enum": ["started", "stopped", "fault_entered", "fault_cleared"]}}}}}}}},
+        {"if": {"properties": {"family": {"const": "ERROR"}}}, "then": {"properties": {"body": {"properties": {"payload": {"type": "object", "additionalProperties": false, "required": ["code", "detail"], "properties": {"code": {"enum": ["BAD_MESSAGE", "UNSUPPORTED_VERSION", "WRONG_SOURCE", "WRONG_BATCH", "ID_CONFLICT", "EVIDENCE_UNAVAILABLE"]}, "detail": {"type": "string", "minLength": 1, "maxLength": 160, "description": "Proposed logical diagnostic character bound, not a frozen wire-byte limit."}}}}}}}}
+      ]
+    }
+  }
+}

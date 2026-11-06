@@ -1,0 +1,1 @@
+CLI emitted Initialising login role. This test requested no end-user provisioning; CLI-internal role side effects are not independently audited.

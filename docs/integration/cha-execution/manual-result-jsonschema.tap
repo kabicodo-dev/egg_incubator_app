@@ -1,0 +1,88 @@
+TAP version 13
+# Subtest: Ajv 2020-12 meta-validation and compilation succeed on unchanged proposal
+ok 1 - Ajv 2020-12 meta-validation and compilation succeed on unchanged proposal
+  ---
+  duration_ms: 2.1383
+  type: 'test'
+  ...
+# Subtest: all seven published request/response fixture objects pass standards shape validation
+ok 2 - all seven published request/response fixture objects pass standards shape validation
+  ---
+  duration_ms: 5.077
+  type: 'test'
+  ...
+# Subtest: submission rejects every missing required top-level field
+ok 3 - submission rejects every missing required top-level field
+  ---
+  duration_ms: 1.3919
+  type: 'test'
+  ...
+# Subtest: submission rejects unknown Stop command status mapping or credential fields
+ok 4 - submission rejects unknown Stop command status mapping or credential fields
+  ---
+  duration_ms: 2.1455
+  type: 'test'
+  ...
+# Subtest: typed count version contract UUID and digest failures are rejected by schema
+ok 5 - typed count version contract UUID and digest failures are rejected by schema
+  ---
+  duration_ms: 46.5971
+  type: 'test'
+  ...
+# Subtest: unknown versus phone-clock time requires exact provenance and a real whole-second UTC date
+ok 6 - unknown versus phone-clock time requires exact provenance and a real whole-second UTC date
+  ---
+  duration_ms: 0.7891
+  type: 'test'
+  ...
+# Subtest: receipt requires all fields and rejects non-null release lifecycle/admission effects
+ok 7 - receipt requires all fields and rejects non-null release lifecycle/admission effects
+  ---
+  duration_ms: 3.0256
+  type: 'test'
+  ...
+# Subtest: found/absent response cannot contradict receipt presence and nested receipt must validate
+ok 8 - found/absent response cannot contradict receipt presence and nested receipt must validate
+  ---
+  duration_ms: 1.1377
+  type: 'test'
+  ...
+# Subtest: unknown-commit and known-failure commit-status combinations are structurally enforced
+ok 9 - unknown-commit and known-failure commit-status combinations are structurally enforced
+  ---
+  duration_ms: 0.735
+  type: 'test'
+  ...
+# Subtest: lookup is closed and never accepts result content or desired physical operation
+ok 10 - lookup is closed and never accepts result content or desired physical operation
+  ---
+  duration_ms: 0.7962
+  type: 'test'
+  ...
+# Subtest: schema alone deliberately cannot prove original quantity bigint range or receipt identity
+ok 11 - schema alone deliberately cannot prove original quantity bigint range or receipt identity
+  ---
+  duration_ms: 6.8357
+  type: 'test'
+  ...
+# Subtest: documents two remaining semantic gaps without mutating or silently upgrading the schema
+ok 12 - documents two remaining semantic gaps without mutating or silently upgrading the schema
+  ---
+  duration_ms: 0.3592
+  type: 'test'
+  ...
+# Subtest: standards checks do not mutate fixtures or turn future implementation cases into passes
+ok 13 - standards checks do not mutate fixtures or turn future implementation cases into passes
+  ---
+  duration_ms: 1.3261
+  type: 'test'
+  ...
+1..13
+# tests 13
+# suites 0
+# pass 13
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 450.2729

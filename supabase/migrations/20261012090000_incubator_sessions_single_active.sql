@@ -1,0 +1,101 @@
+-- ============================================================================
+-- BE-01 / D4 — Capture the existing single-active safeguard in the repository
+-- ============================================================================
+-- STATUS: APPLIED 2026-10-12 — executed by the reviewer in the Supabase SQL
+--         Editor after the D4 pre-checks (STEP 1) were run and reviewed.
+--           * statement result: "Success. No rows returned"
+--           * verification query returned:
+--               incubator_sessions_single_active,
+--               CREATE UNIQUE INDEX incubator_sessions_single_active ON
+--               public.incubator_sessions USING btree (status)
+--               WHERE (status = 'Active'::text)
+--         The safeguard was already live, so this was a NO-OP: zero rows
+--         touched. The migration exists to record the rule in source control
+--         so a fresh deploy reproduces it.
+--
+-- DECISIONS THIS SERVES
+--   D1  M1 (global): ONE physical incubator, ONE active batch for the whole
+--       Supabase project, regardless of species, tab or installation.
+--   D2  The physical incubator owns the session conceptually; no machine
+--       ownership column is added.
+--   D4  If the safeguard already exists, do not duplicate it.
+--
+-- WHY THIS MIGRATION EXISTS
+--   The partial unique index `incubator_sessions_single_active` is enforced by
+--   the live database but appears in NO migration in this repository (verified:
+--   `git grep single_active HEAD -- supabase` has no matches; the string only
+--   exists in test/one_active_batch_test.dart). A fresh environment deployed
+--   from source would therefore be created WITHOUT the one-active guarantee,
+--   while lib/services/supabase_service.dart:158-166 relies on SQLSTATE 23505
+--   from that index.
+--
+-- EFFECTS (what the reviewer is approving)
+--   * READ-ONLY pre-checks below must be run first and their output pasted
+--     into the PR; they select from pg_indexes and incubator_sessions only.
+--   * Forward statement is `CREATE UNIQUE INDEX IF NOT EXISTS`, so if the
+--     index already exists it is a NO-OP: zero rows read, zero rows written,
+--     no lock taken, no notice of change.
+--   * If the index is missing it is created as a PARTIAL unique index on
+--     `(status) WHERE status = 'Active'`, which:
+--       - allows unlimited 'Completed' rows (history is unaffected),
+--       - permits at most one 'Active' row across the entire table,
+--       - takes a SHARE lock on incubator_sessions for the duration of the
+--         build (table is tiny; sub-second), blocking writes only.
+--   * If MORE THAN ONE 'Active' row already exists the statement FAILS and
+--     changes nothing — resolve duplicates manually first. Hatch counts are
+--     farmer-entered and must never be merged or invented automatically.
+--   * NO row is inserted, updated or deleted by this migration.
+--   * NO RLS policy, grant, column or application code is changed.
+--
+-- ROLLBACK (documented here, kept out of the forward path):
+--     DROP INDEX IF EXISTS public.incubator_sessions_single_active;
+--   Restores the pre-audit state. The app-level pre-check and UI guards keep
+--   working, but concurrent inserts from two installations would no longer be
+--   settled by the database, making the 23505 handling in
+--   lib/services/supabase_service.dart:158-166 unreachable.
+-- ============================================================================
+
+-- ----------------------------------------------------------------------------
+-- STEP 1 — PRE-CHECKS (read-only). Run these FIRST. Do not proceed to Step 2
+--          until the output is reviewed.
+--
+-- 1a. Which indexes exist on incubator_sessions today? If a row matching
+--     `incubator_sessions_single_active` appears, the safeguard already
+--     exists → Step 2 becomes a no-op and may still be applied to record it
+--     in source control.
+--
+--     SELECT indexname, indexdef
+--     FROM pg_indexes
+--     WHERE schemaname = 'public' AND tablename = 'incubator_sessions'
+--     ORDER BY indexname;
+--
+-- 1b. STOP if this returns more than one row. Duplicate 'Active' rows must be
+--     resolved by a human before the unique index can be created.
+--
+--     SELECT id, egg_type, status, start_date, end_date, eggs_hatched
+--     FROM public.incubator_sessions
+--     WHERE status = 'Active'
+--     ORDER BY id;
+-- ----------------------------------------------------------------------------
+
+-- ----------------------------------------------------------------------------
+-- STEP 2 — FORWARD (the only statement that changes the database)
+-- ----------------------------------------------------------------------------
+
+CREATE UNIQUE INDEX IF NOT EXISTS incubator_sessions_single_active
+    ON public.incubator_sessions (status)
+    WHERE (status = 'Active');
+
+-- ----------------------------------------------------------------------------
+-- STEP 3 — VERIFY
+--
+--     SELECT indexname, indexdef
+--     FROM pg_indexes
+--     WHERE schemaname = 'public'
+--       AND indexname = 'incubator_sessions_single_active';
+--
+-- Expected definition:
+--     CREATE UNIQUE INDEX incubator_sessions_single_active
+--         ON public.incubator_sessions USING btree (status)
+--         WHERE (status = 'Active'::text)
+-- ----------------------------------------------------------------------------

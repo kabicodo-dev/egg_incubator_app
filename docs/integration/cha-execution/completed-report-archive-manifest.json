@@ -1,0 +1,185 @@
+{
+  "counts": {
+    "completedTasks": 7,
+    "chaReportRecords": 7,
+    "verifiedCompletionReports": 4,
+    "historicalAttempts": 3,
+    "designSourceRecords": 4,
+    "suppliedAllyReports": 5
+  },
+  "completedTaskIds": [
+    "ORIGINAL:C-01",
+    "OCT26:ARCH-01",
+    "OCT26:ARCH-02",
+    "OCT26:ARCH-03",
+    "OCT26:ARCH-04",
+    "OCT26:C-01",
+    "OCT26:C-03"
+  ],
+  "records": [
+    {
+      "id": "R-CHA-20261030-OCT26-C01-AUDIT",
+      "taskId": "OCT26:C-01",
+      "owner": "Mary Charlyn",
+      "kind": "history",
+      "bodySha256": "e9a588464cc10d420c98b6a0df84d1c3457ed7f43fb18c164f6b12549481f701",
+      "warnings": [
+        "Historical attempt for a task now published Completed. This report’s original Partial status/body is preserved."
+      ]
+    },
+    {
+      "id": "R-CHA-C01-LOCAL-PLAN-01",
+      "taskId": "OCT26:C-01",
+      "owner": "Mary Charlyn",
+      "kind": "history",
+      "bodySha256": "372a7c797017c124a090183a74623c93e863ba1886c4524ed673ef56d4bd9a3a",
+      "warnings": [
+        "Historical attempt for a task now published Completed. This report’s original Partial status/body is preserved."
+      ]
+    },
+    {
+      "id": "R-CHA-C01-APPROVED-ROLE-PROBE-01",
+      "taskId": "OCT26:C-01",
+      "owner": "Mary Charlyn",
+      "kind": "history",
+      "bodySha256": "6a29b2e066061a1127512911dc2203e740a5b5dec03be3770a74f5c3098c6793",
+      "warnings": [
+        "Historical attempt for a task now published Completed. This report’s original Partial status/body is preserved."
+      ]
+    },
+    {
+      "id": "R-CHA-C01-AUDIT-COMPLETE-1",
+      "taskId": "ORIGINAL:C-01",
+      "owner": "Mary Charlyn",
+      "kind": "verified",
+      "bodySha256": "e03bd361fe5943332434d3c90f02ef89eb94983b3b1188258110cd3cf46b8df2",
+      "warnings": [
+        "Verified completion scope is the audit/review described, not a production or hardware pass."
+      ]
+    },
+    {
+      "id": "R-CHA-C01-AUDIT-COMPLETE-2",
+      "taskId": "OCT26:C-01",
+      "owner": "Mary Charlyn",
+      "kind": "verified",
+      "bodySha256": "ec14fa271b0d0fdceb1fcd68c3613466cab7e1383f1f2bd2ac740b00295e391f",
+      "warnings": [
+        "Verified completion scope is the audit/review described, not a production or hardware pass."
+      ]
+    },
+    {
+      "id": "R-CHA-C01-SUPPLEMENT-15-19",
+      "taskId": "OCT26:C-01",
+      "owner": "Mary Charlyn",
+      "kind": "verified",
+      "bodySha256": "b867587d72e393fd333ae47d4f77d9eebe04058622458304b28bfc18ddd6ddac",
+      "warnings": [
+        "Verified completion scope is the audit/review described, not a production or hardware pass."
+      ]
+    },
+    {
+      "id": "R-CHA-OCT26-C03-ALIGNMENT-01",
+      "taskId": "OCT26:C-03",
+      "owner": "Mary Charlyn",
+      "kind": "verified",
+      "bodySha256": "aa2dff8f8a6a0ea43db92c2f7772632382624e957211770c3d8eea798f1b4dd3",
+      "warnings": [
+        "Verified completion scope is the audit/review described, not a production or hardware pass."
+      ]
+    },
+    {
+      "id": "SOURCE-OCT26-ARCH-01",
+      "taskId": "OCT26:ARCH-01",
+      "owner": "Mary Charlyn",
+      "kind": "design",
+      "bodySha256": "0bbaf8f1fa86e57a88d688301e6e9aa95a399586ff866bb0d5264d63b59799b2",
+      "warnings": [
+        "Existing design-only completion; not hardware/security/integration verification and not a newly authored completion report."
+      ]
+    },
+    {
+      "id": "SOURCE-OCT26-ARCH-02",
+      "taskId": "OCT26:ARCH-02",
+      "owner": "Mary Charlyn",
+      "kind": "design",
+      "bodySha256": "193ab603bdad1f3ebeca6f5c8e26de4b8e84db97abc3f535e4facb28f91509e8",
+      "warnings": [
+        "Existing design-only completion; not hardware/security/integration verification and not a newly authored completion report."
+      ]
+    },
+    {
+      "id": "SOURCE-OCT26-ARCH-03",
+      "taskId": "OCT26:ARCH-03",
+      "owner": "Mary Charlyn",
+      "kind": "design",
+      "bodySha256": "4f703b533b1a2b9277d335929ac0d399be116afdd04992a37c129de44b06d44c",
+      "warnings": [
+        "Existing design-only completion; not hardware/security/integration verification and not a newly authored completion report."
+      ]
+    },
+    {
+      "id": "SOURCE-OCT26-ARCH-04",
+      "taskId": "OCT26:ARCH-04",
+      "owner": "Mary Charlyn",
+      "kind": "design",
+      "bodySha256": "2638eaa1e88cb8b5cb49e1090695711a72bbb54e6c5eaa267d3610e1892a2469",
+      "warnings": [
+        "Existing design-only completion; not hardware/security/integration verification and not a newly authored completion report."
+      ]
+    },
+    {
+      "id": "R-mvtml756lyul",
+      "taskId": "ORIGINAL:A-06",
+      "owner": "Ally",
+      "kind": "supplied",
+      "bodySha256": "2367ebda14a485c9d4dc434b8e36391b2cd170bd38107acb5c9c1d12ec268ccd",
+      "warnings": [
+        "Supplied by Ally with a Completed label. Its claims have not been independently verified here; task status is unchanged."
+      ]
+    },
+    {
+      "id": "R-mvtmy9ex8u5s",
+      "taskId": "ORIGINAL:A-08",
+      "owner": "Ally",
+      "kind": "supplied",
+      "bodySha256": "6062c64d5f8ea44ebffd78c423d6759d085b635e86381138ddae2deab2d69738",
+      "warnings": [
+        "Supplied by Ally with a Completed label. Its claims have not been independently verified here; task status is unchanged."
+      ]
+    },
+    {
+      "id": "R-mvuaacum9bxm",
+      "taskId": "OCT26:A-01",
+      "owner": "Ally",
+      "kind": "supplied",
+      "bodySha256": "859e6893539fcd078216208e98900222cd4cdf5399a884b8963e4fa45ac87d43",
+      "warnings": [
+        "Supplied by Ally with a Completed label. Its claims have not been independently verified here; task status is unchanged."
+      ]
+    },
+    {
+      "id": "R-mvuclz61hgzq",
+      "taskId": "OCT26:HW-01",
+      "owner": "Ally",
+      "kind": "supplied",
+      "bodySha256": "87554a66ed55150c7e4b62387c6b040b12b21828f660a7ccdc05989eea121ec7",
+      "warnings": [
+        "Supplied by Ally with a Completed label. Its claims have not been independently verified here; task status is unchanged.",
+        "FILING MISMATCH: outer task OCT26:HW-01 but body task CURRENT:HW-IMP-01. This is NOT confirmation of RTC/Bluetooth identification."
+      ]
+    },
+    {
+      "id": "R-mvucw1mbzn44",
+      "taskId": "OCT26:HW-02",
+      "owner": "Ally",
+      "kind": "supplied",
+      "bodySha256": "812346de73b670fb5a3a003058624878f21ca444a9cd114522170c57da0f096d",
+      "warnings": [
+        "Supplied by Ally with a Completed label. Its claims have not been independently verified here; task status is unchanged.",
+        "FILING MISMATCH: outer task OCT26:HW-02 but body task CURRENT:HW-IMP-02. This is NOT confirmation of RTC/Bluetooth identification."
+      ]
+    }
+  ],
+  "storage": "Read-only; no auto import/write; identical saved IDs/content hidden from archive display only",
+  "verification": "Companion unit/static and headless-browser results, if present, identify actual checks; no backend/remote tests implied"
+}

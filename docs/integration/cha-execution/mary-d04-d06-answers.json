@@ -1,0 +1,20 @@
+{
+  "recordedAt": "2026-10-30T04:15:30+08:00",
+  "respondent": "Mary Charlyn L. Aguirre",
+  "aliases": ["Cha", "Mary"],
+  "scope": "Personal backend positions only; not joint contract approval or execution permission",
+  "reportFile": "docs/contract-review/D04_D06_Mary_Backend_Position.md",
+  "answers": [
+    {"topic":"D04.cloud_identity","selection":"Accept this position","disposition":"ACCEPTED_PERSONAL_POSITION"},
+    {"topic":"D04.retained_evidence_release","selection":"Accept fail-closed release","disposition":"ACCEPTED_PERSONAL_POSITION"},
+    {"topic":"D06.sync_invariants_and_candidate_names","selection":"Accept these positions","disposition":"ACCEPTED_PERSONAL_POSITION"},
+    {"topic":"D06.completion_prerequisite","selection":"Separate completion from Stop","disposition":"CHANGE_REQUEST_PENDING_KATH_ALLY"}
+  ],
+  "jointStatus": {"D04":"BLOCKED","D06":"NEEDS_ANSWER","designFreeze":"NOT_APPROVED","Kath":"NO_ANSWER_RECORDED","Ally":"NO_ANSWER_RECORDED"},
+  "authorization": {"remoteAccess":false,"authProvisioning":false,"migrations":false,"rlsChanges":false,"rpcActivation":false,"flutterChanges":false,"firmwareChanges":false,"deployment":false,"gitCommit":false},
+  "referencedCandidates": {
+    "docs/contract-review/DB-02_Proposed_Schema_And_Security.md":"6322985031a82d25184bd0ebefc7e1a9016d74c22b7e8d587e94dafb16d3f230",
+    "docs/contract-review/DB-02_Conflict_Receipt_And_Recovery.md":"08e6f97c7c320769e223218fbea7ce52a1d4a1b0ec5d117a83965d5678f39f06",
+    "docs/contract-review/DB-02_Exact_Bridge_Sync_API.md":"5678de5b6c6c1bcd7de827a4a28ad80b6f6d51454663f73118c6b12229a681ab"
+  }
+}

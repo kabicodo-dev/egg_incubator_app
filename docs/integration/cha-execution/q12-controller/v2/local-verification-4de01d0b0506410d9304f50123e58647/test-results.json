@@ -1,0 +1,830 @@
+﻿{
+    "observedAtUtc":  "2026-10-31T11:19:07.2182164Z",
+    "scope":  "LOCAL ONLY. No Supabase connections, SQL, users or database fixtures.",
+    "tests":  153,
+    "passed":  153,
+    "failed":  0,
+    "categories":  [
+                       {
+                           "category":  "controller",
+                           "count":  9
+                       },
+                       {
+                           "category":  "shape",
+                           "count":  74
+                       },
+                       {
+                           "category":  "native-api-mock",
+                           "count":  38
+                       },
+                       {
+                           "category":  "evidence-policy",
+                           "count":  11
+                       },
+                       {
+                           "category":  "durability",
+                           "count":  7
+                       },
+                       {
+                           "category":  "provenance",
+                           "count":  13
+                       },
+                       {
+                           "category":  "local-native-no-connection",
+                           "count":  1
+                       }
+                   ],
+    "cases":  [
+                  {
+                      "Category":  "controller",
+                      "Name":  "approved hash and 17 unchanged sequential statements",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "controller",
+                      "Name":  "hash mismatch prevents all connection attempts",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "controller",
+                      "Name":  "target/TLS fixed field rejection 0",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "controller",
+                      "Name":  "target/TLS fixed field rejection 1",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "controller",
+                      "Name":  "target/TLS fixed field rejection 2",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "controller",
+                      "Name":  "target/TLS fixed field rejection 3",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "controller",
+                      "Name":  "target/TLS fixed field rejection 4",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "controller",
+                      "Name":  "target/TLS fixed field rejection 5",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "controller",
+                      "Name":  "target/TLS fixed field rejection 6",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "valid exact column/OID/value shape for query 5",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 0 query 5",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 1 query 5",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 2 query 5",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 3 query 5",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 4 query 5",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "valid exact column/OID/value shape for query 6",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 0 query 6",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 1 query 6",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 2 query 6",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 3 query 6",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 4 query 6",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "valid exact column/OID/value shape for query 7",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 0 query 7",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 1 query 7",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 2 query 7",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 3 query 7",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 4 query 7",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "valid exact column/OID/value shape for query 8",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 0 query 8",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 1 query 8",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 2 query 8",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 3 query 8",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 4 query 8",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "valid exact column/OID/value shape for query 9",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 0 query 9",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 1 query 9",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 2 query 9",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 3 query 9",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 4 query 9",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "valid exact column/OID/value shape for query 10",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 0 query 10",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 1 query 10",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 2 query 10",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 3 query 10",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 4 query 10",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "valid exact column/OID/value shape for query 11",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 0 query 11",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 1 query 11",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 2 query 11",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 3 query 11",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 4 query 11",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "valid exact column/OID/value shape for query 12",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 0 query 12",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 1 query 12",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 2 query 12",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 3 query 12",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 4 query 12",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "valid exact column/OID/value shape for query 13",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 0 query 13",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 1 query 13",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 2 query 13",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 3 query 13",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 4 query 13",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "valid exact column/OID/value shape for query 14",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 0 query 14",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 1 query 14",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 2 query 14",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 3 query 14",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 4 query 14",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "valid exact column/OID/value shape for query 15",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 0 query 15",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 1 query 15",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 2 query 15",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 3 query 15",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 4 query 15",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "valid exact column/OID/value shape for query 16",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 0 query 16",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 1 query 16",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 2 query 16",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 3 query 16",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "rectangular missing/extra/reordered/type/representation 4 query 16",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "boolean, enum and array representations fail closed",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "shape",
+                      "Name":  "read-only and isolation mismatch stops before any catalog query",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "native-api-mock",
+                      "Name":  "malformed rectangular catalog result stops whole controller 0",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "native-api-mock",
+                      "Name":  "malformed rectangular catalog result stops whole controller 1",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "native-api-mock",
+                      "Name":  "malformed rectangular catalog result stops whole controller 2",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "native-api-mock",
+                      "Name":  "malformed rectangular catalog result stops whole controller 3",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "native-api-mock",
+                      "Name":  "poll reading/writing to ready and fixed TLS options reach boundary",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "native-api-mock",
+                      "Name":  "certificate fingerprint rejection before native start",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "native-api-mock",
+                      "Name":  "TLS handshake rejection has no SQL and cannot reconnect",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "native-api-mock",
+                      "Name":  "connection polling deadline with controlled monotonic clock",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "native-api-mock",
+                      "Name":  "connection attestation or nonblocking failure 0",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "native-api-mock",
+                      "Name":  "connection attestation or nonblocking failure 1",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "native-api-mock",
+                      "Name":  "connection attestation or nonblocking failure 2",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "native-api-mock",
+                      "Name":  "connection attestation or nonblocking failure 3",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "native-api-mock",
+                      "Name":  "connection attestation or nonblocking failure 4",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "native-api-mock",
+                      "Name":  "result handles fully drained and individually cleared",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "native-api-mock",
+                      "Name":  "missing result stops without subsequent catalog statements",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "native-api-mock",
+                      "Name":  "native row-count extraction accepts 500",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "native-api-mock",
+                      "Name":  "501 count stops before next query 6",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "native-api-mock",
+                      "Name":  "501 count stops before next query 7",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "native-api-mock",
+                      "Name":  "501 count stops before next query 8",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "native-api-mock",
+                      "Name":  "501 count stops before next query 9",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "native-api-mock",
+                      "Name":  "501 count stops before next query 10",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "native-api-mock",
+                      "Name":  "501 count stops before next query 11",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "native-api-mock",
+                      "Name":  "501 count stops before next query 12",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "native-api-mock",
+                      "Name":  "501 count stops before next query 13",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "native-api-mock",
+                      "Name":  "501 count stops before next query 14",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "native-api-mock",
+                      "Name":  "501 count stops before next query 15",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "native-api-mock",
+                      "Name":  "501 count stops before next query 16",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "native-api-mock",
+                      "Name":  "SQLSTATE retained and original connection rollback 42601",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "native-api-mock",
+                      "Name":  "SQLSTATE retained and original connection rollback 42501",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "native-api-mock",
+                      "Name":  "SQLSTATE retained and original connection rollback 57014",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "native-api-mock",
+                      "Name":  "SQLSTATE retained and original connection rollback 55P03",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "native-api-mock",
+                      "Name":  "15s statement deadline invalidates pending connection without rollback",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "native-api-mock",
+                      "Name":  "connection loss cannot resume or send rollback",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "native-api-mock",
+                      "Name":  "send failure does not reuse uncertain connection",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "native-api-mock",
+                      "Name":  "rollback SQL error is unavailable not retried",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "native-api-mock",
+                      "Name":  "cleanup rollback error leaves outcome unavailable",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "native-api-mock",
+                      "Name":  "rollback tag with nonidle transaction never succeeds",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "native-api-mock",
+                      "Name":  "connection close exception is sanitized",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "evidence-policy",
+                      "Name":  "known identifiers owners flags and grants survive sanitized export",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "evidence-policy",
+                      "Name":  "sensitive identifiers use stable opaque IDs, not hashes or raw text",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "evidence-policy",
+                      "Name":  "controlled expression MATCH DIFFERENT UNRESOLVED without literal export",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "evidence-policy",
+                      "Name":  "NULL ACL not reported as no privileges",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "evidence-policy",
+                      "Name":  "quoted array commas preserved, ACL unknown roles opaque",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "evidence-policy",
+                      "Name":  "unrecognized quoted ACL grammar is unresolved, no text leakage",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "evidence-policy",
+                      "Name":  "malicious config and errors cannot leak to serialized journal",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "evidence-policy",
+                      "Name":  "unknown exception codes not copied into evidence",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "evidence-policy",
+                      "Name":  "direct sensitive cell injection rejected before persistence",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "durability",
+                      "Name":  "preflight failure prevents connection and uses emergency summary",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "durability",
+                      "Name":  "journal failure after a result stops inspection and rolls back",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "durability",
+                      "Name":  "final write failure has durable emergency rollback record",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "durability",
+                      "Name":  "primary and emergency failure never claims durable evidence",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "durability",
+                      "Name":  "actual file journal create-new flush and readable JSON records",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "durability",
+                      "Name":  "actual filesystem failure before run creates no connection",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "durability",
+                      "Name":  "serialization/export failure writes no secret bytes",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "provenance",
+                      "Name":  "missing source fingerprints and sensitive approval references reject",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "provenance",
+                      "Name":  "preflight contains approved targets versions hashes and per-statement timing",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "evidence-policy",
+                      "Name":  "RLS and function-owner draft comparisons distinguish MATCH/DIFFERENT",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "evidence-policy",
+                      "Name":  "raw timestamp/summary injection rejected by persistence guard",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "provenance",
+                      "Name":  "synthetic owner attestation parsed without claiming trusted origin",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "provenance",
+                      "Name":  "certificate record invalid field rejected status",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "provenance",
+                      "Name":  "certificate record invalid field rejected projectRef",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "provenance",
+                      "Name":  "certificate record invalid field rejected sourceUrl",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "provenance",
+                      "Name":  "certificate record invalid field rejected verificationMethod",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "provenance",
+                      "Name":  "certificate record invalid field rejected verifiedAtUtc",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "provenance",
+                      "Name":  "certificate record invalid field rejected approvalReference",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "provenance",
+                      "Name":  "certificate record invalid field rejected fileSha256",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "provenance",
+                      "Name":  "certificate record invalid field rejected derSha256",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "provenance",
+                      "Name":  "certificate record missing/extra/duplicate fields rejected",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "provenance",
+                      "Name":  "actual local fingerprint gate rejects altered synthetic file",
+                      "Status":  "PASS"
+                  },
+                  {
+                      "Category":  "local-native-no-connection",
+                      "Name":  "installed libpq version and local empty PGresult lifecycle only",
+                      "Status":  "PASS"
+                  }
+              ],
+    "inputHashes":  {
+                        "ModelPolicy.cs":  "477c9f910bb04f8f5c38ca10c906290ea188dd9c4e14f9ea73e39405df8bf941",
+                        "NativeBoundary.cs":  "83a4fce9f93134005e802342bfce32d55cc1472a50af8f53c75b659d5a6fa70a",
+                        "DurableController.cs":  "4e37579fa566bf2504692c8b52033567e491ad43061b99fefa2284e5be34d597",
+                        "Correction.Tests.cs":  "d4f3c5e615c20b3d83a1a787fc0efc2968c34143d8d159267d2c0704110c467e",
+                        "Invoke-Q12PhaseA-V2.ps1":  "63b03c937af6a3da673590ffdf64799ea32dcc19947dbd535fc7e692988c9725",
+                        "Test-Corrections.ps1":  "f2c910f9e416ee51a1125b422c84543e5f8da1b428b34e73e92de35d15ac323f"
+                    },
+    "approvedSqlSha256":  "9cac281d9ecca2dda46c93de85f2b26b01f9b762d2def67a5efa5ad578242fdc",
+    "nativeProbe":  [
+                        170011,
+                        2,
+                        0,
+                        0
+                    ],
+    "actualNativeCoverage":  "PQlibVersion, PQmakeEmptyPGresult(NULL), result status/zero counts, PQclear only; no PGconn or network",
+    "runtime":  "4.0.30319.42000",
+    "powershell":  "5.1.26100.9711",
+    "launcherDefaultDeny":  "PASS",
+    "launcherSyntax":  "PASS",
+    "realTLS":  "NOT RUN",
+    "realAuthentication":  "NOT RUN",
+    "realPooler":  "NOT RUN",
+    "realRollback":  "NOT RUN",
+    "certificateProvenance":  "BLOCKED: actual trusted source/fingerprint not verified",
+    "taskStatus":  "Q12 Phase A incomplete; DB-IMP-01 incomplete; no task Completed"
+}

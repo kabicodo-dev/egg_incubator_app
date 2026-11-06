@@ -1,0 +1,66 @@
+{
+  "contract": "DB02-MANUAL-RESULT-0.1-review",
+  "status": "Prepared for review, not delivered/approved",
+  "files": [
+    {
+      "file": "docs/contract-review/DB-02_Manual_Result_API_0.1-review.md",
+      "bytes": 12740,
+      "sha256": "be60e96696bcf6acde43727b2205410a81beed08907e7ce7a8a0c8770c20bb98"
+    },
+    {
+      "file": "docs/contract-review/manual-result-0.1.schema.json",
+      "bytes": 5196,
+      "sha256": "c8a17ad20cc1bc6656ef2f4029c725916fb9fab4bb0b5085850f75f8c7909125"
+    },
+    {
+      "file": "docs/contract-review/manual-result-0.1.fixtures.json",
+      "bytes": 8070,
+      "sha256": "a92cba4f788eb844bd04824db3fa14c8c963dc57397299a7ae4d624bc8952f77"
+    },
+    {
+      "file": "docs/contract-review/manual-result-0.1.closure-matrix.json",
+      "bytes": 5550,
+      "sha256": "55c66ae00782dfdd4c255e2bfb9c2c984fdf0b2655cc42610f744ad9e31efbf2"
+    },
+    {
+      "file": "docs/contract-review/D04_D06_Mary_Backend_Position.md",
+      "bytes": 12062,
+      "sha256": "c51f8d8b16400a80238367b69c1f6c3496bf70a63a2eaf9aeb1ff1c8d85e046c"
+    },
+    {
+      "file": "docs/contract-review/CONTRACT-FREEZE-01_Team_Decisions.md",
+      "bytes": 28957,
+      "sha256": "dfeae7398078fb91eefdfb39209e50a475f6a822dfd5623e95f0f5583e0a37e8"
+    },
+    {
+      "file": "docs/contract-review/DB-02_30Oct_Consolidated_Alignment.md",
+      "bytes": 17650,
+      "sha256": "4808510868e2ad57e35f9059dbcfa3e27bf1a54c6cf9d94a629037c35412e3db"
+    },
+    {
+      "file": "docs/integration/cha-execution/manual-result-reference.cjs",
+      "bytes": 7693,
+      "sha256": "2387b78c0c721562823423ffcf2e07afeaaaa4e0904359b4b3519e5d9e18b661"
+    },
+    {
+      "file": "docs/integration/cha-execution/manual-result-proposal.test.cjs",
+      "bytes": 7253,
+      "sha256": "98adb19cc8f30578c5a76a53544ed87b7ae0bcc1f00b32f0be467f76e9e34dc1"
+    },
+    {
+      "file": "docs/integration/cha-execution/manual-result-proposal.tap",
+      "bytes": 4751,
+      "sha256": "e196f3e496ea5bf964c89f010dee01be638e2de97877b89f877a7405e6ff24c8"
+    },
+    {
+      "file": "docs/integration/cha-execution/MANUAL_RESULT_PREPARATION_REPORT.md",
+      "bytes": 3713,
+      "sha256": "45d8161b03b93c8649ad07313d57f67e4db52f05cb66d5bfeb927b471011fe07"
+    },
+    {
+      "file": "README.md",
+      "bytes": 2188,
+      "sha256": "272881b9fa00e67ab44849d9b1454e99faf5125087f785b0f706228fe0cb078a"
+    }
+  ]
+}

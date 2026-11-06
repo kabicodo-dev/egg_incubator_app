@@ -1,0 +1,253 @@
+{
+    "observedAtUtc":  "2026-10-31T13:29:31.5665574Z",
+    "scope":  "LOCAL Q12 controller corrections only; no existing files modified",
+    "files":  [
+                  {
+                      "file":  "CERTIFICATE_PROVENANCE.md",
+                      "bytes":  2970,
+                      "sha256":  "f2dfe705e0eceb37f6ebcc843379e32ba6c6b51087d14d782a3dbf3e74d6c77e"
+                  },
+                  {
+                      "file":  "Correction.Tests.cs",
+                      "bytes":  29794,
+                      "sha256":  "d5c1bad885b4229ec7df4072bec4b547d8743d6ae6e613d640511975cbf521eb"
+                  },
+                  {
+                      "file":  "DurableController.cs",
+                      "bytes":  19205,
+                      "sha256":  "3141f9d815a3447192bf40d9a759a64412f3de7a4e6b526688829999c2eb1f86"
+                  },
+                  {
+                      "file":  "Invoke-Q12PhaseA-V2.ps1",
+                      "bytes":  5070,
+                      "sha256":  "a675216d4c54b68fade44a81e8648d2e08246bde0cda6b819997cb2508a6b34d"
+                  },
+                  {
+                      "file":  "local-verification-2502e7780244458db0bb2647bf1b2e2c/journal-success/emergency.jsonl",
+                      "bytes":  333,
+                      "sha256":  "db3c5324ccc8b37b7a712fb5165a8822cbcdf37eea0e60007e82c9caf258bf81"
+                  },
+                  {
+                      "file":  "local-verification-2502e7780244458db0bb2647bf1b2e2c/journal-success/journal.jsonl",
+                      "bytes":  664,
+                      "sha256":  "b95908b6b7796d93b31c1180308646247bb0ff1b4d67ea48508678446e5c013b"
+                  },
+                  {
+                      "file":  "local-verification-2502e7780244458db0bb2647bf1b2e2c/not-a-directory",
+                      "bytes":  23,
+                      "sha256":  "0b7a15ad83623728049a733f4241f3692131c1fa8c3db2a342fde771e40c16e6"
+                  },
+                  {
+                      "file":  "local-verification-2502e7780244458db0bb2647bf1b2e2c/serialization-failure/emergency.jsonl",
+                      "bytes":  333,
+                      "sha256":  "2b0d40eba909f93631751d57aa225444c542abf312157b5ad9cb4f956f1f15d7"
+                  },
+                  {
+                      "file":  "local-verification-2502e7780244458db0bb2647bf1b2e2c/serialization-failure/journal.jsonl",
+                      "bytes":  332,
+                      "sha256":  "905ab59a78689b5e2e2be544d5e3a6a00dea12f16e64c15b69b25b507d2de4c7"
+                  },
+                  {
+                      "file":  "local-verification-2502e7780244458db0bb2647bf1b2e2c/synthetic-root-bytes.txt",
+                      "bytes":  47,
+                      "sha256":  "07e6171b62102a12611b0fc55ac766e9a32a5d8167b39087fd534d37592f84b3"
+                  },
+                  {
+                      "file":  "local-verification-2502e7780244458db0bb2647bf1b2e2c/synthetic-sanitized-example.jsonl",
+                      "bytes":  19799,
+                      "sha256":  "26409e685534e715fa3fa2b2295edd4e82b450a77e269fdb232913bf51387e1f"
+                  },
+                  {
+                      "file":  "local-verification-2502e7780244458db0bb2647bf1b2e2c/test-results.json",
+                      "bytes":  37741,
+                      "sha256":  "662a0c383f9f0b2ca2a9914c5ba16f0e5b6341684428e32b1bc47f164a913ee1"
+                  },
+                  {
+                      "file":  "local-verification-472ac2f34962445a95c70fecdcb680c2/journal-success/emergency.jsonl",
+                      "bytes":  277,
+                      "sha256":  "a02613a147424f4dc7ea7e9233882d4fad8e78fc302fe2053397cc9d29f3021f"
+                  },
+                  {
+                      "file":  "local-verification-472ac2f34962445a95c70fecdcb680c2/journal-success/journal.jsonl",
+                      "bytes":  552,
+                      "sha256":  "2e1f95432d57a0c427a55033ea077a869107bc4f244640ad4e28172d732b223b"
+                  },
+                  {
+                      "file":  "local-verification-472ac2f34962445a95c70fecdcb680c2/not-a-directory",
+                      "bytes":  23,
+                      "sha256":  "0b7a15ad83623728049a733f4241f3692131c1fa8c3db2a342fde771e40c16e6"
+                  },
+                  {
+                      "file":  "local-verification-472ac2f34962445a95c70fecdcb680c2/serialization-failure/emergency.jsonl",
+                      "bytes":  277,
+                      "sha256":  "85550581467f5964528fc4f99242255af2b235dc575712512906c0d11463efec"
+                  },
+                  {
+                      "file":  "local-verification-472ac2f34962445a95c70fecdcb680c2/serialization-failure/journal.jsonl",
+                      "bytes":  276,
+                      "sha256":  "cc2f3bdb86629234c8f9a5165f6a38b0a9c8bd2159606cc5df5b9334ff8487b8"
+                  },
+                  {
+                      "file":  "local-verification-472ac2f34962445a95c70fecdcb680c2/synthetic-sanitized-example.jsonl",
+                      "bytes":  17681,
+                      "sha256":  "0c6e6fad7a884233fbc0375f41eb9d5a6bfd21ef06fd08c68528eff5da9b9c0e"
+                  },
+                  {
+                      "file":  "local-verification-472ac2f34962445a95c70fecdcb680c2/test-results.json",
+                      "bytes":  33595,
+                      "sha256":  "9495eefc2ac1dd6db6968bf56f7bb12fc2683c3f12c6df52a32f947f293b68c2"
+                  },
+                  {
+                      "file":  "local-verification-4de01d0b0506410d9304f50123e58647/journal-success/emergency.jsonl",
+                      "bytes":  333,
+                      "sha256":  "69fb59259fa1e051a6d814d41247282b19515c30bd74324a1f6664eac5d64e80"
+                  },
+                  {
+                      "file":  "local-verification-4de01d0b0506410d9304f50123e58647/journal-success/journal.jsonl",
+                      "bytes":  664,
+                      "sha256":  "851c3cdd029b34f97a9d5c1bf8be158fbbca9e60a4e72139b8aa99d09b908888"
+                  },
+                  {
+                      "file":  "local-verification-4de01d0b0506410d9304f50123e58647/not-a-directory",
+                      "bytes":  23,
+                      "sha256":  "0b7a15ad83623728049a733f4241f3692131c1fa8c3db2a342fde771e40c16e6"
+                  },
+                  {
+                      "file":  "local-verification-4de01d0b0506410d9304f50123e58647/serialization-failure/emergency.jsonl",
+                      "bytes":  333,
+                      "sha256":  "2fdb8b6f48e472dcbd89e1834cb0ff52a6fe66d2b0021d0a206f4fd7cff1290b"
+                  },
+                  {
+                      "file":  "local-verification-4de01d0b0506410d9304f50123e58647/serialization-failure/journal.jsonl",
+                      "bytes":  332,
+                      "sha256":  "a47df207d3593bc5da2d609b9ca3415d4db1f00d8f61eba88af1dc76670103c4"
+                  },
+                  {
+                      "file":  "local-verification-4de01d0b0506410d9304f50123e58647/synthetic-root-bytes.txt",
+                      "bytes":  47,
+                      "sha256":  "07e6171b62102a12611b0fc55ac766e9a32a5d8167b39087fd534d37592f84b3"
+                  },
+                  {
+                      "file":  "local-verification-4de01d0b0506410d9304f50123e58647/synthetic-sanitized-example.jsonl",
+                      "bytes":  19770,
+                      "sha256":  "a5570e847aceaf79f180b0d171ae4ec88b409d4a494206cd306781fd81025429"
+                  },
+                  {
+                      "file":  "local-verification-4de01d0b0506410d9304f50123e58647/test-results.json",
+                      "bytes":  37502,
+                      "sha256":  "f1aed959dc9ea83039a04878ea50ee39d59160fe0b14bc0d87b9f8d7814060b7"
+                  },
+                  {
+                      "file":  "local-verification-cdc2d6d37b14413889a8611c2c9e201f/journal-success/emergency.jsonl",
+                      "bytes":  333,
+                      "sha256":  "821cc85b92a8b3319b6e3e6ba7435eb25526ac028ac3153e3989bd00c38dc4a9"
+                  },
+                  {
+                      "file":  "local-verification-cdc2d6d37b14413889a8611c2c9e201f/journal-success/journal.jsonl",
+                      "bytes":  664,
+                      "sha256":  "77a4e96a40c8b37fae028ec54cf74260e069ae8eead76b97697994e0ad36d620"
+                  },
+                  {
+                      "file":  "local-verification-cdc2d6d37b14413889a8611c2c9e201f/not-a-directory",
+                      "bytes":  23,
+                      "sha256":  "0b7a15ad83623728049a733f4241f3692131c1fa8c3db2a342fde771e40c16e6"
+                  },
+                  {
+                      "file":  "local-verification-cdc2d6d37b14413889a8611c2c9e201f/serialization-failure/emergency.jsonl",
+                      "bytes":  333,
+                      "sha256":  "17d9585efaf8e2ed0d9d481c81d351553cea49e389d500cdc6fb9fb299c2053b"
+                  },
+                  {
+                      "file":  "local-verification-cdc2d6d37b14413889a8611c2c9e201f/serialization-failure/journal.jsonl",
+                      "bytes":  332,
+                      "sha256":  "ce7d6bde121ff2bd96a0e0453d96f65c433ae5c175f95b7071a0810dcab5715c"
+                  },
+                  {
+                      "file":  "local-verification-cdc2d6d37b14413889a8611c2c9e201f/synthetic-root-bytes.txt",
+                      "bytes":  47,
+                      "sha256":  "07e6171b62102a12611b0fc55ac766e9a32a5d8167b39087fd534d37592f84b3"
+                  },
+                  {
+                      "file":  "local-verification-cdc2d6d37b14413889a8611c2c9e201f/synthetic-sanitized-example.jsonl",
+                      "bytes":  19799,
+                      "sha256":  "781c05ba6fcc157df914453bf238c18ef06a8d6579300cac0bcced57f1a40ef4"
+                  },
+                  {
+                      "file":  "local-verification-cdc2d6d37b14413889a8611c2c9e201f/test-results.json",
+                      "bytes":  38288,
+                      "sha256":  "8d4826966c4e4f18133df8d841bffd8869f283aeab16280891adca0b6348cd1b"
+                  },
+                  {
+                      "file":  "local-verification-ee9acc30dabd49e0a5805776649865ce/journal-success/emergency.jsonl",
+                      "bytes":  333,
+                      "sha256":  "40308c98e9e7141c93a2e3afcb06ee69654a973e0c3db8fb2879b99692d556e0"
+                  },
+                  {
+                      "file":  "local-verification-ee9acc30dabd49e0a5805776649865ce/journal-success/journal.jsonl",
+                      "bytes":  664,
+                      "sha256":  "a2aea434e63fd716c126f0e3a71573a5a0c72e85b284ab671d337cd2b7a8fbfd"
+                  },
+                  {
+                      "file":  "local-verification-ee9acc30dabd49e0a5805776649865ce/not-a-directory",
+                      "bytes":  23,
+                      "sha256":  "0b7a15ad83623728049a733f4241f3692131c1fa8c3db2a342fde771e40c16e6"
+                  },
+                  {
+                      "file":  "local-verification-ee9acc30dabd49e0a5805776649865ce/serialization-failure/emergency.jsonl",
+                      "bytes":  333,
+                      "sha256":  "ae5c15c51801b85daaa0519da7620b194430186e517af73688e01c4bde691bca"
+                  },
+                  {
+                      "file":  "local-verification-ee9acc30dabd49e0a5805776649865ce/serialization-failure/journal.jsonl",
+                      "bytes":  332,
+                      "sha256":  "7dd20b188141a65ba1307ae11eb07d0eee182ba4eb9948a85530281a44c36bf9"
+                  },
+                  {
+                      "file":  "local-verification-ee9acc30dabd49e0a5805776649865ce/synthetic-root-bytes.txt",
+                      "bytes":  47,
+                      "sha256":  "07e6171b62102a12611b0fc55ac766e9a32a5d8167b39087fd534d37592f84b3"
+                  },
+                  {
+                      "file":  "local-verification-ee9acc30dabd49e0a5805776649865ce/synthetic-sanitized-example.jsonl",
+                      "bytes":  19799,
+                      "sha256":  "01afb736811a57e273ccf4359a55e1dc3226cef142e24ddb843f86027ba193f7"
+                  },
+                  {
+                      "file":  "local-verification-ee9acc30dabd49e0a5805776649865ce/test-results.json",
+                      "bytes":  38288,
+                      "sha256":  "ac4e8af836b861a1b7103ab66297037c66efecf3b176971c551eb0fbf2cb92e8"
+                  },
+                  {
+                      "file":  "ModelPolicy.cs",
+                      "bytes":  18937,
+                      "sha256":  "b54ab5b0b4a9af30fecd2e6efcd9853064ef384b782f4e31cb7baa280d5a0373"
+                  },
+                  {
+                      "file":  "NativeBoundary.cs",
+                      "bytes":  15642,
+                      "sha256":  "9041ebef9a480b818b7bc8179453321cabe9652c9b471ccad973af5379ad0e39"
+                  },
+                  {
+                      "file":  "README.md",
+                      "bytes":  14633,
+                      "sha256":  "42326f6420f4c94c60294e61fadfd3c8fe93df27bdadb6dd0601dee220ba097f"
+                  },
+                  {
+                      "file":  "Test-Corrections.ps1",
+                      "bytes":  3589,
+                      "sha256":  "70370706ea0584231042a6945190d1ca1cdc286977000f4ee31fd45b1f30a741"
+                  },
+                  {
+                      "file":  "Write-ReviewInventory.ps1",
+                      "bytes":  2624,
+                      "sha256":  "cc3af5244273d397cae9dc4459741c8336adab05745ada6768330cc810a18683"
+                  }
+              ],
+    "excludes":  "This generated inventory itself; no recursive self hash",
+    "previousReviewedSourcesUnchanged":  true,
+    "approvedSqlSha256":  "9cac281d9ecca2dda46c93de85f2b26b01f9b762d2def67a5efa5ad578242fdc",
+    "finalSourceHashesMatchTestEvidence":  true,
+    "remoteExecuted":  false,
+    "phaseAComplete":  false,
+    "dbImp01Complete":  false
+}

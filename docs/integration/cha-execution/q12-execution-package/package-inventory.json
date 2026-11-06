@@ -1,0 +1,1372 @@
+{
+  "observedAtUtc": "2026-10-31T14:38:33.460Z",
+  "scope": "Q12 offline coordinated review/execution preparation only",
+  "excludes": "This generated inventory itself; pending owner approval file intentionally absent",
+  "files": [
+    {
+      "file": "SmartHatch_Cha_Backend_Updated.html",
+      "bytes": 1389246,
+      "sha256": "f57ba0408f054ab198400b6e3047c642a34c2c322b3aa8f2b7ac59f4af5f0e74"
+    },
+    {
+      "file": "docs/integration/cha-execution/Q12_PHASE_A_APPROVAL_AND_BLOCKER.md",
+      "bytes": 3530,
+      "sha256": "acd24ee260b5d4724b93725c4ef8efdc69cb79d89e88867aa7533177c010f885"
+    },
+    {
+      "file": "docs/integration/cha-execution/Q12_PHASE_A_ATTEMPT_1_RECEIPT.md",
+      "bytes": 3799,
+      "sha256": "11cdf66dbada5874fde06504f7d1b929b30080196849e47313d89871653d0913"
+    },
+    {
+      "file": "docs/integration/cha-execution/Q12_PHASE_A_PREFLIGHT_20261031_103006Z.json",
+      "bytes": 2552,
+      "sha256": "1bf22e33e19679e80cb1e0020be22c93563289073a2cbb2eca007cbdb35912aa"
+    },
+    {
+      "file": "docs/integration/cha-execution/Q12_Phase_A_Read_Only.sql",
+      "bytes": 4918,
+      "sha256": "9cac281d9ecca2dda46c93de85f2b26b01f9b762d2def67a5efa5ad578242fdc"
+    },
+    {
+      "file": "docs/integration/cha-execution/Q12_Test_Project_Approval_Plan.md",
+      "bytes": 14375,
+      "sha256": "7de0a687f51168e2f0f1928ec7d44a75b8b070afcce7c64de7ffb18128f27e37"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/Invoke-Q12PhaseA.ps1",
+      "bytes": 2774,
+      "sha256": "79ba006b03068dc8c98903b9bdf8da1333f8d9d33ab1c61c43d9924c0f497bbb"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/Q12Controller.Tests.cs",
+      "bytes": 13899,
+      "sha256": "393e5dfb81c9c755f0ba08c5250401d128ed1cdcc8f44b0c1cb88e4f4a4ddd50"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/Q12Controller.cs",
+      "bytes": 21356,
+      "sha256": "51c209d22c26c27286923a900936f97aca24fb6f96de16f6dae81bb720639bf4"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/README.md",
+      "bytes": 8644,
+      "sha256": "eaf88b669a0d7eee152a50f9689beb10f2c5088dc234522a8b428f515f339600"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/Test-Q12Controller.ps1",
+      "bytes": 2920,
+      "sha256": "a95ed49d92cf29f81252e9996628188356a33715cc5baa5574607cb19c085bab"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/local-test-1118803c180d42a88e5491410bb69584.json",
+      "bytes": 10417,
+      "sha256": "0ee804b705dc1807e86530e259af10b8f49e614174e766e3dbdf8a7487f5f0b0"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/local-test-8175115be7ba4e9ca1cad4a9fcec471f.json",
+      "bytes": 8665,
+      "sha256": "0128b5cc27675f1dee5fb612907e695a26f81e767d01fb01c012b0a74c027f79"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v2/CERTIFICATE_PROVENANCE.md",
+      "bytes": 2970,
+      "sha256": "f2dfe705e0eceb37f6ebcc843379e32ba6c6b51087d14d782a3dbf3e74d6c77e"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v2/Correction.Tests.cs",
+      "bytes": 29794,
+      "sha256": "d5c1bad885b4229ec7df4072bec4b547d8743d6ae6e613d640511975cbf521eb"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v2/DurableController.cs",
+      "bytes": 19205,
+      "sha256": "3141f9d815a3447192bf40d9a759a64412f3de7a4e6b526688829999c2eb1f86"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v2/Invoke-Q12PhaseA-V2.ps1",
+      "bytes": 5070,
+      "sha256": "a675216d4c54b68fade44a81e8648d2e08246bde0cda6b819997cb2508a6b34d"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v2/ModelPolicy.cs",
+      "bytes": 18937,
+      "sha256": "b54ab5b0b4a9af30fecd2e6efcd9853064ef384b782f4e31cb7baa280d5a0373"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v2/NativeBoundary.cs",
+      "bytes": 15642,
+      "sha256": "9041ebef9a480b818b7bc8179453321cabe9652c9b471ccad973af5379ad0e39"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v2/README.md",
+      "bytes": 14633,
+      "sha256": "42326f6420f4c94c60294e61fadfd3c8fe93df27bdadb6dd0601dee220ba097f"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v2/Test-Corrections.ps1",
+      "bytes": 3589,
+      "sha256": "70370706ea0584231042a6945190d1ca1cdc286977000f4ee31fd45b1f30a741"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v2/Write-ReviewInventory.ps1",
+      "bytes": 2624,
+      "sha256": "cc3af5244273d397cae9dc4459741c8336adab05745ada6768330cc810a18683"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v2/local-verification-2502e7780244458db0bb2647bf1b2e2c/journal-success/emergency.jsonl",
+      "bytes": 333,
+      "sha256": "db3c5324ccc8b37b7a712fb5165a8822cbcdf37eea0e60007e82c9caf258bf81"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v2/local-verification-2502e7780244458db0bb2647bf1b2e2c/journal-success/journal.jsonl",
+      "bytes": 664,
+      "sha256": "b95908b6b7796d93b31c1180308646247bb0ff1b4d67ea48508678446e5c013b"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v2/local-verification-2502e7780244458db0bb2647bf1b2e2c/not-a-directory",
+      "bytes": 23,
+      "sha256": "0b7a15ad83623728049a733f4241f3692131c1fa8c3db2a342fde771e40c16e6"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v2/local-verification-2502e7780244458db0bb2647bf1b2e2c/serialization-failure/emergency.jsonl",
+      "bytes": 333,
+      "sha256": "2b0d40eba909f93631751d57aa225444c542abf312157b5ad9cb4f956f1f15d7"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v2/local-verification-2502e7780244458db0bb2647bf1b2e2c/serialization-failure/journal.jsonl",
+      "bytes": 332,
+      "sha256": "905ab59a78689b5e2e2be544d5e3a6a00dea12f16e64c15b69b25b507d2de4c7"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v2/local-verification-2502e7780244458db0bb2647bf1b2e2c/synthetic-root-bytes.txt",
+      "bytes": 47,
+      "sha256": "07e6171b62102a12611b0fc55ac766e9a32a5d8167b39087fd534d37592f84b3"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v2/local-verification-2502e7780244458db0bb2647bf1b2e2c/synthetic-sanitized-example.jsonl",
+      "bytes": 19799,
+      "sha256": "26409e685534e715fa3fa2b2295edd4e82b450a77e269fdb232913bf51387e1f"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v2/local-verification-2502e7780244458db0bb2647bf1b2e2c/test-results.json",
+      "bytes": 37741,
+      "sha256": "662a0c383f9f0b2ca2a9914c5ba16f0e5b6341684428e32b1bc47f164a913ee1"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v2/local-verification-472ac2f34962445a95c70fecdcb680c2/journal-success/emergency.jsonl",
+      "bytes": 277,
+      "sha256": "a02613a147424f4dc7ea7e9233882d4fad8e78fc302fe2053397cc9d29f3021f"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v2/local-verification-472ac2f34962445a95c70fecdcb680c2/journal-success/journal.jsonl",
+      "bytes": 552,
+      "sha256": "2e1f95432d57a0c427a55033ea077a869107bc4f244640ad4e28172d732b223b"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v2/local-verification-472ac2f34962445a95c70fecdcb680c2/not-a-directory",
+      "bytes": 23,
+      "sha256": "0b7a15ad83623728049a733f4241f3692131c1fa8c3db2a342fde771e40c16e6"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v2/local-verification-472ac2f34962445a95c70fecdcb680c2/serialization-failure/emergency.jsonl",
+      "bytes": 277,
+      "sha256": "85550581467f5964528fc4f99242255af2b235dc575712512906c0d11463efec"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v2/local-verification-472ac2f34962445a95c70fecdcb680c2/serialization-failure/journal.jsonl",
+      "bytes": 276,
+      "sha256": "cc2f3bdb86629234c8f9a5165f6a38b0a9c8bd2159606cc5df5b9334ff8487b8"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v2/local-verification-472ac2f34962445a95c70fecdcb680c2/synthetic-sanitized-example.jsonl",
+      "bytes": 17681,
+      "sha256": "0c6e6fad7a884233fbc0375f41eb9d5a6bfd21ef06fd08c68528eff5da9b9c0e"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v2/local-verification-472ac2f34962445a95c70fecdcb680c2/test-results.json",
+      "bytes": 33595,
+      "sha256": "9495eefc2ac1dd6db6968bf56f7bb12fc2683c3f12c6df52a32f947f293b68c2"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v2/local-verification-4de01d0b0506410d9304f50123e58647/journal-success/emergency.jsonl",
+      "bytes": 333,
+      "sha256": "69fb59259fa1e051a6d814d41247282b19515c30bd74324a1f6664eac5d64e80"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v2/local-verification-4de01d0b0506410d9304f50123e58647/journal-success/journal.jsonl",
+      "bytes": 664,
+      "sha256": "851c3cdd029b34f97a9d5c1bf8be158fbbca9e60a4e72139b8aa99d09b908888"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v2/local-verification-4de01d0b0506410d9304f50123e58647/not-a-directory",
+      "bytes": 23,
+      "sha256": "0b7a15ad83623728049a733f4241f3692131c1fa8c3db2a342fde771e40c16e6"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v2/local-verification-4de01d0b0506410d9304f50123e58647/serialization-failure/emergency.jsonl",
+      "bytes": 333,
+      "sha256": "2fdb8b6f48e472dcbd89e1834cb0ff52a6fe66d2b0021d0a206f4fd7cff1290b"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v2/local-verification-4de01d0b0506410d9304f50123e58647/serialization-failure/journal.jsonl",
+      "bytes": 332,
+      "sha256": "a47df207d3593bc5da2d609b9ca3415d4db1f00d8f61eba88af1dc76670103c4"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v2/local-verification-4de01d0b0506410d9304f50123e58647/synthetic-root-bytes.txt",
+      "bytes": 47,
+      "sha256": "07e6171b62102a12611b0fc55ac766e9a32a5d8167b39087fd534d37592f84b3"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v2/local-verification-4de01d0b0506410d9304f50123e58647/synthetic-sanitized-example.jsonl",
+      "bytes": 19770,
+      "sha256": "a5570e847aceaf79f180b0d171ae4ec88b409d4a494206cd306781fd81025429"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v2/local-verification-4de01d0b0506410d9304f50123e58647/test-results.json",
+      "bytes": 37502,
+      "sha256": "f1aed959dc9ea83039a04878ea50ee39d59160fe0b14bc0d87b9f8d7814060b7"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v2/local-verification-cdc2d6d37b14413889a8611c2c9e201f/journal-success/emergency.jsonl",
+      "bytes": 333,
+      "sha256": "821cc85b92a8b3319b6e3e6ba7435eb25526ac028ac3153e3989bd00c38dc4a9"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v2/local-verification-cdc2d6d37b14413889a8611c2c9e201f/journal-success/journal.jsonl",
+      "bytes": 664,
+      "sha256": "77a4e96a40c8b37fae028ec54cf74260e069ae8eead76b97697994e0ad36d620"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v2/local-verification-cdc2d6d37b14413889a8611c2c9e201f/not-a-directory",
+      "bytes": 23,
+      "sha256": "0b7a15ad83623728049a733f4241f3692131c1fa8c3db2a342fde771e40c16e6"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v2/local-verification-cdc2d6d37b14413889a8611c2c9e201f/serialization-failure/emergency.jsonl",
+      "bytes": 333,
+      "sha256": "17d9585efaf8e2ed0d9d481c81d351553cea49e389d500cdc6fb9fb299c2053b"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v2/local-verification-cdc2d6d37b14413889a8611c2c9e201f/serialization-failure/journal.jsonl",
+      "bytes": 332,
+      "sha256": "ce7d6bde121ff2bd96a0e0453d96f65c433ae5c175f95b7071a0810dcab5715c"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v2/local-verification-cdc2d6d37b14413889a8611c2c9e201f/synthetic-root-bytes.txt",
+      "bytes": 47,
+      "sha256": "07e6171b62102a12611b0fc55ac766e9a32a5d8167b39087fd534d37592f84b3"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v2/local-verification-cdc2d6d37b14413889a8611c2c9e201f/synthetic-sanitized-example.jsonl",
+      "bytes": 19799,
+      "sha256": "781c05ba6fcc157df914453bf238c18ef06a8d6579300cac0bcced57f1a40ef4"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v2/local-verification-cdc2d6d37b14413889a8611c2c9e201f/test-results.json",
+      "bytes": 38288,
+      "sha256": "8d4826966c4e4f18133df8d841bffd8869f283aeab16280891adca0b6348cd1b"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v2/local-verification-ee9acc30dabd49e0a5805776649865ce/journal-success/emergency.jsonl",
+      "bytes": 333,
+      "sha256": "40308c98e9e7141c93a2e3afcb06ee69654a973e0c3db8fb2879b99692d556e0"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v2/local-verification-ee9acc30dabd49e0a5805776649865ce/journal-success/journal.jsonl",
+      "bytes": 664,
+      "sha256": "a2aea434e63fd716c126f0e3a71573a5a0c72e85b284ab671d337cd2b7a8fbfd"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v2/local-verification-ee9acc30dabd49e0a5805776649865ce/not-a-directory",
+      "bytes": 23,
+      "sha256": "0b7a15ad83623728049a733f4241f3692131c1fa8c3db2a342fde771e40c16e6"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v2/local-verification-ee9acc30dabd49e0a5805776649865ce/serialization-failure/emergency.jsonl",
+      "bytes": 333,
+      "sha256": "ae5c15c51801b85daaa0519da7620b194430186e517af73688e01c4bde691bca"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v2/local-verification-ee9acc30dabd49e0a5805776649865ce/serialization-failure/journal.jsonl",
+      "bytes": 332,
+      "sha256": "7dd20b188141a65ba1307ae11eb07d0eee182ba4eb9948a85530281a44c36bf9"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v2/local-verification-ee9acc30dabd49e0a5805776649865ce/synthetic-root-bytes.txt",
+      "bytes": 47,
+      "sha256": "07e6171b62102a12611b0fc55ac766e9a32a5d8167b39087fd534d37592f84b3"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v2/local-verification-ee9acc30dabd49e0a5805776649865ce/synthetic-sanitized-example.jsonl",
+      "bytes": 19799,
+      "sha256": "01afb736811a57e273ccf4359a55e1dc3226cef142e24ddb843f86027ba193f7"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v2/local-verification-ee9acc30dabd49e0a5805776649865ce/test-results.json",
+      "bytes": 38288,
+      "sha256": "ac4e8af836b861a1b7103ab66297037c66efecf3b176971c551eb0fbf2cb92e8"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v2/review-inventory.json",
+      "bytes": 14311,
+      "sha256": "c1ff03b2787271dd416b3148bad75f14228e8496ddd7f94af8ccf1f22991c924"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/CERTIFICATE_PROVENANCE.md",
+      "bytes": 2970,
+      "sha256": "f2dfe705e0eceb37f6ebcc843379e32ba6c6b51087d14d782a3dbf3e74d6c77e"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/Correction.Tests.cs",
+      "bytes": 29903,
+      "sha256": "dd8e5a6fd0d2e286ddfc91701187d930ad59719fb12aad48fe46509656b1d113"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/DurableController.cs",
+      "bytes": 21064,
+      "sha256": "a9ffb06222e53f31f1cda4fc848dc646257b83790ffd067ae87473790fb4bcb9"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/Followup.Tests.cs",
+      "bytes": 15137,
+      "sha256": "dd012010cb1f6fb86c98dfc1c10a973c13e355455841466096561b8de1ff8fc1"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/Invoke-Q12PhaseA-V3.ps1",
+      "bytes": 5265,
+      "sha256": "004b5468b3e0fda8c52cd4efe1edd70fefd33de9424b8ce516c21dd28b761ae9"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/ModelPolicy.cs",
+      "bytes": 21476,
+      "sha256": "d94cb03cb1d61a5251d7b6e3c211288553cd3688d7a93fe859352c531dfb9fd8"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/NativeBoundary.cs",
+      "bytes": 15642,
+      "sha256": "381f705c0892d7b8f93278e14da545ba013e0afce77642d10e2b4f9b044b5268"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/README.md",
+      "bytes": 14444,
+      "sha256": "eea740d5b27e272d4bc385119f5ba8680f6d2dc4e7a4bd332c1d04ef16dee54f"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/SourceSnapshot.psm1",
+      "bytes": 5553,
+      "sha256": "8998819dbf1458e83d80c537066cd7c5ab16d044e5954a823b61c8b4c26a9be2"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/Test-Corrections.ps1",
+      "bytes": 8660,
+      "sha256": "b6838eb5942fe96ae7dc2684e9f2bc8f57b54b5429274f34ebf6ab98881eeba4"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/Write-ReviewInventory.ps1",
+      "bytes": 3049,
+      "sha256": "757cb552dd9b5e29f32fb40fcfc52e064f00fd14896cab38e734bc1f16b342a4"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-3892609edcbf4448ad25a1f28eb99fe8/compiler-inputs/iodccsre.0.cs",
+      "bytes": 21479,
+      "sha256": "0f484796be10314137296f165cf647c187d95ee5d62fff5886f58f1f0700489d"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-3892609edcbf4448ad25a1f28eb99fe8/compiler-inputs/iodccsre.1.cs",
+      "bytes": 15645,
+      "sha256": "c6b62533b22b4466fc99a7f227cdf88f9b2f440564701fbfe4c563f386520194"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-3892609edcbf4448ad25a1f28eb99fe8/compiler-inputs/iodccsre.2.cs",
+      "bytes": 20705,
+      "sha256": "261975ef68e63b4d84d9465fdafba93f5bd3e8ea8da856906b4150586bc3bcd6"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-3892609edcbf4448ad25a1f28eb99fe8/compiler-inputs/iodccsre.3.cs",
+      "bytes": 29906,
+      "sha256": "3d82f103d3f46f6a1221a316181ef22b0d18c9c7867b0abd99ffd45259786686"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-3892609edcbf4448ad25a1f28eb99fe8/compiler-inputs/iodccsre.4.cs",
+      "bytes": 13837,
+      "sha256": "a036d89b16322ddaf965582546601eed7fc89dbf9a16c131ecd24a3b2f172b51"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-3892609edcbf4448ad25a1f28eb99fe8/compiler-inputs/iodccsre.cmdline",
+      "bytes": 1119,
+      "sha256": "67347df680a1b84eb85c1f3c59ba672f82ab57f34258534543a88fe03a2cf6a1"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-3892609edcbf4448ad25a1f28eb99fe8/compiler-inputs/iodccsre.err",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-3892609edcbf4448ad25a1f28eb99fe8/compiler-inputs/iodccsre.out",
+      "bytes": 1632,
+      "sha256": "2cef36978afa7f8e68c68d561f0d9333aac42955fa0d446c9ef69997bbcfb434"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-3892609edcbf4448ad25a1f28eb99fe8/compiler-inputs/iodccsre.tmp",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-3892609edcbf4448ad25a1f28eb99fe8/journal-success/emergency.jsonl",
+      "bytes": 346,
+      "sha256": "a8bab46324dfef743b634ed8820f543cb67a9f2e751cb5712dc16f16fb7e28c6"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-3892609edcbf4448ad25a1f28eb99fe8/journal-success/journal.jsonl",
+      "bytes": 690,
+      "sha256": "78f78f7b5db8c2ea6030cbdad30267554ad663bc7c94c3cdfb21baa780808dd5"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-3892609edcbf4448ad25a1f28eb99fe8/not-a-directory",
+      "bytes": 23,
+      "sha256": "0b7a15ad83623728049a733f4241f3692131c1fa8c3db2a342fde771e40c16e6"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-3892609edcbf4448ad25a1f28eb99fe8/serialization-failure/emergency.jsonl",
+      "bytes": 346,
+      "sha256": "29d79b992bc7cc29c602bd218918ad874fe4684cf81e1c4cf7d092d3f2c18e6c"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-3892609edcbf4448ad25a1f28eb99fe8/serialization-failure/journal.jsonl",
+      "bytes": 345,
+      "sha256": "3c4303bbd46aea901132b4b90de5dcc4e3315f31ba9d6873ba772e09a13a91c6"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-3892609edcbf4448ad25a1f28eb99fe8/snapshot-lock-test/Probe.cs",
+      "bytes": 117,
+      "sha256": "46ef3d320160fe4e429cab25de7fe6347ad6b5fc69748c4ed5d6458d318a9d61"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-3892609edcbf4448ad25a1f28eb99fe8/snapshot-lock-test/compiler/w1xninxq.0.cs",
+      "bytes": 120,
+      "sha256": "220aa7a0f375722deaeec32dc28c104f5516f48379a4ad0bb774d8e830430cf9"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-3892609edcbf4448ad25a1f28eb99fe8/snapshot-lock-test/compiler/w1xninxq.cmdline",
+      "bytes": 475,
+      "sha256": "3325b74cf8676c3570a93bd6b2c00a219d967af2c8ed7d5f5b5afcbc70c0f6d3"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-3892609edcbf4448ad25a1f28eb99fe8/snapshot-lock-test/compiler/w1xninxq.err",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-3892609edcbf4448ad25a1f28eb99fe8/snapshot-lock-test/compiler/w1xninxq.out",
+      "bytes": 988,
+      "sha256": "fc2c4389e8e49c5cd7e4e3409781d1bd0f5ac31b003d04fa739ecc1ef2ab05d3"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-3892609edcbf4448ad25a1f28eb99fe8/snapshot-lock-test/compiler/w1xninxq.tmp",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-3892609edcbf4448ad25a1f28eb99fe8/snapshot-memory-test/Probe.cs",
+      "bytes": 25,
+      "sha256": "4c28b9d73fefbd6371dd75a42ab14a1b35bc14ca3143b66449a676e15d240839"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-3892609edcbf4448ad25a1f28eb99fe8/snapshot-modification-test/Probe.cs",
+      "bytes": 29,
+      "sha256": "6dd55c431b2ee58748327c4e11dfa43eadcab39d62e336776f95e89678ec7ed2"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-3892609edcbf4448ad25a1f28eb99fe8/synthetic-emergency-only-recovery/emergency.jsonl",
+      "bytes": 3343,
+      "sha256": "0e7e8acea4f6682d8faea9bf0322559267a8ae8088e93abbd4eec65a535528f2"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-3892609edcbf4448ad25a1f28eb99fe8/synthetic-emergency-only-recovery/primary-unavailable-preserved.jsonl",
+      "bytes": 3342,
+      "sha256": "ea4a915d6eb60cb983c33f684ab22be74309dedb11b18f4892b74d209a684ea4"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-3892609edcbf4448ad25a1f28eb99fe8/synthetic-emergency-success/emergency.jsonl",
+      "bytes": 3420,
+      "sha256": "a89aa6eb26993df77534de5600509fb195ecc9e93760e72abc3db5ebe6193820"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-3892609edcbf4448ad25a1f28eb99fe8/synthetic-emergency-success/journal.jsonl",
+      "bytes": 22892,
+      "sha256": "56bc84603f0274ebf5c1f03ec295967ba205beaa75fbef71f9bc346f5b2b0d4e"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-3892609edcbf4448ad25a1f28eb99fe8/synthetic-root-bytes.txt",
+      "bytes": 47,
+      "sha256": "07e6171b62102a12611b0fc55ac766e9a32a5d8167b39087fd534d37592f84b3"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-3892609edcbf4448ad25a1f28eb99fe8/synthetic-sanitized-example.jsonl",
+      "bytes": 24736,
+      "sha256": "f39612731c68fe71efb1033d0f5eb0ba8cd6aa30e77ba437d198baa38b910212"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-3892609edcbf4448ad25a1f28eb99fe8/test-results.json",
+      "bytes": 52852,
+      "sha256": "5477a87aee6fe4334b6f6381568302d390a0e1c6b5bb257b0b414a2be88474fa"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-bebd27bce9604f5788913b8b6278d28f/compiler-inputs/xkn45nb5.0.cs",
+      "bytes": 21479,
+      "sha256": "0f484796be10314137296f165cf647c187d95ee5d62fff5886f58f1f0700489d"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-bebd27bce9604f5788913b8b6278d28f/compiler-inputs/xkn45nb5.1.cs",
+      "bytes": 15645,
+      "sha256": "c6b62533b22b4466fc99a7f227cdf88f9b2f440564701fbfe4c563f386520194"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-bebd27bce9604f5788913b8b6278d28f/compiler-inputs/xkn45nb5.2.cs",
+      "bytes": 21067,
+      "sha256": "a65f941eb6236859a21fc12aa7c8138f54b7a9e0bd550fe01cc60fa0f3bab32b"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-bebd27bce9604f5788913b8b6278d28f/compiler-inputs/xkn45nb5.3.cs",
+      "bytes": 29906,
+      "sha256": "3d82f103d3f46f6a1221a316181ef22b0d18c9c7867b0abd99ffd45259786686"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-bebd27bce9604f5788913b8b6278d28f/compiler-inputs/xkn45nb5.4.cs",
+      "bytes": 15140,
+      "sha256": "7e2fc55d84d12d491ff6ad26c870df1cd0c9f68f04177f011bda86ed05a81151"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-bebd27bce9604f5788913b8b6278d28f/compiler-inputs/xkn45nb5.cmdline",
+      "bytes": 1119,
+      "sha256": "1eb8cc0a36b33b8ecc35e2830d15c131f543cb0daf87847e79207ab0930bd054"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-bebd27bce9604f5788913b8b6278d28f/compiler-inputs/xkn45nb5.err",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-bebd27bce9604f5788913b8b6278d28f/compiler-inputs/xkn45nb5.out",
+      "bytes": 1632,
+      "sha256": "6e5988dc5ad86b6a9b3c2de26e8214fbc3094d3c9a9accca7a3fa9a8b732667a"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-bebd27bce9604f5788913b8b6278d28f/compiler-inputs/xkn45nb5.tmp",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-bebd27bce9604f5788913b8b6278d28f/journal-success/emergency.jsonl",
+      "bytes": 346,
+      "sha256": "e2dabc1d919a9e13f2d39ec0b5eae592c4b1182bac234646908518c3545de9b5"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-bebd27bce9604f5788913b8b6278d28f/journal-success/journal.jsonl",
+      "bytes": 690,
+      "sha256": "8327a91e038582e035f9c80e76ecbff40b42add0be6f4e385227b2569065194f"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-bebd27bce9604f5788913b8b6278d28f/not-a-directory",
+      "bytes": 23,
+      "sha256": "0b7a15ad83623728049a733f4241f3692131c1fa8c3db2a342fde771e40c16e6"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-bebd27bce9604f5788913b8b6278d28f/serialization-failure/emergency.jsonl",
+      "bytes": 346,
+      "sha256": "af5bb04634a7818240c78bf178b19b252fe2ae93d072293407e42fa675e1e19e"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-bebd27bce9604f5788913b8b6278d28f/serialization-failure/journal.jsonl",
+      "bytes": 345,
+      "sha256": "1da152b280d86867d974fd2bd6fe94560feba15cd53cd1597962d7f4b9be6118"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-bebd27bce9604f5788913b8b6278d28f/snapshot-lock-test/Probe.cs",
+      "bytes": 117,
+      "sha256": "deee44bfad52df50d9216becdd9edb5ec67085bbcf10f4f2d54e801222239b4a"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-bebd27bce9604f5788913b8b6278d28f/snapshot-lock-test/compiler/4yoiy3y0.0.cs",
+      "bytes": 120,
+      "sha256": "00acef227c13dd852819b891a7d5cd5d5787fb594d378eb7ee2bba6c62573e22"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-bebd27bce9604f5788913b8b6278d28f/snapshot-lock-test/compiler/4yoiy3y0.cmdline",
+      "bytes": 475,
+      "sha256": "080dee9d91385a52261f7da1f239e4a9f062eb09b56ca8931b7c3a4de6efc8a5"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-bebd27bce9604f5788913b8b6278d28f/snapshot-lock-test/compiler/4yoiy3y0.err",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-bebd27bce9604f5788913b8b6278d28f/snapshot-lock-test/compiler/4yoiy3y0.out",
+      "bytes": 988,
+      "sha256": "6ed25cb2fa60941a2bb41ae9ca4fa42fe4b6325d4265178e78c162ea7ca4ed42"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-bebd27bce9604f5788913b8b6278d28f/snapshot-lock-test/compiler/4yoiy3y0.tmp",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-bebd27bce9604f5788913b8b6278d28f/snapshot-memory-test/Probe.cs",
+      "bytes": 25,
+      "sha256": "4c28b9d73fefbd6371dd75a42ab14a1b35bc14ca3143b66449a676e15d240839"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-bebd27bce9604f5788913b8b6278d28f/snapshot-modification-test/Probe.cs",
+      "bytes": 29,
+      "sha256": "6dd55c431b2ee58748327c4e11dfa43eadcab39d62e336776f95e89678ec7ed2"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-bebd27bce9604f5788913b8b6278d28f/synthetic-emergency-only-recovery/emergency.jsonl",
+      "bytes": 4693,
+      "sha256": "4828134d8e5455cf3bff76cffc26959e12348ad23a42ffae5cf4f3da21e1053f"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-bebd27bce9604f5788913b8b6278d28f/synthetic-emergency-only-recovery/primary-unavailable-preserved.jsonl",
+      "bytes": 7292,
+      "sha256": "515326f7977eba6f4f8a36682d7ce41fa101b95c8aa76f02033ddca4353b0ee2"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-bebd27bce9604f5788913b8b6278d28f/synthetic-emergency-success/emergency.jsonl",
+      "bytes": 3454,
+      "sha256": "1ccda47aa6e49229bd7863c944a74cedffbbc92b6de6cbf700632c132ae8397d"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-bebd27bce9604f5788913b8b6278d28f/synthetic-emergency-success/journal.jsonl",
+      "bytes": 22926,
+      "sha256": "aabbcdeed405af3b88797592085e80bcdef8616b93406582bef7d883f65e78b8"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-bebd27bce9604f5788913b8b6278d28f/synthetic-root-bytes.txt",
+      "bytes": 47,
+      "sha256": "07e6171b62102a12611b0fc55ac766e9a32a5d8167b39087fd534d37592f84b3"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-bebd27bce9604f5788913b8b6278d28f/synthetic-sanitized-example.jsonl",
+      "bytes": 24803,
+      "sha256": "e534e01ba9ccd22495b632378b25797b54d8134d338f8cad68da4590482d21d0"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-bebd27bce9604f5788913b8b6278d28f/test-results.json",
+      "bytes": 58193,
+      "sha256": "5e18457e43f78076b1872af303887597418609dda1759abded66d33740cb3a1f"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-c3bfebc1a48c47c6bc26bdcc2cd93ca6/compiler-inputs/nr1pfszj.0.cs",
+      "bytes": 21479,
+      "sha256": "0f484796be10314137296f165cf647c187d95ee5d62fff5886f58f1f0700489d"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-c3bfebc1a48c47c6bc26bdcc2cd93ca6/compiler-inputs/nr1pfszj.1.cs",
+      "bytes": 15645,
+      "sha256": "c6b62533b22b4466fc99a7f227cdf88f9b2f440564701fbfe4c563f386520194"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-c3bfebc1a48c47c6bc26bdcc2cd93ca6/compiler-inputs/nr1pfszj.2.cs",
+      "bytes": 20705,
+      "sha256": "261975ef68e63b4d84d9465fdafba93f5bd3e8ea8da856906b4150586bc3bcd6"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-c3bfebc1a48c47c6bc26bdcc2cd93ca6/compiler-inputs/nr1pfszj.3.cs",
+      "bytes": 29906,
+      "sha256": "3d82f103d3f46f6a1221a316181ef22b0d18c9c7867b0abd99ffd45259786686"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-c3bfebc1a48c47c6bc26bdcc2cd93ca6/compiler-inputs/nr1pfszj.4.cs",
+      "bytes": 14070,
+      "sha256": "adf168f286a320ca2b269a723ccbe8acb5fa4945ab28d1836dfb7c5e72617a3d"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-c3bfebc1a48c47c6bc26bdcc2cd93ca6/compiler-inputs/nr1pfszj.cmdline",
+      "bytes": 1119,
+      "sha256": "5be372314fc048adf91e2589ed021f91082ee13adb8581464110e3bfcc9af83e"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-c3bfebc1a48c47c6bc26bdcc2cd93ca6/compiler-inputs/nr1pfszj.err",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-c3bfebc1a48c47c6bc26bdcc2cd93ca6/compiler-inputs/nr1pfszj.out",
+      "bytes": 1632,
+      "sha256": "a6b2d0caa729815bce7363ede93a5d23905b8f2c46e85edf53d589dc7cdf6f69"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-c3bfebc1a48c47c6bc26bdcc2cd93ca6/compiler-inputs/nr1pfszj.tmp",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-c3bfebc1a48c47c6bc26bdcc2cd93ca6/journal-success/emergency.jsonl",
+      "bytes": 346,
+      "sha256": "5ac6e08c1e0fd82c67ec2efa361430d0e8f4dc8f2e2761b95ce793c269bbdd12"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-c3bfebc1a48c47c6bc26bdcc2cd93ca6/journal-success/journal.jsonl",
+      "bytes": 690,
+      "sha256": "9bd7194603e568a472bebee0b8becb13fb53cad30635288b18a3104799c22b89"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-c3bfebc1a48c47c6bc26bdcc2cd93ca6/not-a-directory",
+      "bytes": 23,
+      "sha256": "0b7a15ad83623728049a733f4241f3692131c1fa8c3db2a342fde771e40c16e6"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-c3bfebc1a48c47c6bc26bdcc2cd93ca6/serialization-failure/emergency.jsonl",
+      "bytes": 346,
+      "sha256": "138ebaf270c5c5eb13877e0a02f4cd32b3b48073566f3e899420d35daaf53f38"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-c3bfebc1a48c47c6bc26bdcc2cd93ca6/serialization-failure/journal.jsonl",
+      "bytes": 345,
+      "sha256": "364d8f83c3c1fc5a2b3ae6ab4741a05e5596e63086e1e9b4f3fe1938e96fb8eb"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-c3bfebc1a48c47c6bc26bdcc2cd93ca6/snapshot-lock-test/Probe.cs",
+      "bytes": 117,
+      "sha256": "1ce2f7fcd7d270074d3373a652bbbd1b801f8ef9e81404158f6bbda61ab168fb"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-c3bfebc1a48c47c6bc26bdcc2cd93ca6/snapshot-lock-test/compiler/skunt1lh.0.cs",
+      "bytes": 120,
+      "sha256": "7108d6dcf669387dd8ffc76c7a0ba3f3a05e83f1ad6e91405be1c54de1cbfc5a"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-c3bfebc1a48c47c6bc26bdcc2cd93ca6/snapshot-lock-test/compiler/skunt1lh.cmdline",
+      "bytes": 475,
+      "sha256": "26d2381dab417c3d4d40bf89a441fe35a5cf10443f0ddeb8fa71e82936f0ec66"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-c3bfebc1a48c47c6bc26bdcc2cd93ca6/snapshot-lock-test/compiler/skunt1lh.err",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-c3bfebc1a48c47c6bc26bdcc2cd93ca6/snapshot-lock-test/compiler/skunt1lh.out",
+      "bytes": 988,
+      "sha256": "82b06727b737c7437f990c3643ef85002f918e5491e2f869440b0107c3e63f9d"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-c3bfebc1a48c47c6bc26bdcc2cd93ca6/snapshot-lock-test/compiler/skunt1lh.tmp",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-c3bfebc1a48c47c6bc26bdcc2cd93ca6/snapshot-memory-test/Probe.cs",
+      "bytes": 25,
+      "sha256": "4c28b9d73fefbd6371dd75a42ab14a1b35bc14ca3143b66449a676e15d240839"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-c3bfebc1a48c47c6bc26bdcc2cd93ca6/snapshot-modification-test/Probe.cs",
+      "bytes": 29,
+      "sha256": "6dd55c431b2ee58748327c4e11dfa43eadcab39d62e336776f95e89678ec7ed2"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-c3bfebc1a48c47c6bc26bdcc2cd93ca6/synthetic-emergency-only-recovery/emergency.jsonl",
+      "bytes": 4659,
+      "sha256": "b7fa64d46a9e55d773db750e0acd94a42f7bd9c8f44fc5a39f9d2aaddf619901"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-c3bfebc1a48c47c6bc26bdcc2cd93ca6/synthetic-emergency-only-recovery/primary-unavailable-preserved.jsonl",
+      "bytes": 7258,
+      "sha256": "2290fc61e85ca98450e9fab5cfb1685ba5c0cc18bfd7c56e08906bbaff9aedc8"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-c3bfebc1a48c47c6bc26bdcc2cd93ca6/synthetic-emergency-success/emergency.jsonl",
+      "bytes": 3420,
+      "sha256": "b72f42b688427eba3a7ffbab80e677db2347497be640a3002e44f551000bd467"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-c3bfebc1a48c47c6bc26bdcc2cd93ca6/synthetic-emergency-success/journal.jsonl",
+      "bytes": 22892,
+      "sha256": "a723f851a3e31aac8a05587e9b5a352c6fa09d4fa852d179c663f68586eebdea"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-c3bfebc1a48c47c6bc26bdcc2cd93ca6/synthetic-root-bytes.txt",
+      "bytes": 47,
+      "sha256": "07e6171b62102a12611b0fc55ac766e9a32a5d8167b39087fd534d37592f84b3"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-c3bfebc1a48c47c6bc26bdcc2cd93ca6/synthetic-sanitized-example.jsonl",
+      "bytes": 24735,
+      "sha256": "ec3bdc2c9949480b0451613f1958b6193b4ccaff095f7097d0551972520f54ac"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-c3bfebc1a48c47c6bc26bdcc2cd93ca6/test-results.json",
+      "bytes": 53027,
+      "sha256": "6e44614e709861a98d87480ad9041c67ac6955e41f5d1bc34983d501dc81653e"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d4164e06880e4ef5acc1bc83ef374ce8/compiler-inputs/nmgkisxx.0.cs",
+      "bytes": 21479,
+      "sha256": "0f484796be10314137296f165cf647c187d95ee5d62fff5886f58f1f0700489d"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d4164e06880e4ef5acc1bc83ef374ce8/compiler-inputs/nmgkisxx.1.cs",
+      "bytes": 15645,
+      "sha256": "c6b62533b22b4466fc99a7f227cdf88f9b2f440564701fbfe4c563f386520194"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d4164e06880e4ef5acc1bc83ef374ce8/compiler-inputs/nmgkisxx.2.cs",
+      "bytes": 21067,
+      "sha256": "a65f941eb6236859a21fc12aa7c8138f54b7a9e0bd550fe01cc60fa0f3bab32b"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d4164e06880e4ef5acc1bc83ef374ce8/compiler-inputs/nmgkisxx.3.cs",
+      "bytes": 29906,
+      "sha256": "3d82f103d3f46f6a1221a316181ef22b0d18c9c7867b0abd99ffd45259786686"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d4164e06880e4ef5acc1bc83ef374ce8/compiler-inputs/nmgkisxx.4.cs",
+      "bytes": 14664,
+      "sha256": "251907c4d88bedbcaf4e0a5447ce93f3d8ee389c13e15a4601debae5d7a0fd11"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d4164e06880e4ef5acc1bc83ef374ce8/compiler-inputs/nmgkisxx.cmdline",
+      "bytes": 1119,
+      "sha256": "32df5f80ee7924c70a858cd544cc0172153f945343b45bc2ad267658d7914c88"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d4164e06880e4ef5acc1bc83ef374ce8/compiler-inputs/nmgkisxx.err",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d4164e06880e4ef5acc1bc83ef374ce8/compiler-inputs/nmgkisxx.out",
+      "bytes": 1632,
+      "sha256": "d5fe0318a6b8337688fbf76e28a000309d5774ebf4121316ecf8d96b58824fb7"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d4164e06880e4ef5acc1bc83ef374ce8/compiler-inputs/nmgkisxx.tmp",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d4164e06880e4ef5acc1bc83ef374ce8/journal-success/emergency.jsonl",
+      "bytes": 346,
+      "sha256": "8c24c9bb6205e187a8ac0f9a5a7ea221eac0f5a1e0a06f7ca6b83abb9d97d775"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d4164e06880e4ef5acc1bc83ef374ce8/journal-success/journal.jsonl",
+      "bytes": 690,
+      "sha256": "3be8f3f553798824af0f69b319217114b562e47fe86efcbff27341a9c2702067"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d4164e06880e4ef5acc1bc83ef374ce8/not-a-directory",
+      "bytes": 23,
+      "sha256": "0b7a15ad83623728049a733f4241f3692131c1fa8c3db2a342fde771e40c16e6"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d4164e06880e4ef5acc1bc83ef374ce8/serialization-failure/emergency.jsonl",
+      "bytes": 346,
+      "sha256": "ea8ee91ec9ec47ef4b698e3ba3c0c308772929d1ebc6358c0265b39f5b6395ee"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d4164e06880e4ef5acc1bc83ef374ce8/serialization-failure/journal.jsonl",
+      "bytes": 345,
+      "sha256": "786459ded698f904a1ea8ff5536341706bcc6df8204f2ef4deb88c1cc9fc7249"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d4164e06880e4ef5acc1bc83ef374ce8/snapshot-lock-test/Probe.cs",
+      "bytes": 117,
+      "sha256": "801f06504f37a959734d01aadac12142c778d26803edef17cc89575680ddc195"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d4164e06880e4ef5acc1bc83ef374ce8/snapshot-lock-test/compiler/tvdk0wkm.0.cs",
+      "bytes": 120,
+      "sha256": "77c4b6e492f1252f146e2726490b40930081128f4fd36f41b3c549e5134af9f1"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d4164e06880e4ef5acc1bc83ef374ce8/snapshot-lock-test/compiler/tvdk0wkm.cmdline",
+      "bytes": 475,
+      "sha256": "a21c7d94949ca1e6331a4651fa462d2cccf15bcfdb6fde041299d181181dfe96"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d4164e06880e4ef5acc1bc83ef374ce8/snapshot-lock-test/compiler/tvdk0wkm.err",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d4164e06880e4ef5acc1bc83ef374ce8/snapshot-lock-test/compiler/tvdk0wkm.out",
+      "bytes": 988,
+      "sha256": "f6e7ca78d0b0d5e28ed40d43267bebdfe927463d24c64786c37bfe0e88fc3d34"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d4164e06880e4ef5acc1bc83ef374ce8/snapshot-lock-test/compiler/tvdk0wkm.tmp",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d4164e06880e4ef5acc1bc83ef374ce8/snapshot-memory-test/Probe.cs",
+      "bytes": 25,
+      "sha256": "4c28b9d73fefbd6371dd75a42ab14a1b35bc14ca3143b66449a676e15d240839"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d4164e06880e4ef5acc1bc83ef374ce8/snapshot-modification-test/Probe.cs",
+      "bytes": 29,
+      "sha256": "6dd55c431b2ee58748327c4e11dfa43eadcab39d62e336776f95e89678ec7ed2"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d4164e06880e4ef5acc1bc83ef374ce8/synthetic-emergency-only-recovery/emergency.jsonl",
+      "bytes": 4693,
+      "sha256": "9ebbb70b9aa122e63fde996ea6c23e01af0e8d01a14625c958fb6069bf34e600"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d4164e06880e4ef5acc1bc83ef374ce8/synthetic-emergency-only-recovery/primary-unavailable-preserved.jsonl",
+      "bytes": 7292,
+      "sha256": "669d955059a7db4ce7512be808d15e5d5719a71930cb82f62bd30cad949b9b8c"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d4164e06880e4ef5acc1bc83ef374ce8/synthetic-emergency-success/emergency.jsonl",
+      "bytes": 3454,
+      "sha256": "cfae553b27b2f8544de32294b5573e93d105e51d3375f3e22b4495dff70cce71"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d4164e06880e4ef5acc1bc83ef374ce8/synthetic-emergency-success/journal.jsonl",
+      "bytes": 22926,
+      "sha256": "d6afa2180e2a7405aa2473f7ad541a1f5afdd4ede5ebb741e02a37cf375e06fb"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d4164e06880e4ef5acc1bc83ef374ce8/synthetic-root-bytes.txt",
+      "bytes": 47,
+      "sha256": "07e6171b62102a12611b0fc55ac766e9a32a5d8167b39087fd534d37592f84b3"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d4164e06880e4ef5acc1bc83ef374ce8/synthetic-sanitized-example.jsonl",
+      "bytes": 24803,
+      "sha256": "b805b70039b9ceb3690af5ff11074d7344f9d1083a55c7be8bf6dbbcfcdb9fdb"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d4164e06880e4ef5acc1bc83ef374ce8/test-results.json",
+      "bytes": 57253,
+      "sha256": "e8a646951cc4e7bbb884c1656ec21d4b3aab7bd4677373e2e23b324bf06af05e"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d7b25ad8655a47318783ec987cee2859/compiler-inputs/dsm3hbvw.0.cs",
+      "bytes": 21479,
+      "sha256": "0f484796be10314137296f165cf647c187d95ee5d62fff5886f58f1f0700489d"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d7b25ad8655a47318783ec987cee2859/compiler-inputs/dsm3hbvw.1.cs",
+      "bytes": 15645,
+      "sha256": "c6b62533b22b4466fc99a7f227cdf88f9b2f440564701fbfe4c563f386520194"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d7b25ad8655a47318783ec987cee2859/compiler-inputs/dsm3hbvw.2.cs",
+      "bytes": 21067,
+      "sha256": "a65f941eb6236859a21fc12aa7c8138f54b7a9e0bd550fe01cc60fa0f3bab32b"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d7b25ad8655a47318783ec987cee2859/compiler-inputs/dsm3hbvw.3.cs",
+      "bytes": 29906,
+      "sha256": "3d82f103d3f46f6a1221a316181ef22b0d18c9c7867b0abd99ffd45259786686"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d7b25ad8655a47318783ec987cee2859/compiler-inputs/dsm3hbvw.4.cs",
+      "bytes": 15140,
+      "sha256": "7e2fc55d84d12d491ff6ad26c870df1cd0c9f68f04177f011bda86ed05a81151"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d7b25ad8655a47318783ec987cee2859/compiler-inputs/dsm3hbvw.cmdline",
+      "bytes": 1119,
+      "sha256": "dcad5795b4d08f6d878caba3875ede2c574eccc0db9258037f37d5a54573ed15"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d7b25ad8655a47318783ec987cee2859/compiler-inputs/dsm3hbvw.err",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d7b25ad8655a47318783ec987cee2859/compiler-inputs/dsm3hbvw.out",
+      "bytes": 1632,
+      "sha256": "7b91c93903e847debb0cfee7fd9976adf1e0e59488a7db5d315158187f4d31f2"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d7b25ad8655a47318783ec987cee2859/compiler-inputs/dsm3hbvw.tmp",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d7b25ad8655a47318783ec987cee2859/journal-success/emergency.jsonl",
+      "bytes": 346,
+      "sha256": "70af79dfa0e8c032c29b15ea3c8b7c02d3ae584222f839e98f49bd56e71632ad"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d7b25ad8655a47318783ec987cee2859/journal-success/journal.jsonl",
+      "bytes": 690,
+      "sha256": "cf42b349d40bd85ad91dceeab3911024a7a18acc9a20985e195ccfce33a5d484"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d7b25ad8655a47318783ec987cee2859/not-a-directory",
+      "bytes": 23,
+      "sha256": "0b7a15ad83623728049a733f4241f3692131c1fa8c3db2a342fde771e40c16e6"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d7b25ad8655a47318783ec987cee2859/serialization-failure/emergency.jsonl",
+      "bytes": 346,
+      "sha256": "d91f608bacb894f9b05268191c7fd705c6e516eb03a583b7cf0e984558651f99"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d7b25ad8655a47318783ec987cee2859/serialization-failure/journal.jsonl",
+      "bytes": 345,
+      "sha256": "bb8018960661bf0c018a7ebf9e6c4ec8e72497551bf7db70f0aa0441784c1400"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d7b25ad8655a47318783ec987cee2859/snapshot-lock-test/Probe.cs",
+      "bytes": 117,
+      "sha256": "4035db69cb4ea505310ec4eff0bbf274d6182eeaea43ee6cba9a1e5412aed65b"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d7b25ad8655a47318783ec987cee2859/snapshot-lock-test/compiler/4asulfos.0.cs",
+      "bytes": 120,
+      "sha256": "18825f45a2283fed49ec375cf66debfdaad7833488b415fb513840d8f5cfd7b7"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d7b25ad8655a47318783ec987cee2859/snapshot-lock-test/compiler/4asulfos.cmdline",
+      "bytes": 475,
+      "sha256": "5dba827136d59d5103bfd5787f5809d735ff4dc27e5c63ce918f99d02a0ccbaa"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d7b25ad8655a47318783ec987cee2859/snapshot-lock-test/compiler/4asulfos.err",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d7b25ad8655a47318783ec987cee2859/snapshot-lock-test/compiler/4asulfos.out",
+      "bytes": 988,
+      "sha256": "a455791f796d529192ca67351046ea9a86249366e0057faef26bae2fa634b267"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d7b25ad8655a47318783ec987cee2859/snapshot-lock-test/compiler/4asulfos.tmp",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d7b25ad8655a47318783ec987cee2859/snapshot-memory-test/Probe.cs",
+      "bytes": 25,
+      "sha256": "4c28b9d73fefbd6371dd75a42ab14a1b35bc14ca3143b66449a676e15d240839"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d7b25ad8655a47318783ec987cee2859/snapshot-modification-test/Probe.cs",
+      "bytes": 29,
+      "sha256": "6dd55c431b2ee58748327c4e11dfa43eadcab39d62e336776f95e89678ec7ed2"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d7b25ad8655a47318783ec987cee2859/synthetic-emergency-only-recovery/emergency.jsonl",
+      "bytes": 4693,
+      "sha256": "60488e1ccb76659f62ead71bd68af638d9ccdec6bed26711611fce0097213890"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d7b25ad8655a47318783ec987cee2859/synthetic-emergency-only-recovery/primary-unavailable-preserved.jsonl",
+      "bytes": 7292,
+      "sha256": "2be1ae1c4d348b7ee513171c2bce4c134a8609cb9e173d1f21a25761dea1361c"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d7b25ad8655a47318783ec987cee2859/synthetic-emergency-success/emergency.jsonl",
+      "bytes": 3454,
+      "sha256": "478573acf2c8a9584002b9c10f3aa97b30765d067138d3f023062b1b5bd3614c"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d7b25ad8655a47318783ec987cee2859/synthetic-emergency-success/journal.jsonl",
+      "bytes": 22926,
+      "sha256": "8470d1d8dd6d33e24bfdd29e05ab640a7e48cbfe7a50636cf19a297937e47cf4"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d7b25ad8655a47318783ec987cee2859/synthetic-root-bytes.txt",
+      "bytes": 47,
+      "sha256": "07e6171b62102a12611b0fc55ac766e9a32a5d8167b39087fd534d37592f84b3"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d7b25ad8655a47318783ec987cee2859/synthetic-sanitized-example.jsonl",
+      "bytes": 24804,
+      "sha256": "6715f4b652cfa9e822ecebb12fd450a1f0dafb29a382b2d8818260b9f1f7a0e8"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-d7b25ad8655a47318783ec987cee2859/test-results.json",
+      "bytes": 58193,
+      "sha256": "4882652349926f6e3a158f1b9af4d2bef195478748e0e7e2395951b9401c7fd3"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-fdf7956c5ace4af7bd47605d80d44f9d/compiler-inputs/ahd0vsna.0.cs",
+      "bytes": 21479,
+      "sha256": "0f484796be10314137296f165cf647c187d95ee5d62fff5886f58f1f0700489d"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-fdf7956c5ace4af7bd47605d80d44f9d/compiler-inputs/ahd0vsna.1.cs",
+      "bytes": 15645,
+      "sha256": "c6b62533b22b4466fc99a7f227cdf88f9b2f440564701fbfe4c563f386520194"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-fdf7956c5ace4af7bd47605d80d44f9d/compiler-inputs/ahd0vsna.2.cs",
+      "bytes": 21067,
+      "sha256": "a65f941eb6236859a21fc12aa7c8138f54b7a9e0bd550fe01cc60fa0f3bab32b"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-fdf7956c5ace4af7bd47605d80d44f9d/compiler-inputs/ahd0vsna.3.cs",
+      "bytes": 29906,
+      "sha256": "3d82f103d3f46f6a1221a316181ef22b0d18c9c7867b0abd99ffd45259786686"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-fdf7956c5ace4af7bd47605d80d44f9d/compiler-inputs/ahd0vsna.4.cs",
+      "bytes": 15140,
+      "sha256": "7e2fc55d84d12d491ff6ad26c870df1cd0c9f68f04177f011bda86ed05a81151"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-fdf7956c5ace4af7bd47605d80d44f9d/compiler-inputs/ahd0vsna.cmdline",
+      "bytes": 1119,
+      "sha256": "25c3272edc8a84a4ecde84567844d8161e0344f58177f60ab29b6c29bc4d173b"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-fdf7956c5ace4af7bd47605d80d44f9d/compiler-inputs/ahd0vsna.err",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-fdf7956c5ace4af7bd47605d80d44f9d/compiler-inputs/ahd0vsna.out",
+      "bytes": 1632,
+      "sha256": "d49c030164d55560bbd3d6a8e31c660dc3a026e53a6f76c13021e161a308562f"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-fdf7956c5ace4af7bd47605d80d44f9d/compiler-inputs/ahd0vsna.tmp",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-fdf7956c5ace4af7bd47605d80d44f9d/journal-success/emergency.jsonl",
+      "bytes": 346,
+      "sha256": "ca5c458be090216ed9ce5cc524c653b434519198d09f16d04fb2410b6d7fb04b"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-fdf7956c5ace4af7bd47605d80d44f9d/journal-success/journal.jsonl",
+      "bytes": 690,
+      "sha256": "cbf8dbd77dbfda188bc463c76fa537fe19367c443da35b930374fc6b83ebc64b"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-fdf7956c5ace4af7bd47605d80d44f9d/not-a-directory",
+      "bytes": 23,
+      "sha256": "0b7a15ad83623728049a733f4241f3692131c1fa8c3db2a342fde771e40c16e6"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-fdf7956c5ace4af7bd47605d80d44f9d/serialization-failure/emergency.jsonl",
+      "bytes": 346,
+      "sha256": "da246e0a1ed54f166918a5dad2089de20b9bbb8411ba19a188c761973ef96c76"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-fdf7956c5ace4af7bd47605d80d44f9d/serialization-failure/journal.jsonl",
+      "bytes": 345,
+      "sha256": "00ce8bf5613485c091bf5bcefab48d82fc5cd2161a360b2181da42b51ca47e4c"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-fdf7956c5ace4af7bd47605d80d44f9d/snapshot-lock-test/Probe.cs",
+      "bytes": 117,
+      "sha256": "a963b9216f3684f7cb3f047a6506420872a43f38e501757cf2e78ea88e2fa1be"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-fdf7956c5ace4af7bd47605d80d44f9d/snapshot-lock-test/compiler/b4uqrthv.0.cs",
+      "bytes": 120,
+      "sha256": "5d5503ab4e241d6e87863792b6e185240a7976884560a9dd522f569243880679"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-fdf7956c5ace4af7bd47605d80d44f9d/snapshot-lock-test/compiler/b4uqrthv.cmdline",
+      "bytes": 475,
+      "sha256": "81ec4aaf37dde3d271fb835842809e6825f4c84e2f048434520d89c07dfee800"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-fdf7956c5ace4af7bd47605d80d44f9d/snapshot-lock-test/compiler/b4uqrthv.err",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-fdf7956c5ace4af7bd47605d80d44f9d/snapshot-lock-test/compiler/b4uqrthv.out",
+      "bytes": 988,
+      "sha256": "19f6287488e9bd50ce5ade86635bfeb1ba07f65b5e798f99f5ca1166c43cc712"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-fdf7956c5ace4af7bd47605d80d44f9d/snapshot-lock-test/compiler/b4uqrthv.tmp",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-fdf7956c5ace4af7bd47605d80d44f9d/snapshot-memory-test/Probe.cs",
+      "bytes": 25,
+      "sha256": "4c28b9d73fefbd6371dd75a42ab14a1b35bc14ca3143b66449a676e15d240839"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-fdf7956c5ace4af7bd47605d80d44f9d/snapshot-modification-test/Probe.cs",
+      "bytes": 29,
+      "sha256": "6dd55c431b2ee58748327c4e11dfa43eadcab39d62e336776f95e89678ec7ed2"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-fdf7956c5ace4af7bd47605d80d44f9d/synthetic-emergency-only-recovery/emergency.jsonl",
+      "bytes": 4693,
+      "sha256": "df31b288896e057deee718b76644c1645ee52dc0c67aee6a76b93266851f5301"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-fdf7956c5ace4af7bd47605d80d44f9d/synthetic-emergency-only-recovery/primary-unavailable-preserved.jsonl",
+      "bytes": 7292,
+      "sha256": "a2c88b084b05face0da55fa45044523de923a71ac0cbbd1b7dc752a7a4db4258"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-fdf7956c5ace4af7bd47605d80d44f9d/synthetic-emergency-success/emergency.jsonl",
+      "bytes": 3454,
+      "sha256": "ddfa1593bca6e7a045cf7758ef940e9a001fa68857e13710df46c0ffde235606"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-fdf7956c5ace4af7bd47605d80d44f9d/synthetic-emergency-success/journal.jsonl",
+      "bytes": 22926,
+      "sha256": "53086fb5621df5c1959a21bc2b5dbc50f23cb0230e1538772d775aa9efb6ccd8"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-fdf7956c5ace4af7bd47605d80d44f9d/synthetic-root-bytes.txt",
+      "bytes": 47,
+      "sha256": "07e6171b62102a12611b0fc55ac766e9a32a5d8167b39087fd534d37592f84b3"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-fdf7956c5ace4af7bd47605d80d44f9d/synthetic-sanitized-example.jsonl",
+      "bytes": 24803,
+      "sha256": "6c361f82774023cccfd2a452c4699d3ed1b33e034a281da5942bcaf55d44302a"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/local-verification-fdf7956c5ace4af7bd47605d80d44f9d/test-results.json",
+      "bytes": 58193,
+      "sha256": "93362bf8b29eb2cc608d3dfe0cdbf51fd018b484a624d8a9a9652f62a5be5e80"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-controller/v3/review-inventory.json",
+      "bytes": 47310,
+      "sha256": "6f8adf82413ca2f5188fc1fef91a3171b9d71f0c58c12d042852e800617ced0d"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-execution-package/PENDING_REMOTE_AND_CLOSURE.md",
+      "bytes": 4225,
+      "sha256": "0748a45e1b8c0dd7cc34db476e51fc49c18e2c34eaa367cb1e85aa1dfefd972b"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-execution-package/README.md",
+      "bytes": 14057,
+      "sha256": "a1b3f085711a896da55ea9ad4dd0bad84081a1bdce523bae97771412461c83e7"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-execution-package/REQUIREMENT_MATRIX.md",
+      "bytes": 12775,
+      "sha256": "0f1b79328ba7b6e4e85d16f349460657e6da4ee9374b042aeb074770defd1dbd"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-execution-package/REVIEW.md",
+      "bytes": 9860,
+      "sha256": "aa8951f2726e336934929798b4d84a948437b8aa1f81fed87100827a330e02eb"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-execution-package/Verify-AdditionalControls.ps1",
+      "bytes": 2810,
+      "sha256": "c7478f3c8a80704e91258ccab2d7ab36d0ab20d02db31df53e25f0094617d884"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-execution-package/Verify-LocalEvidence.ps1",
+      "bytes": 6704,
+      "sha256": "00beb7b557f88c7b2ea8ea8cb5d6068cf5b7820bab5d774482479a2c01edec89"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-execution-package/Write-PackageInventory.cjs",
+      "bytes": 4659,
+      "sha256": "aaec2cce9b20eeee1591dfa4091ef3adf0f07a73ff01b0d8ba340a78bb64ca01"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-execution-package/additional-controls.json",
+      "bytes": 4205,
+      "sha256": "b5f439f813e7f9659f26a078064c6b085b5bb4621f22df8a9a8011ce0ed98c1e"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-execution-package/local-review-evidence.json",
+      "bytes": 8155,
+      "sha256": "72bfcfabde4e7f3fc42fc41cc27d13ba08bf4c6d0cc88d23ce3b333ace482551"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-execution-package/original-scope-extract.json",
+      "bytes": 2553,
+      "sha256": "676c1b16cfbc80d2d1e74119cc7bbf43fe569cb6f9ee97100b6c51a3a5196ef4"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-execution-package/production-subset-compiler-inputs/r3rngxf1.0.cs",
+      "bytes": 21479,
+      "sha256": "0f484796be10314137296f165cf647c187d95ee5d62fff5886f58f1f0700489d"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-execution-package/production-subset-compiler-inputs/r3rngxf1.1.cs",
+      "bytes": 15645,
+      "sha256": "c6b62533b22b4466fc99a7f227cdf88f9b2f440564701fbfe4c563f386520194"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-execution-package/production-subset-compiler-inputs/r3rngxf1.2.cs",
+      "bytes": 21067,
+      "sha256": "a65f941eb6236859a21fc12aa7c8138f54b7a9e0bd550fe01cc60fa0f3bab32b"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-execution-package/production-subset-compiler-inputs/r3rngxf1.cmdline",
+      "bytes": 665,
+      "sha256": "c81e27707a72aec6c154aa72fc8b1df61d103356694968fe4a4e34eb887e6367"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-execution-package/production-subset-compiler-inputs/r3rngxf1.err",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-execution-package/production-subset-compiler-inputs/r3rngxf1.out",
+      "bytes": 1178,
+      "sha256": "d208d5b22b7a4ed50028d2a1a84c686867eb6f837d09eb87baa00561328aeadb"
+    },
+    {
+      "file": "docs/integration/cha-execution/q12-execution-package/production-subset-compiler-inputs/r3rngxf1.tmp",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "docs/integration/remaining-task-workqueue/REMAINING_DECISIONS_ALL_OWNERS.md",
+      "bytes": 12302,
+      "sha256": "f3dc83b1ca0e99600760dd447c45c29def8615462893978ece90a72da7a57056"
+    },
+    {
+      "file": "docs/integration/remaining-task-workqueue/decision-index.json",
+      "bytes": 13659,
+      "sha256": "0098ea33d1b48d8ca6abe6b72351b27ba3da540ca4b8120da01acf82c8115f9e"
+    },
+    {
+      "file": "docs/integration/remaining-task-workqueue/tasks/CURRENT_DB-IMP-01.md",
+      "bytes": 5001,
+      "sha256": "3f6f560bd355e8661be8fc7e286500a85b0eee6dfa92fdbbbd9d638cadf51022"
+    },
+    {
+      "file": "supabase/drafts/DB-IMP-01_authorization_schema_draft.sql",
+      "bytes": 25957,
+      "sha256": "258fad0aa091e6e5b7ba6bb660df84a2269aa0f326ecb72706eec6fb26e764d0"
+    },
+    {
+      "file": "supabase/drafts/DB-IMP-01_bridge_sync_rpcs_draft.sql",
+      "bytes": 10673,
+      "sha256": "dcb065fac25e2b26366d424bb236020185aaba92d23115e49fdd2584289eec4a"
+    },
+    {
+      "file": "supabase/drafts/DB-IMP-01_disabled_registry.sql",
+      "bytes": 3246,
+      "sha256": "6d8e11d72f28bb6291184fea2227d20adb3dc9d73761517d86a87abe5517644b"
+    }
+  ],
+  "controllerRevision": "v3 unchanged",
+  "freshTests": {
+    "passed": 211,
+    "failed": 0,
+    "runId": "d7b25ad8655a47318783ec987cee2859"
+  },
+  "certificateTrusted": false,
+  "remoteExecuted": false,
+  "closureAccepted": false,
+  "taskStatusEdited": false
+}

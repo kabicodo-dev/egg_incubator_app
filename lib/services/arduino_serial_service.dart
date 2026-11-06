@@ -73,6 +73,11 @@ abstract class ArduinoSerialService {
     Duration timeout = const Duration(seconds: 3),
   });
 
+  /// Sends an LCD update (egg type, day, duration) to the Arduino display.
+  ///
+  /// This is fire-and-forget: no acknowledgement is awaited.
+  Future<void> sendLcdUpdate(LcdUpdateCommand lcdCommand);
+
   /// Releases every reader/writer/listener.
   Future<void> dispose();
 }

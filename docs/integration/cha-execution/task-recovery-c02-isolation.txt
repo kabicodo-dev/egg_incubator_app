@@ -1,0 +1,102 @@
+ORIGINAL:C-02 — targeted local isolation validation
+Recorded: 2026-10-31T15:54:25.850Z
+Status: PARTIAL / BLOCKED; no task-status files modified.
+Scope: documentation validator only. Historical contracts/fixtures are unchanged.
+
+Environment
+Working directory: C:\EggIncubator\egg_incubator_app
+Node: v26.4.0
+Child-process NODE_PATH: C:/Users/Mary Charlyn/AppData/Local/Temp/opencode/node_modules
+Reused Ajv 8.17.1 and ajv-formats 3.0.1; no dependencies installed.
+Commands below were executed by Node child_process.spawnSync with this environment,
+using process.execPath, an argument array and a 60000 ms timeout per command.
+No existing evidence-producing runner was invoked or historical log overwritten.
+
+Actual command: node --check docs/validate-c02-provisional.cjs
+Started: 2026-10-31T15:54:25.179Z
+Finished: 2026-10-31T15:54:25.330Z
+Exit code: 0; signal: null; launch error: none; stdout/stderr: empty.
+
+Actual command: node docs/validate-c02-provisional.cjs
+Started: 2026-10-31T15:54:25.330Z
+Finished: 2026-10-31T15:54:25.848Z
+Exit code: 0; signal: null; launch error: none; stderr: empty.
+Captured stdout (transcribed unchanged from the execution result):
+PASS: draft 2020-12 schema meta-validation and compilation
+PASS: 14 labeled synthetic messages accepted
+PASS: 65 schema-negative mutations rejected
+PASS: 11 malformed/unsafe frame fixtures rejected
+PASS: CRLF, trailing whitespace, and 2 status/time edge cases
+PASS: isolation rejection and no-mutation hw02_batch_review.ndjson:1 HELLO
+PASS: isolation rejection and no-mutation hw02_batch_review.ndjson:2 HELLO
+PASS: isolation rejection and no-mutation hw02_batch_review.ndjson:3 START
+PASS: isolation rejection and no-mutation hw02_batch_review.ndjson:4 STOP
+PASS: isolation rejection and no-mutation hw02_batch_review.ndjson:5 STATUS
+PASS: isolation rejection and no-mutation hw02_batch_review.ndjson:6 ACK
+PASS: isolation rejection and no-mutation hw02_batch_review.ndjson:7 ACK
+PASS: isolation rejection and no-mutation hw02_batch_review.ndjson:8 STATE
+PASS: isolation rejection and no-mutation hw02_batch_review.ndjson:9 EVENT
+PASS: isolation rejection and no-mutation hw02_batch_review.ndjson:10 TEL
+PASS: isolation rejection and no-mutation hw02_batch_review.ndjson:11 ERROR
+PASS: isolation rejection and no-mutation hw02_batch_review.ndjson:12 REPLAY
+PASS: isolation rejection and no-mutation hw02_batch_review.ndjson:13 REPLAY_END
+PASS: isolation rejection and no-mutation hw02_batch_review.ndjson:14 RCPT_ACK
+PASS: isolation rejection and no-mutation hw02_corrected_review.ndjson:1 command
+PASS: isolation rejection and no-mutation hw02_corrected_review.ndjson:2 telemetry
+PASS: isolation rejection and no-mutation hw02_corrected_review.ndjson:3 ack
+PASS: isolation rejection and no-mutation hw02_corrected_review.ndjson:4 hello
+PASS: isolation rejection and no-mutation hw02_corrected_review.ndjson:5 hello_ack
+PASS: isolation rejection and no-mutation hw02_corrected_review.ndjson:6 event
+PASS: 20 incompatible literal frames rejected, each checked twice
+PASS: schema/example objects and all 5 protected contract/fixture files unchanged
+LIMITATION: isolation checks prove documentation-validator rejection only; not a live parser, lossless uint64 decoder, protocol selection or reviewer approval.
+NOT TESTED: firmware, physical Start/Stop, clocks, identity persistence, authentication, RLS, network, or hardware.
+
+Interpretation
+- 20 distinct historical frames: 14 compact batch-family and 6 corrected-family.
+- Each has two rejection/no-mutation attempts through the schema validator and
+  literal-frame checker. Repeated checks are not distinct additional fixtures.
+- Schema rejection must include required/additionalProperties envelope mismatch.
+- Original positive example objects and schema object remain unchanged.
+- Exact disk bytes of the three contract inputs and both NDJSON files remain unchanged.
+- Raw unsafe uint64 tokens are never serialized back to fixture files. This is
+  NOT a lossless numeric decoding test; JSON.parse can round unsafe integers.
+- No production parser/adapter behavior, selected firmware compatibility, source
+  authorization, hardware behavior or team approval is established by this run.
+
+Input SHA-256 verification
+All five protected hashes matched the pre-edit snapshot, before and after execution:
+docs/C02-provisional-communication-contract.md
+3559b60ace2b2d12e0a52304ed4ff1d9831a416b9a4edb5478d7ec359a69ddb7
+docs/C02-provisional.schema.json
+9e95d34ca160cae8600548c5c4919ece26953d892d77bd786198d9e9e15461dd
+docs/C02-provisional.examples.json
+155a44ed24f2c0627481822569c008b1ee332d315d72abe3bf9f09fc584275b5
+test/fixtures/integration/hw02_batch_review.ndjson
+e6c9ad858db1610a9aa3daab87c25ea575e42e282c033faed364bb7d0d654035
+test/fixtures/integration/hw02_corrected_review.ndjson
+c4c38f41d8aaaf24cc713b799641d9b8c8fb23c8f1d4f967daf69b4773bb9f11
+
+Authorized validator modification:
+Before SHA-256: 5d7d6185c1802923901770090f5537ba196f063f8a663c24a4faeae113373c1c
+After SHA-256: 40c7bd4444612c317f72058ad6fb74c0710d0a95098bd67fab352bd235395e63
+
+Review applicability and closure
+Kath's received focused review lists the exact three unchanged input hashes above:
+docs/integration/cha-execution/kath-focused-review-inputs/Kath-C02-Provisional-Focused-Review-2026-10-30.md
+Overall CHANGE; exact shared-wire acceptance BLOCKED. It is not final approval.
+Kath's manual-result 0.2 ACCEPT is a different, scoped cloud-result API review,
+not approval of this provisional wire protocol or a replacement firmware catalog.
+Ally's exact-input review and the selected source/catalog supersession are missing.
+Reported RX size versus verbose START/STOP/STATUS, incompatible envelopes and
+identity/time/lifecycle/recovery capability gaps remain unresolved, not fixed here.
+If a replacement candidate is selected, Kath and Ally must explicitly review its
+same exact document/schema/example hashes and dispose of the old CHANGE findings.
+Required for Completed: identify final contract/source/catalog revision; pass
+validation on that final revision; obtain attributable same-revision Ally/Kath
+reviews; resolve every mandatory incompatibility and link each original C-02
+requirement (telemetry, START/STOP/STATUS, ACK, error and provenance fields) to evidence.
+
+No contract rewrite, Flutter/firmware/Supabase change, SQL, dependency install,
+deployment, Git mutation, hardware command or external message send performed.
+ORIGINAL:C-03, DB-IMP-01 and unrelated work were not started/resumed.

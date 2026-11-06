@@ -1,0 +1,430 @@
+TAP version 13
+# Subtest: updated objective: Chicken profile identity propagates without invented numerical targets
+ok 1 - updated objective: Chicken profile identity propagates without invented numerical targets
+  ---
+  duration_ms: 6.9782
+  type: 'test'
+  ...
+# Subtest: updated objective: Duck profile identity propagates without invented numerical targets
+ok 2 - updated objective: Duck profile identity propagates without invented numerical targets
+  ---
+  duration_ms: 0.7828
+  type: 'test'
+  ...
+# Subtest: updated objective: Quail profile identity propagates without invented numerical targets
+ok 3 - updated objective: Quail profile identity propagates without invented numerical targets
+  ---
+  duration_ms: 0.3779
+  type: 'test'
+  ...
+# Subtest: updated objective: unknown species/profile identity is rejected, never defaults to Chicken
+ok 4 - updated objective: unknown species/profile identity is rejected, never defaults to Chicken
+  ---
+  duration_ms: 1.1162
+  type: 'test'
+  ...
+# Subtest: updated objective: temperature and humidity have independent actual-value/freshness states
+ok 5 - updated objective: temperature and humidity have independent actual-value/freshness states
+  ---
+  duration_ms: 0.739
+  type: 'test'
+  ...
+# Subtest: updated objective: stale remote reading stays stale despite recent cloud receipt
+ok 6 - updated objective: stale remote reading stays stale despite recent cloud receipt
+  ---
+  duration_ms: 0.3987
+  type: 'test'
+  ...
+# Subtest: updated objective: invalid RTC, unconfigured threshold or future clock does not claim live data
+ok 7 - updated objective: invalid RTC, unconfigured threshold or future clock does not claim live data
+  ---
+  duration_ms: 0.5554
+  type: 'test'
+  ...
+# Subtest: updated objective: source egg-turning diagnostic is recognized but never fabricated into a synced event
+ok 8 - updated objective: source egg-turning diagnostic is recognized but never fabricated into a synced event
+  ---
+  duration_ms: 0.5797
+  type: 'test'
+  ...
+# Subtest: updated objective: source lockdown stage is recognized for all species, not inferred from relay off
+ok 9 - updated objective: source lockdown stage is recognized for all species, not inferred from relay off
+  ---
+  duration_ms: 0.525
+  type: 'test'
+  ...
+# Subtest: updated objective: sensor errors have diagnostic data without claiming source identity or safety
+ok 10 - updated objective: sensor errors have diagnostic data without claiming source identity or safety
+  ---
+  duration_ms: 0.5569
+  type: 'test'
+  ...
+# Subtest: updated objective: a sensor error does not erase a separately reported lockdown stage
+ok 11 - updated objective: a sensor error does not erase a separately reported lockdown stage
+  ---
+  duration_ms: 0.3388
+  type: 'test'
+  ...
+# Subtest: updated objective: condition notification data is stable and controller-reported, not push delivery proof
+ok 12 - updated objective: condition notification data is stable and controller-reported, not push delivery proof
+  ---
+  duration_ms: 10.8113
+  type: 'test'
+  ...
+# Subtest: real core strict JSON rejects duplicate/escaped/nested keys, overflow numbers and trailing text
+ok 13 - real core strict JSON rejects duplicate/escaped/nested keys, overflow numbers and trailing text
+  ---
+  duration_ms: 6.4495
+  type: 'test'
+  ...
+# Subtest: real core accepts all seven existing candidate request shapes without changing fixtures
+ok 14 - real core accepts all seven existing candidate request shapes without changing fixtures
+  ---
+  duration_ms: 4.6674
+  type: 'test'
+  ...
+# Subtest: real canonical core matches recorded DB-02 fingerprint and ignores transport metadata
+ok 15 - real canonical core matches recorded DB-02 fingerprint and ignores transport metadata
+  ---
+  duration_ms: 19.5342
+  type: 'test'
+  ...
+# Subtest: actual loopback HTTP records Start, duplicate and changed-content conflict via real handler/ports; DB stub only
+ok 16 - actual loopback HTTP records Start, duplicate and changed-content conflict via real handler/ports; DB stub only
+  ---
+  duration_ms: 163.4165
+  type: 'test'
+  ...
+# Subtest: actual HTTP default source gate refuses valid-looking controller evidence before persistence
+ok 17 - actual HTTP default source gate refuses valid-looking controller evidence before persistence
+  ---
+  duration_ms: 30.7082
+  type: 'test'
+  ...
+# Subtest: actual HTTP missing/forged credentials and anonymous user are denied against Auth boundary stub
+ok 18 - actual HTTP missing/forged credentials and anonymous user are denied against Auth boundary stub
+  ---
+  duration_ms: 36.887
+  type: 'test'
+  ...
+# Subtest: actual HTTP registry/session denial blocks writes and receipt lookup even for otherwise accepted Auth fixture
+ok 19 - actual HTTP registry/session denial blocks writes and receipt lookup even for otherwise accepted Auth fixture
+  ---
+  duration_ms: 39.3355
+  type: 'test'
+  ...
+# Subtest: actual HTTP wrong source scope is denied before source adapter/store
+ok 20 - actual HTTP wrong source scope is denied before source adapter/store
+  ---
+  duration_ms: 21.3861
+  type: 'test'
+  ...
+# Subtest: actual HTTP source/body mismatch and unsupported split evidence cannot persist
+ok 21 - actual HTTP source/body mismatch and unsupported split evidence cannot persist
+  ---
+  duration_ms: 24.0859
+  type: 'test'
+  ...
+# Subtest: actual HTTP duplicate JSON keys, invalid dates, wrong types and invented event kinds are rejected
+ok 22 - actual HTTP duplicate JSON keys, invalid dates, wrong types and invented event kinds are rejected
+  ---
+  duration_ms: 48.2827
+  type: 'test'
+  ...
+# Subtest: actual HTTP stream bounds and method/media handling fail without storage writes
+ok 23 - actual HTTP stream bounds and method/media handling fail without storage writes
+  ---
+  duration_ms: 30.197
+  type: 'test'
+  ...
+# Subtest: actual HTTP Stop and farmer zero completion remain separate accepted candidate facts
+ok 24 - actual HTTP Stop and farmer zero completion remain separate accepted candidate facts
+  ---
+  duration_ms: 31.4952
+  type: 'test'
+  ...
+# Subtest: actual HTTP readings use source values and source fingerprint, not profile targets
+ok 25 - actual HTTP readings use source values and source fingerprint, not profile targets
+  ---
+  duration_ms: 45.2903
+  type: 'test'
+  ...
+# Subtest: actual HTTP returns committed waiting/conflict receipts distinctly from rejected content
+ok 26 - actual HTTP returns committed waiting/conflict receipts distinctly from rejected content
+  ---
+  duration_ms: 17.9843
+  type: 'test'
+  ...
+# Subtest: real HTTP socket response loss after handler completion reconciles same stored receipt (storage stub)
+ok 27 - real HTTP socket response loss after handler completion reconciles same stored receipt (storage stub)
+  ---
+  duration_ms: 28.9507
+  type: 'test'
+  ...
+# Subtest: upstream persistence failure and malformed receipt are sanitized, never false success
+ok 28 - upstream persistence failure and malformed receipt are sanitized, never false success
+  ---
+  duration_ms: 20.3517
+  type: 'test'
+  ...
+# Subtest: actual reconciliation validates request IDs and nested receipt scope before echoing data
+ok 29 - actual reconciliation validates request IDs and nested receipt scope before echoing data
+  ---
+  duration_ms: 17.253
+  type: 'test'
+  ...
+# Subtest: real Supabase ports refuse main-project URL and require explicit isolated configuration
+ok 30 - real Supabase ports refuse main-project URL and require explicit isolated configuration
+  ---
+  duration_ms: 0.7807
+  type: 'test'
+  ...
+# Subtest: real Supabase ports do not turn a missing RPC/registry into a fake allowed result
+ok 31 - real Supabase ports do not turn a missing RPC/registry into a fake allowed result
+  ---
+  duration_ms: 0.6754
+  type: 'test'
+  ...
+# Subtest: DB-IMP-01 default-closed started: initial and retry never ingest
+ok 32 - DB-IMP-01 default-closed started: initial and retry never ingest
+  ---
+  duration_ms: 13.4986
+  type: 'test'
+  ...
+# Subtest: DB-IMP-01 default-closed stopped: initial and retry never ingest
+ok 33 - DB-IMP-01 default-closed stopped: initial and retry never ingest
+  ---
+  duration_ms: 15.0376
+  type: 'test'
+  ...
+# Subtest: DB-IMP-01 default-closed completion: initial and retry never ingest
+ok 34 - DB-IMP-01 default-closed completion: initial and retry never ingest
+  ---
+  duration_ms: 15.0672
+  type: 'test'
+  ...
+# Subtest: DB-IMP-01 default-closed reading: initial and retry never ingest
+ok 35 - DB-IMP-01 default-closed reading: initial and retry never ingest
+  ---
+  duration_ms: 17.3074
+  type: 'test'
+  ...
+# Subtest: DB-IMP-01 default-closed conflicting_count: initial and retry never ingest
+ok 36 - DB-IMP-01 default-closed conflicting_count: initial and retry never ingest
+  ---
+  duration_ms: 12.7496
+  type: 'test'
+  ...
+# Subtest: DB-IMP-01 default-closed status: initial and retry never ingest
+ok 37 - DB-IMP-01 default-closed status: initial and retry never ingest
+  ---
+  duration_ms: 13.4901
+  type: 'test'
+  ...
+# Subtest: INT-08 source snapshots and fixture namespaces are pinned, not selected
+ok 38 - INT-08 source snapshots and fixture namespaces are pinned, not selected
+  ---
+  duration_ms: 7.9694
+  type: 'test'
+  ...
+# Subtest: INT-08 source pinning permits checkout line endings, never semantic source drift
+ok 39 - INT-08 source pinning permits checkout line endings, never semantic source drift
+  ---
+  duration_ms: 6.1926
+  type: 'test'
+  ...
+# Subtest: INT-08 review references cannot open real hardware or claim an active catalog
+ok 40 - INT-08 review references cannot open real hardware or claim an active catalog
+  ---
+  duration_ms: 0.7055
+  type: 'test'
+  ...
+# Subtest: INT-08 all 20 reference frames retain exact payload byte counts across checkout line endings
+ok 41 - INT-08 all 20 reference frames retain exact payload byte counts across checkout line endings
+  ---
+  duration_ms: 2.3866
+  type: 'test'
+  ...
+# Subtest: INT-01 byte fragmentation at every boundary preserves each reference frame
+ok 42 - INT-01 byte fragmentation at every boundary preserves each reference frame
+  ---
+  duration_ms: 41.3778
+  type: 'test'
+  ...
+# Subtest: INT-01 coalesced reads and one-byte reads preserve order
+ok 43 - INT-01 coalesced reads and one-byte reads preserve order
+  ---
+  duration_ms: 2.1392
+  type: 'test'
+  ...
+# Subtest: INT-01 exact test bound succeeds; overflow suffix is discarded through LF
+ok 44 - INT-01 exact test bound succeeds; overflow suffix is discarded through LF
+  ---
+  duration_ms: 0.7943
+  type: 'test'
+  ...
+# Subtest: INT-01 invalid ASCII/NUL input is not surfaced as a valid frame
+ok 45 - INT-01 invalid ASCII/NUL input is not surfaced as a valid frame
+  ---
+  duration_ms: 0.3602
+  type: 'test'
+  ...
+# Subtest: INT-01 disconnect clears partial bytes; reconnect does not join old suffix
+ok 46 - INT-01 disconnect clears partial bytes; reconnect does not join old suffix
+  ---
+  duration_ms: 0.6741
+  type: 'test'
+  ...
+# Subtest: INT-02 repeated read-only status queries never actuate or create outbox events
+ok 47 - INT-02 repeated read-only status queries never actuate or create outbox events
+  ---
+  duration_ms: 6.2861
+  type: 'test'
+  ...
+# Subtest: INT-03 explicit mock Start then Stop; controller report differs from cloud lifecycle
+ok 48 - INT-03 explicit mock Start then Stop; controller report differs from cloud lifecycle
+  ---
+  duration_ms: 30.3994
+  type: 'test'
+  ...
+# Subtest: INT-03 ACK alone remains unknown; it is not a Running report
+ok 49 - INT-03 ACK alone remains unknown; it is not a Running report
+  ---
+  duration_ms: 9.5458
+  type: 'test'
+  ...
+# Subtest: INT-03 manual zero hatch count does not dispatch a physical Stop
+ok 50 - INT-03 manual zero hatch count does not dispatch a physical Stop
+  ---
+  duration_ms: 32.7128
+  type: 'test'
+  ...
+# Subtest: INT-04 lost ACK with event/report still records one Start
+ok 51 - INT-04 lost ACK with event/report still records one Start
+  ---
+  duration_ms: 15.4395
+  type: 'test'
+  ...
+# Subtest: INT-04 lost entire outcome, app restart and reconnect recover original retained mock event
+ok 52 - INT-04 lost entire outcome, app restart and reconnect recover original retained mock event
+  ---
+  duration_ms: 11.5782
+  type: 'test'
+  ...
+# Subtest: INT-04 older retained Start cannot override newer current mock Stop
+ok 53 - INT-04 older retained Start cannot override newer current mock Stop
+  ---
+  duration_ms: 28.7899
+  type: 'test'
+  ...
+# Subtest: INT-04 replayed original command result after Stop is not current Running evidence
+ok 54 - INT-04 replayed original command result after Stop is not current Running evidence
+  ---
+  duration_ms: 24.1482
+  type: 'test'
+  ...
+# Subtest: INT-04 wrong controller on reconnect cannot bind, Start or reassign original local events
+ok 55 - INT-04 wrong controller on reconnect cannot bind, Start or reassign original local events
+  ---
+  duration_ms: 12.449
+  type: 'test'
+  ...
+# Subtest: INT-05 same logical command replays outcome; changed content conflicts
+ok 56 - INT-05 same logical command replays outcome; changed content conflicts
+  ---
+  duration_ms: 11.9716
+  type: 'test'
+  ...
+# Subtest: INT-05 a different Start identity cannot replace an active batch; wrong batch Stop rejected
+ok 57 - INT-05 a different Start identity cannot replace an active batch; wrong batch Stop rejected
+  ---
+  duration_ms: 14.5465
+  type: 'test'
+  ...
+# Subtest: INT-05 repeated local event has one outbox entry; changed same-key content is retained as conflict
+ok 58 - INT-05 repeated local event has one outbox entry; changed same-key content is retained as conflict
+  ---
+  duration_ms: 16.4245
+  type: 'test'
+  ...
+# Subtest: INT-06 failed initial local commit prevents command dispatch
+ok 59 - INT-06 failed initial local commit prevents command dispatch
+  ---
+  duration_ms: 3.0689
+  type: 'test'
+  ...
+# Subtest: INT-06 Running report plus failed event save stays distinct; source recovery repairs mock outbox
+ok 60 - INT-06 Running report plus failed event save stays distinct; source recovery repairs mock outbox
+  ---
+  duration_ms: 14.4427
+  type: 'test'
+  ...
+# Subtest: INT-06 offline event checkpoint survives reopen; failed upload preserves immutable outbox
+ok 61 - INT-06 offline event checkpoint survives reopen; failed upload preserves immutable outbox
+  ---
+  duration_ms: 15.6251
+  type: 'test'
+  ...
+# Subtest: INT-07 response lost after mock commit reconciles same receipt with one session
+ok 62 - INT-07 response lost after mock commit reconciles same receipt with one session
+  ---
+  duration_ms: 23.8628
+  type: 'test'
+  ...
+# Subtest: INT-07 identical duplicate does not reopen completed batch; same ID changed count rejected
+ok 63 - INT-07 identical duplicate does not reopen completed batch; same ID changed count rejected
+  ---
+  duration_ms: 32.3396
+  type: 'test'
+  ...
+# Subtest: INT-07 uploader/phone receipt changes do not rename an existing mock source fact
+ok 64 - INT-07 uploader/phone receipt changes do not rename an existing mock source fact
+  ---
+  duration_ms: 22.5388
+  type: 'test'
+  ...
+# Subtest: INT-07 missing predecessor persists waiting receipt; no invented session
+ok 65 - INT-07 missing predecessor persists waiting receipt; no invented session
+  ---
+  duration_ms: 10.3267
+  type: 'test'
+  ...
+# Subtest: INT-07 existing unrelated Active record conflicts without automatic completion or reassignment
+ok 66 - INT-07 existing unrelated Active record conflicts without automatic completion or reassignment
+  ---
+  duration_ms: 11.393
+  type: 'test'
+  ...
+# Subtest: INT-07 fake revoked-authorization gate denies submission and receipt reads, preserving local events
+ok 67 - INT-07 fake revoked-authorization gate denies submission and receipt reads, preserving local events
+  ---
+  duration_ms: 13.4639
+  type: 'test'
+  ...
+# Subtest: INT-07 mismatched receipt content cannot mark synced; no unsigned Uno release
+ok 68 - INT-07 mismatched receipt content cannot mark synced; no unsigned Uno release
+  ---
+  duration_ms: 12.0837
+  type: 'test'
+  ...
+# Subtest: INT-07 lower receipt revision ignored; same revision changed receipt rejected
+ok 69 - INT-07 lower receipt revision ignored; same revision changed receipt rejected
+  ---
+  duration_ms: 12.8335
+  type: 'test'
+  ...
+# Subtest: INT-08 read-only export is portable labelled JSON with original wire bytes and candidate DB fixtures
+ok 70 - INT-08 read-only export is portable labelled JSON with original wire bytes and candidate DB fixtures
+  ---
+  duration_ms: 148.4353
+  type: 'test'
+  ...
+1..70
+# tests 70
+# suites 0
+# pass 70
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1080.7616

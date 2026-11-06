@@ -1,0 +1,19 @@
+{
+  "date": "2026-11-01",
+  "classification": "LOCAL CHECKOUT SNAPSHOT ONLY; NOT A DELIVERED OR SELECTED SOURCE PACKET",
+  "files": [
+    {"path":"arduino/SmartHatch_Combined/SmartHatch_Combined.ino","bytes":23249,"sha256":"a466a868e6c148cf4f9c3230378d5033d81db89dfb77a3e0fa53891d847a9598"},
+    {"path":"arduino/SmartHatch_Uno/SmartHatch_Uno.ino","bytes":21544,"sha256":"0365b18bc969d36547440b5e4299b946da03fa5aeccdbff0fff8dc8efeef01fc"},
+    {"path":"lib/services/arduino_protocol.dart","bytes":11146,"sha256":"b5b836bb0b038dddf23025a60fd9c892dd08367e9aa125203450285af5acdd1d"},
+    {"path":"lib/services/supabase_service.dart","bytes":10817,"sha256":"8af0b3288bd605bd1a8493c88df6ece83e68e52102190cbb3fc6f41800076c5b"},
+    {"path":"supabase/functions/_shared/bridge-sync-core.mjs","bytes":16971,"sha256":"b7a9aa133ce46d180b84de0c2f712c5dc9229cf59c8b24c42f4dd661750850d2"},
+    {"path":"supabase/functions/_shared/bridge-sync-supabase.mjs","bytes":5042,"sha256":"f2f047c1826b02aef5b39c4c25f841a887440a9a9b95182076af00abc1e49f04"},
+    {"path":"docs/contract-review/DB-02_Exact_Bridge_Sync_API.md","bytes":45838,"sha256":"5678de5b6c6c1bcd7de827a4a28ad80b6f6d51454663f73118c6b12229a681ab"},
+    {"path":"docs/contract-review/DB-02_Manual_Result_API_0.2-review.md","bytes":7256,"sha256":"304da072775686906e67ea77ce635794273869f8ba3d933dcae80bf3fcdeabd6"},
+    {"path":"docs/contract-review/manual-result-0.2-review/schema.json","bytes":11271,"sha256":"b2d739271a2a575536c6db8c18504477eac951f63bfb88828bdf0f1db42cc7c4"},
+    {"path":"docs/contract-review/manual-result-0.2-review/reference.cjs","bytes":9908,"sha256":"032f070b7e584729436a311aea4a8cd9d2223650d40e8f907698056c0763c209"},
+    {"path":"docs/contract-review/manual-result-0.2-review/fixtures.json","bytes":9150,"sha256":"5ec00ee6b891e6c21cb5c3a378fca9fa6ea1c06d60e4d6c1b36a07b036bf2afa"},
+    {"path":"docs/integration/cha-execution/KATH_02_DELTA_ACCEPT_RECEIPT.md","bytes":4484,"sha256":"c78dd9951b2cd76db367871acd9cd0d2b158158e72c3a470f82d02689e494fcb"},
+    {"path":"docs/integration/cha-execution/q12-phase-a-status.json","bytes":2292,"sha256":"341a49d2a5193878252e65357484fb6e6eaafd68232f9b5345f73e1db712b0fb"}
+  ]
+}

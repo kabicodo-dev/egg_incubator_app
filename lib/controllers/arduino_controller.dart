@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 
 import '../services/arduino_protocol.dart';
+import '../services/arduino_readiness.dart';
 import '../services/arduino_serial_factory.dart';
 import '../services/arduino_serial_service.dart';
 
@@ -42,6 +43,10 @@ class ArduinoController extends ChangeNotifier {
 
   ArduinoConnectionState _connection = const ArduinoConnectionState.disconnected();
   ArduinoTelemetry? _telemetry;
+  /// Whether at least one telemetry frame has been received on the current
+  /// connection (distinguishes "awaiting first heartbeat" from "silence after
+  /// heartbeat"). Reset whenever the connection is (re)opened.
+  bool _telemetryReceived = false;
   final Map<String, ActuatorCommandStatus> _commandStatus = {};
   final Map<String, bool> _actuatorStates = {};
   List<String> _ports = const [];
@@ -71,6 +76,37 @@ class ArduinoController extends ChangeNotifier {
   }
 
   bool get isStale => _telemetry != null && !isLive;
+
+  /// Hardware readiness (HW-01): a serial port alone does not prove the
+  /// incubator is ready. Only [ready] means live readings may be shown.
+  ///
+  /// Computed from the transport connection state and the freshness of the
+  /// last telemetry frame (heartbeat). Recompute on every read so the
+  /// ready → timeout transition is observed as time passes while connected.
+  ArduinoReadinessState get readiness =>
+      computeHardwareReadiness(
+        connection: _connection.status,
+        portName: _connection.portName,
+        telemetry: _telemetry,
+        telemetryReceived: _telemetryReceived,
+        now: DateTime.now(),
+      ).state;
+
+  /// True only when the incubator is connected and heartbeating (fresh
+  /// telemetry within the heartbeat timeout).
+  bool get isReady => readiness == ArduinoReadinessState.ready;
+
+  /// Human-readable readiness status for a status badge, or null while the
+  /// connection is idle.
+  String? get readinessMessage {
+    return computeHardwareReadiness(
+      connection: _connection.status,
+      portName: _connection.portName,
+      telemetry: _telemetry,
+      telemetryReceived: _telemetryReceived,
+      now: DateTime.now(),
+    ).message;
+  }
 
   /// Live sensor values (null when disconnected, stale, or sensor error).
   double? get incubatorTemperature => isLive ? _telemetry!.incubatorTemperature : null;
@@ -110,6 +146,10 @@ class ArduinoController extends ChangeNotifier {
   }
 
   Future<void> connect(String port, {int baudRate = 9600}) async {
+    // A (re)opened port awaits a fresh heartbeat before the incubator is
+    // ready; stale readings from a previous session must not count.
+    _telemetry = null;
+    _telemetryReceived = false;
     _lastError = null;
     _notify();
     try {
@@ -224,6 +264,7 @@ class ArduinoController extends ChangeNotifier {
 
   void _onTelemetry(ArduinoTelemetry reading) {
     _telemetry = reading;
+    _telemetryReceived = true;
     // Adopt reported relay states, except actuators with a command in flight.
     for (final entry in reading.actuators.entries) {
       if (commandStatus(entry.key) != ActuatorCommandStatus.pending) {

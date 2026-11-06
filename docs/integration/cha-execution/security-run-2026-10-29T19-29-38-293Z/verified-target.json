@@ -1,0 +1,17 @@
+{
+  "observedAt": "2026-10-29T19:29:40.940Z",
+  "target": {
+    "id": "zbwntspdecngnicllwlw",
+    "name": "smarthatch-test",
+    "status": "ACTIVE_HEALTHY",
+    "host": "db.zbwntspdecngnicllwlw.supabase.co",
+    "url": "https://zbwntspdecngnicllwlw.supabase.co",
+    "linked": false
+  },
+  "application": {
+    "id": "suopuhgtwyqkpupzvdng",
+    "name": "egg incubator",
+    "linked": true
+  },
+  "authorization": "User approved temporary test identities/records and exact-fixture cleanup; no migrations/RLS/RPC activation/deployment/production access. This probe requires no Auth user creation."
+}

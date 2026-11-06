@@ -1,0 +1,29 @@
+PASS: draft 2020-12 schema meta-validation and compilation
+PASS: 14 labeled synthetic messages accepted
+PASS: 65 schema-negative mutations rejected
+PASS: 11 malformed/unsafe frame fixtures rejected
+PASS: CRLF, trailing whitespace, and 2 status/time edge cases
+PASS: isolation rejection and no-mutation hw02_batch_review.ndjson:1 HELLO
+PASS: isolation rejection and no-mutation hw02_batch_review.ndjson:2 HELLO
+PASS: isolation rejection and no-mutation hw02_batch_review.ndjson:3 START
+PASS: isolation rejection and no-mutation hw02_batch_review.ndjson:4 STOP
+PASS: isolation rejection and no-mutation hw02_batch_review.ndjson:5 STATUS
+PASS: isolation rejection and no-mutation hw02_batch_review.ndjson:6 ACK
+PASS: isolation rejection and no-mutation hw02_batch_review.ndjson:7 ACK
+PASS: isolation rejection and no-mutation hw02_batch_review.ndjson:8 STATE
+PASS: isolation rejection and no-mutation hw02_batch_review.ndjson:9 EVENT
+PASS: isolation rejection and no-mutation hw02_batch_review.ndjson:10 TEL
+PASS: isolation rejection and no-mutation hw02_batch_review.ndjson:11 ERROR
+PASS: isolation rejection and no-mutation hw02_batch_review.ndjson:12 REPLAY
+PASS: isolation rejection and no-mutation hw02_batch_review.ndjson:13 REPLAY_END
+PASS: isolation rejection and no-mutation hw02_batch_review.ndjson:14 RCPT_ACK
+PASS: isolation rejection and no-mutation hw02_corrected_review.ndjson:1 command
+PASS: isolation rejection and no-mutation hw02_corrected_review.ndjson:2 telemetry
+PASS: isolation rejection and no-mutation hw02_corrected_review.ndjson:3 ack
+PASS: isolation rejection and no-mutation hw02_corrected_review.ndjson:4 hello
+PASS: isolation rejection and no-mutation hw02_corrected_review.ndjson:5 hello_ack
+PASS: isolation rejection and no-mutation hw02_corrected_review.ndjson:6 event
+PASS: 20 incompatible literal frames rejected, each checked twice
+PASS: schema/example objects and all 5 protected contract/fixture files unchanged
+LIMITATION: isolation checks prove documentation-validator rejection only; not a live parser, lossless uint64 decoder, protocol selection or reviewer approval.
+NOT TESTED: firmware, physical Start/Stop, clocks, identity persistence, authentication, RLS, network, or hardware.

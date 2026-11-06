@@ -1,0 +1,672 @@
+{
+  "scope": "Complete local review of all nine user CSVs; structural agreement with independently targeted test catalog does not prove CSV project provenance.",
+  "sourceProject": "CSV exports contain no project ref, original SQL, execution role, verified observation time or fixture test outcomes.",
+  "files": [
+    {
+      "name": "Supabase Snippet Untitled query (6).csv",
+      "sha256": "00c7a99a7c8f9ecf7d6a43877ffa080a84b43188b028ac4bdea9666246162655",
+      "bytes": 1339,
+      "rows": 13,
+      "columns": [
+        "schemaname",
+        "tablename",
+        "policyname",
+        "permissive",
+        "roles",
+        "cmd",
+        "using_expression",
+        "check_expression"
+      ],
+      "sourceProject": "NOT_EMBEDDED_IN_CSV",
+      "rowsReviewed": [
+        {
+          "schemaname": "public",
+          "tablename": "active_settings",
+          "policyname": "Anyone can insert active settings",
+          "permissive": "PERMISSIVE",
+          "roles": "{public}",
+          "cmd": "INSERT",
+          "using_expression": "null",
+          "check_expression": "true"
+        },
+        {
+          "schemaname": "public",
+          "tablename": "active_settings",
+          "policyname": "Anyone can read active settings",
+          "permissive": "PERMISSIVE",
+          "roles": "{public}",
+          "cmd": "SELECT",
+          "using_expression": "true",
+          "check_expression": "null"
+        },
+        {
+          "schemaname": "public",
+          "tablename": "active_settings",
+          "policyname": "Anyone can update active settings",
+          "permissive": "PERMISSIVE",
+          "roles": "{public}",
+          "cmd": "UPDATE",
+          "using_expression": "true",
+          "check_expression": "null"
+        },
+        {
+          "schemaname": "public",
+          "tablename": "active_settings",
+          "policyname": "Authenticated users can insert settings",
+          "permissive": "PERMISSIVE",
+          "roles": "{authenticated}",
+          "cmd": "INSERT",
+          "using_expression": "null",
+          "check_expression": "true"
+        },
+        {
+          "schemaname": "public",
+          "tablename": "active_settings",
+          "policyname": "Authenticated users can read settings",
+          "permissive": "PERMISSIVE",
+          "roles": "{authenticated}",
+          "cmd": "SELECT",
+          "using_expression": "true",
+          "check_expression": "null"
+        },
+        {
+          "schemaname": "public",
+          "tablename": "active_settings",
+          "policyname": "Authenticated users can update settings",
+          "permissive": "PERMISSIVE",
+          "roles": "{authenticated}",
+          "cmd": "UPDATE",
+          "using_expression": "true",
+          "check_expression": "null"
+        },
+        {
+          "schemaname": "public",
+          "tablename": "incubator_presets",
+          "policyname": "Anyone can read presets",
+          "permissive": "PERMISSIVE",
+          "roles": "{public}",
+          "cmd": "SELECT",
+          "using_expression": "true",
+          "check_expression": "null"
+        },
+        {
+          "schemaname": "public",
+          "tablename": "incubator_sessions",
+          "policyname": "Allow all for authenticated users",
+          "permissive": "PERMISSIVE",
+          "roles": "{authenticated}",
+          "cmd": "ALL",
+          "using_expression": "true",
+          "check_expression": "true"
+        },
+        {
+          "schemaname": "public",
+          "tablename": "incubator_sessions",
+          "policyname": "Anyone can insert sessions",
+          "permissive": "PERMISSIVE",
+          "roles": "{public}",
+          "cmd": "INSERT",
+          "using_expression": "null",
+          "check_expression": "true"
+        },
+        {
+          "schemaname": "public",
+          "tablename": "incubator_sessions",
+          "policyname": "Anyone can read sessions",
+          "permissive": "PERMISSIVE",
+          "roles": "{public}",
+          "cmd": "SELECT",
+          "using_expression": "true",
+          "check_expression": "null"
+        },
+        {
+          "schemaname": "public",
+          "tablename": "incubator_sessions",
+          "policyname": "Anyone can update sessions",
+          "permissive": "PERMISSIVE",
+          "roles": "{public}",
+          "cmd": "UPDATE",
+          "using_expression": "true",
+          "check_expression": "null"
+        },
+        {
+          "schemaname": "public",
+          "tablename": "sensor_readings",
+          "policyname": "Anyone can insert sensor readings",
+          "permissive": "PERMISSIVE",
+          "roles": "{public}",
+          "cmd": "INSERT",
+          "using_expression": "null",
+          "check_expression": "true"
+        },
+        {
+          "schemaname": "public",
+          "tablename": "sensor_readings",
+          "policyname": "Anyone can read sensor readings",
+          "permissive": "PERMISSIVE",
+          "roles": "{public}",
+          "cmd": "SELECT",
+          "using_expression": "true",
+          "check_expression": "null"
+        }
+      ]
+    },
+    {
+      "name": "Supabase Snippet Untitled query (7).csv",
+      "sha256": "517354348b0e6d82af3cb9fb5c7af166178ea2d9b22f50fa403759a3f004ea52",
+      "bytes": 499,
+      "rows": 8,
+      "columns": [
+        "table_name",
+        "role_name",
+        "can_select",
+        "can_insert",
+        "can_update",
+        "can_delete",
+        "can_truncate"
+      ],
+      "sourceProject": "NOT_EMBEDDED_IN_CSV",
+      "rowsReviewed": [
+        {
+          "table_name": "active_settings",
+          "role_name": "anon",
+          "can_select": "true",
+          "can_insert": "true",
+          "can_update": "true",
+          "can_delete": "true",
+          "can_truncate": "true"
+        },
+        {
+          "table_name": "active_settings",
+          "role_name": "authenticated",
+          "can_select": "true",
+          "can_insert": "true",
+          "can_update": "true",
+          "can_delete": "true",
+          "can_truncate": "true"
+        },
+        {
+          "table_name": "incubator_presets",
+          "role_name": "anon",
+          "can_select": "true",
+          "can_insert": "true",
+          "can_update": "true",
+          "can_delete": "true",
+          "can_truncate": "true"
+        },
+        {
+          "table_name": "incubator_presets",
+          "role_name": "authenticated",
+          "can_select": "true",
+          "can_insert": "true",
+          "can_update": "true",
+          "can_delete": "true",
+          "can_truncate": "true"
+        },
+        {
+          "table_name": "incubator_sessions",
+          "role_name": "anon",
+          "can_select": "true",
+          "can_insert": "true",
+          "can_update": "true",
+          "can_delete": "true",
+          "can_truncate": "true"
+        },
+        {
+          "table_name": "incubator_sessions",
+          "role_name": "authenticated",
+          "can_select": "true",
+          "can_insert": "true",
+          "can_update": "true",
+          "can_delete": "true",
+          "can_truncate": "true"
+        },
+        {
+          "table_name": "sensor_readings",
+          "role_name": "anon",
+          "can_select": "true",
+          "can_insert": "true",
+          "can_update": "true",
+          "can_delete": "true",
+          "can_truncate": "true"
+        },
+        {
+          "table_name": "sensor_readings",
+          "role_name": "authenticated",
+          "can_select": "true",
+          "can_insert": "true",
+          "can_update": "true",
+          "can_delete": "true",
+          "can_truncate": "true"
+        }
+      ]
+    },
+    {
+      "name": "Supabase Snippet Untitled query (8).csv",
+      "sha256": "ca0d6b7e2b9d2da8b93fa3f453dc4cf5771304ea3f54d8dccb5e81570eecca2a",
+      "bytes": 135,
+      "rows": 1,
+      "columns": [
+        "schema_name",
+        "function_name",
+        "arguments",
+        "security_definer",
+        "anon_can_execute",
+        "authenticated_can_execute"
+      ],
+      "sourceProject": "NOT_EMBEDDED_IN_CSV",
+      "rowsReviewed": [
+        {
+          "schema_name": "public",
+          "function_name": "rls_auto_enable",
+          "arguments": "",
+          "security_definer": "true",
+          "anon_can_execute": "true",
+          "authenticated_can_execute": "true"
+        }
+      ]
+    },
+    {
+      "name": "Supabase Snippet Untitled query (9).csv",
+      "sha256": "2546817e51eb5d00a7f23c05a5b1bab471c2520d5a5acb097311c182eaeb5c5c",
+      "bytes": 1246,
+      "rows": 1,
+      "columns": [
+        "function_definition"
+      ],
+      "sourceProject": "NOT_EMBEDDED_IN_CSV",
+      "rowsReviewed": [
+        {
+          "function_definition": "CREATE OR REPLACE FUNCTION public.rls_auto_enable()\n RETURNS event_trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO 'pg_catalog'\nAS $function$\nDECLARE\n  cmd record;\n  tbl name;\nBEGIN\n  FOR cmd IN\n    SELECT *\n    FROM pg_event_trigger_ddl_commands()\n    WHERE command_tag IN ('CREATE TABLE', 'CREATE TABLE AS', 'SELECT INTO')\n      AND object_type IN ('table','partitioned table')\n  LOOP\n     IF cmd.schema_name IS NOT NULL AND cmd.schema_name IN ('public') AND cmd.schema_name NOT IN ('pg_catalog','information_schema') AND cmd.schema_name NOT LIKE 'pg_toast%' AND cmd.schema_name NOT LIKE 'pg_temp%' THEN\n      BEGIN\n        SELECT c.relname INTO tbl FROM pg_catalog.pg_class c WHERE c.oid = cmd.objid;\n        EXECUTE format('alter table if exists %I.%I enable row level security', cmd.schema_name, tbl);\n        RAISE LOG 'rls_auto_enable: enabled RLS on %', cmd.object_identity;\n      EXCEPTION\n        WHEN OTHERS THEN\n          RAISE LOG 'rls_auto_enable: failed to enable RLS on %', cmd.object_identity;\n      END;\n     ELSE\n        RAISE LOG 'rls_auto_enable: skip % (either system schema or not in enforced list: %.)', cmd.object_identity, cmd.schema_name;\n     END IF;\n  END LOOP;\nEND;\n$function$\n"
+        }
+      ]
+    },
+    {
+      "name": "Supabase Snippet Untitled query (10).csv",
+      "sha256": "2f41143e905f6b032a523d3f3f66f656ea063c20f688a8da4a55a2e849b7df17",
+      "bytes": 113,
+      "rows": 1,
+      "columns": [
+        "trigger_name",
+        "event_type",
+        "trigger_status",
+        "function_name"
+      ],
+      "sourceProject": "NOT_EMBEDDED_IN_CSV",
+      "rowsReviewed": [
+        {
+          "trigger_name": "ensure_rls",
+          "event_type": "ddl_command_end",
+          "trigger_status": "Enabled (origin)",
+          "function_name": "rls_auto_enable"
+        }
+      ]
+    },
+    {
+      "name": "Supabase Snippet Untitled query (11).csv",
+      "sha256": "677fb893dcbab34d031dbe053a5b971d35c3fa8c80df22ac103f3529e6eef554",
+      "bytes": 342,
+      "rows": 4,
+      "columns": [
+        "table_name",
+        "constraint_name",
+        "constraint_type",
+        "constraint_definition"
+      ],
+      "sourceProject": "NOT_EMBEDDED_IN_CSV",
+      "rowsReviewed": [
+        {
+          "table_name": "active_settings",
+          "constraint_name": "active_settings_pkey",
+          "constraint_type": "PRIMARY KEY",
+          "constraint_definition": "PRIMARY KEY (id)"
+        },
+        {
+          "table_name": "incubator_presets",
+          "constraint_name": "incubator_presets_pkey",
+          "constraint_type": "PRIMARY KEY",
+          "constraint_definition": "PRIMARY KEY (id)"
+        },
+        {
+          "table_name": "incubator_sessions",
+          "constraint_name": "incubator_sessions_pkey",
+          "constraint_type": "PRIMARY KEY",
+          "constraint_definition": "PRIMARY KEY (id)"
+        },
+        {
+          "table_name": "sensor_readings",
+          "constraint_name": "sensor_readings_pkey",
+          "constraint_type": "PRIMARY KEY",
+          "constraint_definition": "PRIMARY KEY (id)"
+        }
+      ]
+    },
+    {
+      "name": "Supabase Snippet Untitled query (12).csv",
+      "sha256": "fcb9cdc6a3bee83b63e964507f3aa7eb4894944bde93c980b7a218bba2cdfd32",
+      "bytes": 770,
+      "rows": 5,
+      "columns": [
+        "schemaname",
+        "tablename",
+        "indexname",
+        "indexdef"
+      ],
+      "sourceProject": "NOT_EMBEDDED_IN_CSV",
+      "rowsReviewed": [
+        {
+          "schemaname": "public",
+          "tablename": "active_settings",
+          "indexname": "active_settings_pkey",
+          "indexdef": "CREATE UNIQUE INDEX active_settings_pkey ON public.active_settings USING btree (id)"
+        },
+        {
+          "schemaname": "public",
+          "tablename": "incubator_presets",
+          "indexname": "incubator_presets_pkey",
+          "indexdef": "CREATE UNIQUE INDEX incubator_presets_pkey ON public.incubator_presets USING btree (id)"
+        },
+        {
+          "schemaname": "public",
+          "tablename": "incubator_sessions",
+          "indexname": "incubator_sessions_pkey",
+          "indexdef": "CREATE UNIQUE INDEX incubator_sessions_pkey ON public.incubator_sessions USING btree (id)"
+        },
+        {
+          "schemaname": "public",
+          "tablename": "incubator_sessions",
+          "indexname": "incubator_sessions_single_active",
+          "indexdef": "CREATE UNIQUE INDEX incubator_sessions_single_active ON public.incubator_sessions USING btree (status) WHERE (status = 'Active'::text)"
+        },
+        {
+          "schemaname": "public",
+          "tablename": "sensor_readings",
+          "indexname": "sensor_readings_pkey",
+          "indexdef": "CREATE UNIQUE INDEX sensor_readings_pkey ON public.sensor_readings USING btree (id)"
+        }
+      ]
+    },
+    {
+      "name": "Supabase Snippet Untitled query (13).csv",
+      "sha256": "8fc10030f24289e37c5cf9a6b411925177d2355240ca7130908f810e6bdae75b",
+      "bytes": 1198,
+      "rows": 22,
+      "columns": [
+        "table_name",
+        "ordinal_position",
+        "column_name",
+        "data_type",
+        "is_nullable",
+        "column_default"
+      ],
+      "sourceProject": "NOT_EMBEDDED_IN_CSV",
+      "rowsReviewed": [
+        {
+          "table_name": "active_settings",
+          "ordinal_position": "1",
+          "column_name": "id",
+          "data_type": "bigint",
+          "is_nullable": "NO",
+          "column_default": "null"
+        },
+        {
+          "table_name": "active_settings",
+          "ordinal_position": "2",
+          "column_name": "egg_type",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": "null"
+        },
+        {
+          "table_name": "active_settings",
+          "ordinal_position": "3",
+          "column_name": "target_temperature",
+          "data_type": "numeric",
+          "is_nullable": "YES",
+          "column_default": "null"
+        },
+        {
+          "table_name": "active_settings",
+          "ordinal_position": "4",
+          "column_name": "target_humidity",
+          "data_type": "numeric",
+          "is_nullable": "YES",
+          "column_default": "null"
+        },
+        {
+          "table_name": "active_settings",
+          "ordinal_position": "5",
+          "column_name": "incubation_days",
+          "data_type": "integer",
+          "is_nullable": "YES",
+          "column_default": "null"
+        },
+        {
+          "table_name": "incubator_presets",
+          "ordinal_position": "1",
+          "column_name": "id",
+          "data_type": "bigint",
+          "is_nullable": "NO",
+          "column_default": "null"
+        },
+        {
+          "table_name": "incubator_presets",
+          "ordinal_position": "2",
+          "column_name": "egg_type",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": "null"
+        },
+        {
+          "table_name": "incubator_presets",
+          "ordinal_position": "3",
+          "column_name": "target_temperature",
+          "data_type": "numeric",
+          "is_nullable": "YES",
+          "column_default": "null"
+        },
+        {
+          "table_name": "incubator_presets",
+          "ordinal_position": "4",
+          "column_name": "target_humidity",
+          "data_type": "numeric",
+          "is_nullable": "YES",
+          "column_default": "null"
+        },
+        {
+          "table_name": "incubator_presets",
+          "ordinal_position": "5",
+          "column_name": "incubation_days",
+          "data_type": "integer",
+          "is_nullable": "YES",
+          "column_default": "null"
+        },
+        {
+          "table_name": "incubator_sessions",
+          "ordinal_position": "1",
+          "column_name": "id",
+          "data_type": "bigint",
+          "is_nullable": "NO",
+          "column_default": "null"
+        },
+        {
+          "table_name": "incubator_sessions",
+          "ordinal_position": "2",
+          "column_name": "egg_type",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": "null"
+        },
+        {
+          "table_name": "incubator_sessions",
+          "ordinal_position": "3",
+          "column_name": "start_date",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": "now()"
+        },
+        {
+          "table_name": "incubator_sessions",
+          "ordinal_position": "4",
+          "column_name": "status",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": "'Active'::text"
+        },
+        {
+          "table_name": "incubator_sessions",
+          "ordinal_position": "5",
+          "column_name": "egg_quantity",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": "0"
+        },
+        {
+          "table_name": "incubator_sessions",
+          "ordinal_position": "6",
+          "column_name": "end_date",
+          "data_type": "timestamp with time zone",
+          "is_nullable": "YES",
+          "column_default": "null"
+        },
+        {
+          "table_name": "incubator_sessions",
+          "ordinal_position": "7",
+          "column_name": "eggs_hatched",
+          "data_type": "integer",
+          "is_nullable": "YES",
+          "column_default": "0"
+        },
+        {
+          "table_name": "incubator_sessions",
+          "ordinal_position": "8",
+          "column_name": "temperature",
+          "data_type": "numeric",
+          "is_nullable": "YES",
+          "column_default": "null"
+        },
+        {
+          "table_name": "sensor_readings",
+          "ordinal_position": "1",
+          "column_name": "id",
+          "data_type": "bigint",
+          "is_nullable": "NO",
+          "column_default": "null"
+        },
+        {
+          "table_name": "sensor_readings",
+          "ordinal_position": "2",
+          "column_name": "current_temperature",
+          "data_type": "numeric",
+          "is_nullable": "YES",
+          "column_default": "null"
+        },
+        {
+          "table_name": "sensor_readings",
+          "ordinal_position": "3",
+          "column_name": "current_humidity",
+          "data_type": "numeric",
+          "is_nullable": "YES",
+          "column_default": "null"
+        },
+        {
+          "table_name": "sensor_readings",
+          "ordinal_position": "4",
+          "column_name": "recorded_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": "now()"
+        }
+      ]
+    },
+    {
+      "name": "Supabase Snippet Untitled query (14).csv",
+      "sha256": "40342789acbb7342fcf2bc42d1f12756a881677582b851373ea6393ab4648c29",
+      "bytes": 272,
+      "rows": 4,
+      "columns": [
+        "table_name",
+        "column_name",
+        "data_type",
+        "is_identity",
+        "identity_generation",
+        "column_default"
+      ],
+      "sourceProject": "NOT_EMBEDDED_IN_CSV",
+      "rowsReviewed": [
+        {
+          "table_name": "active_settings",
+          "column_name": "id",
+          "data_type": "bigint",
+          "is_identity": "YES",
+          "identity_generation": "BY DEFAULT",
+          "column_default": "null"
+        },
+        {
+          "table_name": "incubator_presets",
+          "column_name": "id",
+          "data_type": "bigint",
+          "is_identity": "YES",
+          "identity_generation": "BY DEFAULT",
+          "column_default": "null"
+        },
+        {
+          "table_name": "incubator_sessions",
+          "column_name": "id",
+          "data_type": "bigint",
+          "is_identity": "YES",
+          "identity_generation": "BY DEFAULT",
+          "column_default": "null"
+        },
+        {
+          "table_name": "sensor_readings",
+          "column_name": "id",
+          "data_type": "bigint",
+          "is_identity": "YES",
+          "identity_generation": "BY DEFAULT",
+          "column_default": "null"
+        }
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "name": "13 policy definitions match independently verified test catalog",
+      "result": "PASSED"
+    },
+    {
+      "name": "eight role grant rows agree with test ACL inventory, not CRUD execution proof",
+      "result": "PASSED"
+    },
+    {
+      "name": "one listed public routine matches test name/security-definer flag",
+      "result": "PASSED"
+    },
+    {
+      "name": "function body and enabled DDL event trigger are supplied, not ingest RPCs",
+      "result": "PASSED"
+    },
+    {
+      "name": "four primary-key constraints match test catalog",
+      "result": "PASSED"
+    },
+    {
+      "name": "five indexes including single-active-session guard match test catalog",
+      "result": "PASSED"
+    },
+    {
+      "name": "22 column definitions match test catalog",
+      "result": "PASSED"
+    },
+    {
+      "name": "four BY DEFAULT identity columns match known test identity columns",
+      "result": "PASSED"
+    }
+  ],
+  "conclusions": [
+    "Schema inventory/audit evidence is valid and useful. An audit can finish with open security findings.",
+    "can_* grant booleans are not executed SELECT/INSERT/UPDATE/DELETE tests and do not incorporate all RLS effects.",
+    "The rls_auto_enable event trigger enables RLS for new public tables; it does not remove permissive policies or implement bridge-sync RPCs.",
+    "This evidence does not establish installation identity, ingestion/ledger/RPC implementation, secure persisted receipts, Flutter/Arduino compatibility or physical integration."
+  ]
+}

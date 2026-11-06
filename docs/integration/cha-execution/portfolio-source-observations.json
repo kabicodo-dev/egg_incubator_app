@@ -1,0 +1,65 @@
+{
+  "date": "2026-10-30",
+  "scope": "Read-only source excerpts, no Flutter execution or app behavior test; source may differ from other reviewers branches",
+  "sourceFingerprints": {
+    "lib/main.dart": "f98ee1ffcd60e04d77b20611123285ed5804739832fa0d1ccdef90ccfc4f1a5e",
+    "lib/services/supabase_service.dart": "8af0b3288bd605bd1a8493c88df6ece83e68e52102190cbb3fc6f41800076c5b",
+    "supabase/functions/_shared/bridge-sync-core.mjs": "b7a9aa133ce46d180b84de0c2f712c5dc9229cf59c8b24c42f4dd661750850d2",
+    "supabase/functions/_shared/bridge-monitoring.mjs": "863447ee1c8a869cff380a7d55e99d6ce5ae207b9bf8237dc849efbdb0b434ec"
+  },
+  "observations": [
+    {
+      "id": "SRC-01",
+      "tasks": [
+        "ORIGINAL:C-08",
+        "OCT26:C-10",
+        "OCT26:TEST-09"
+      ],
+      "file": "lib/services/supabase_service.dart",
+      "startLine": 232,
+      "endLine": 247,
+      "text": "  Future<void> completeSession({\n    required int sessionId,\n    DateTime? endDate,\n    int? eggsHatched,\n  }) async {\n    await _client\n        .from('incubator_sessions')\n        .update({\n          'status': 'Completed',\n          'end_date': (endDate ?? DateTime.now()).toIso8601String(),\n          'eggs_hatched': eggsHatched,\n        })\n        .eq('id', sessionId);\n  }\n\n  // ── Stats ──",
+      "finding": "Current completion path writes Completed and defaults end_date to DateTime.now; no returned-row confirmation in this method. Not the new result-only API and not proof of accepted original time. Coordinate with Kath; do not patch her Flutter here."
+    },
+    {
+      "id": "SRC-02",
+      "tasks": [
+        "ORIGINAL:C-07",
+        "ORIGINAL:C-09",
+        "OCT26:C-09"
+      ],
+      "file": "lib/services/supabase_service.dart",
+      "startLine": 287,
+      "endLine": 295,
+      "text": "  Future<Map<String, dynamic>?> getLatestReading() async {\n    // limit(1) keeps maybeSingle() valid once the table holds many rows.\n    final response = await _client\n        .from('sensor_readings')\n        .select()\n        .order('recorded_at', ascending: false)\n        .limit(1)\n        .maybeSingle();\n    return response;",
+      "finding": "Current method selects global newest recorded_at with no controller/batch filter in this method. Caller/system acceptance must not assume original batch/source selection is implemented."
+    },
+    {
+      "id": "SRC-03",
+      "tasks": [
+        "OCT26:C-06",
+        "OCT26:C-07",
+        "OCT26:TEST-07"
+      ],
+      "file": "lib/main.dart",
+      "startLine": 207,
+      "endLine": 221,
+      "text": "SpeciesData speciesDataForName(String name) {\n  for (final s in defaultSpeciesList) {\n    if (s.name == name) return s;\n  }\n  return SpeciesData(\n    name: name.isEmpty ? 'Eggs' : name,\n    emoji: '\\uD83E\\uDD5A',\n    incubationDays: 21,\n    temperature: '37.5\\u00B0C',\n    targetHumidity: 55,\n    description: '',\n  );\n}\n\n/// The farmer-facing Active Incubation screen for a raw Supabase session",
+      "finding": "Unknown/legacy species display helper uses fixed temperature/humidity/day fallback values. This is local UI/source observation, not an authorized profile default or biological approval; unknown-target behavior requires Kath review."
+    },
+    {
+      "id": "SRC-04",
+      "tasks": [
+        "ORIGINAL:C-07",
+        "OCT26:C-09"
+      ],
+      "file": "lib/main.dart",
+      "startLine": 224,
+      "endLine": 237,
+      "text": "ActiveIncubationScreen activeIncubationScreenFor(Map<String, dynamic> row) {\n  final species = speciesDataForName((row['egg_type'] as String?) ?? '');\n  final startDate =\n      DateTime.tryParse('${row['start_date']}') ?? DateTime.now();\n  return ActiveIncubationScreen(\n    species: species,\n    eggCount: (row['egg_quantity'] as int?) ?? 0,\n    batchId: 'Batch #${row['id']}',\n    sessionId: (row['id'] as int?) ?? 0,\n    startDate: startDate,\n  );\n}\n\n/// The Active Incubation screen for an already-parsed [BatchData] batch",
+      "finding": "Current helper substitutes DateTime.now for an unparseable session start_date. Do not call this preserved original Start or a completed truthful-time implementation; coordinated UI change remains pending."
+    }
+  ],
+  "sourceGate": "Default source acceptance remains CONTRACT_NOT_ENABLED",
+  "productionChanges": false
+}

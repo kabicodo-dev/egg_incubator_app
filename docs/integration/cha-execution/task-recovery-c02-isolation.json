@@ -1,0 +1,106 @@
+{
+  "task": "ORIGINAL:C-02",
+  "candidate": "0.1.0-provisional",
+  "status": "PARTIAL/BLOCKED",
+  "recordedAt": "2026-10-31T15:54:25.850Z",
+  "cwd": "C:\\EggIncubator\\egg_incubator_app",
+  "node": "v26.4.0",
+  "NODE_PATH": "C:/Users/Mary Charlyn/AppData/Local/Temp/opencode/node_modules",
+  "toolVersions": {"ajv": "8.17.1", "ajv-formats": "3.0.1"},
+  "dependenciesInstalled": false,
+  "executionMethod": "child_process.spawnSync(process.execPath, argumentArray), child-scoped NODE_PATH, timeout 60000 ms",
+  "runs": [
+    {
+      "command": "node --check docs/validate-c02-provisional.cjs",
+      "startedAt": "2026-10-31T15:54:25.179Z",
+      "finishedAt": "2026-10-31T15:54:25.330Z",
+      "exitCode": 0,
+      "signal": null,
+      "launchError": null,
+      "stdout": "",
+      "stderr": "",
+      "result": "PASS"
+    },
+    {
+      "command": "node docs/validate-c02-provisional.cjs",
+      "startedAt": "2026-10-31T15:54:25.330Z",
+      "finishedAt": "2026-10-31T15:54:25.848Z",
+      "exitCode": 0,
+      "signal": null,
+      "launchError": null,
+      "stdoutEvidence": "task-recovery-c02-isolation.txt: Captured stdout",
+      "stderr": "",
+      "result": "PASS"
+    }
+  ],
+  "results": {
+    "schemaMetaValidationAndCompilation": "PASS",
+    "positiveSyntheticExamples": 14,
+    "schemaNegativeMutations": 65,
+    "malformedUnsafeFrames": 11,
+    "crlfAndTrailingWhitespace": "PASS",
+    "additionalStatusTimeCases": 2,
+    "distinctIncompatibleFramesRejected": 20,
+    "compactBatchFamilyFrames": 14,
+    "correctedFamilyFrames": 6,
+    "attemptsPerIncompatibleFrame": 2,
+    "schemaEnvelopeMismatchRequired": true,
+    "schemaAndExampleObjectsUnchanged": true,
+    "rejectedObjectsUnchanged": true,
+    "protectedDiskBytesUnchanged": true,
+    "failures": 0,
+    "note": "Repeated checks are not distinct fixtures. Schema and literal-frame rejection are documentation-validator checks, not production interoperability."
+  },
+  "validator": {
+    "path": "docs/validate-c02-provisional.cjs",
+    "beforeSha256": "5d7d6185c1802923901770090f5537ba196f063f8a663c24a4faeae113373c1c",
+    "afterSha256": "40c7bd4444612c317f72058ad6fb74c0710d0a95098bd67fab352bd235395e63"
+  },
+  "protectedInputHashesBefore": {
+    "docs/C02-provisional-communication-contract.md": "3559b60ace2b2d12e0a52304ed4ff1d9831a416b9a4edb5478d7ec359a69ddb7",
+    "docs/C02-provisional.schema.json": "9e95d34ca160cae8600548c5c4919ece26953d892d77bd786198d9e9e15461dd",
+    "docs/C02-provisional.examples.json": "155a44ed24f2c0627481822569c008b1ee332d315d72abe3bf9f09fc584275b5",
+    "test/fixtures/integration/hw02_batch_review.ndjson": "e6c9ad858db1610a9aa3daab87c25ea575e42e282c033faed364bb7d0d654035",
+    "test/fixtures/integration/hw02_corrected_review.ndjson": "c4c38f41d8aaaf24cc713b799641d9b8c8fb23c8f1d4f967daf69b4773bb9f11"
+  },
+  "protectedInputHashesAfter": {
+    "docs/C02-provisional-communication-contract.md": "3559b60ace2b2d12e0a52304ed4ff1d9831a416b9a4edb5478d7ec359a69ddb7",
+    "docs/C02-provisional.schema.json": "9e95d34ca160cae8600548c5c4919ece26953d892d77bd786198d9e9e15461dd",
+    "docs/C02-provisional.examples.json": "155a44ed24f2c0627481822569c008b1ee332d315d72abe3bf9f09fc584275b5",
+    "test/fixtures/integration/hw02_batch_review.ndjson": "e6c9ad858db1610a9aa3daab87c25ea575e42e282c033faed364bb7d0d654035",
+    "test/fixtures/integration/hw02_corrected_review.ndjson": "c4c38f41d8aaaf24cc713b799641d9b8c8fb23c8f1d4f967daf69b4773bb9f11"
+  },
+  "protectedInputsUnchanged": true,
+  "reviewApplicability": {
+    "kathReview": "docs/integration/cha-execution/kath-focused-review-inputs/Kath-C02-Provisional-Focused-Review-2026-10-30.md",
+    "kathReviewInputHashesMatchCurrentContractSchemaExamples": true,
+    "kathDisposition": "CHANGE; exact shared-wire acceptance BLOCKED; not final sign-off",
+    "manualResult02AcceptanceAppliesToWireContract": false,
+    "allyExactInputDisposition": "MISSING",
+    "finalSharedWireRevision": null,
+    "neededIfReplacementSelected": "Ally and Kath explicitly review identical final document/schema/example hashes, resolve the existing CHANGE findings and identify source/catalog supersession."
+  },
+  "remainingBlockers": [
+    "Exact selected firmware/source/catalog revision and explicit protocol supersession",
+    "Ally's disposition of these exact provisional schema/example hashes",
+    "Mandatory envelope, frame-size, identity, time, lifecycle and recovery incompatibilities",
+    "Same-final-revision Ally/Kath review and final validation evidence"
+  ],
+  "completionEvidenceRequired": [
+    "Identified final versioned contract/schema/examples linked to source/catalog hashes",
+    "Actual passing validation for that exact final revision",
+    "Attributable Ally and Kath reviews of identical final revision hashes",
+    "Disposition and resolution evidence for every mandatory protocol incompatibility",
+    "Traceability for original telemetry, START/STOP/STATUS, ACK, error and provenance requirements"
+  ],
+  "limitations": [
+    "Historical synthetic corpus only; no live or selected source contract established",
+    "No production parser/adapter, lossless uint64 decoding or firmware compatibility proof",
+    "No firmware, Flutter, SQL, database, authentication, RLS, network or hardware tests",
+    "No review approval or task closure inferred from validation",
+    "Protected raw numeric/identity tokens unchanged; parsed unsafe integers are never written back"
+  ],
+  "taskStatusFilesModified": false,
+  "otherTasksStartedOrResumed": [],
+  "externalMessageSent": false
+}

@@ -1,0 +1,5 @@
+{
+  "status": "PREFLIGHT_PASSED",
+  "remote": "Catalog query only; no fixtures written",
+  "next": "Explicit --execute-approved-probe flag required"
+}

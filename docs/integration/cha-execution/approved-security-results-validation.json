@@ -1,0 +1,33 @@
+{
+  "scope": "Offline evidence consistency, not an additional live test",
+  "checks": [
+    {
+      "name": "exact current test project and distinct linked application",
+      "result": "PASSED"
+    },
+    {
+      "name": "eight unique role/operation results without SQL errors",
+      "result": "PASSED"
+    },
+    {
+      "name": "reported sensor security findings match real output",
+      "result": "PASSED"
+    },
+    {
+      "name": "fixture IDs are explicit, negative, unique and bigint-safe",
+      "result": "PASSED"
+    },
+    {
+      "name": "separate absence check confirms rollback cleanup",
+      "result": "PASSED"
+    },
+    {
+      "name": "no Auth users or schema/security mutations in submitted probe",
+      "result": "PASSED"
+    },
+    {
+      "name": "fresh catalog still has no bridge-sync RPCs and was read-only",
+      "result": "PASSED"
+    }
+  ]
+}

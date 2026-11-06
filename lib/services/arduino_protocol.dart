@@ -10,6 +10,8 @@ import 'dart:convert';
 const String kTypeTelemetry = 'telemetry';
 const String kTypeCommand = 'command';
 const String kTypeAck = 'ack';
+const String kTypeLcdUpdate = 'lcdUpdate';
+const String kTypeLcdAck = 'lcdAck';
 
 /// Canonical actuator names. These strings are the contract between the app and
 /// the sketch, so both sides must use them verbatim.
@@ -209,6 +211,33 @@ class ArduinoCommand {
   String toJsonLine() => '${jsonEncode(toJson())}\n';
 }
 
+/// An `lcdUpdate` message sent from the app to update the Arduino LCD display.
+///
+/// The LCD alternates between showing egg info (type + incubation day) and
+/// live sensor data (temperature + humidity). This command keeps the egg
+/// information on the physical LCD in sync with the Flutter app state.
+class LcdUpdateCommand {
+  final String eggType;
+  final int day;
+  final int duration;
+
+  const LcdUpdateCommand({
+    required this.eggType,
+    required this.day,
+    required this.duration,
+  });
+
+  Map<String, dynamic> toJson() => {
+        'type': kTypeLcdUpdate,
+        'eggType': eggType,
+        'day': day,
+        'duration': duration,
+      };
+
+  /// Serialized as a single JSON line (terminated with `\n`).
+  String toJsonLine() => '${jsonEncode(toJson())}\n';
+}
+
 /// An `ack` message from the Arduino confirming/rejecting a command.
 ///
 /// An acknowledgement means the firmware *processed* the command; it is not
@@ -247,6 +276,16 @@ class ArduinoAck {
   }
 }
 
+/// An `lcdAck` message from the Arduino confirming that the LCD was updated.
+class ArduinoLcdAck {
+  final bool success;
+  const ArduinoLcdAck({required this.success});
+
+  factory ArduinoLcdAck.fromJson(Map<String, dynamic> json) {
+    return ArduinoLcdAck(success: _parseBool(json['success']) ?? false);
+  }
+}
+
 // ── Incoming message envelope ──
 
 /// Base type for a parsed incoming line.
@@ -268,6 +307,11 @@ class ArduinoAckMessage extends ArduinoIncoming {
 class ArduinoUnknownMessage extends ArduinoIncoming {
   final String? type;
   const ArduinoUnknownMessage(this.type);
+}
+
+class ArduinoLcdAckMessage extends ArduinoIncoming {
+  final ArduinoLcdAck lcdAck;
+  const ArduinoLcdAckMessage(this.lcdAck);
 }
 
 /// A line that was not valid JSON, or not a JSON object.
@@ -303,6 +347,8 @@ ArduinoIncoming? parseArduinoLine(String line) {
       return ArduinoTelemetryMessage(ArduinoTelemetry.fromJson(map));
     case kTypeAck:
       return ArduinoAckMessage(ArduinoAck.fromJson(map));
+    case kTypeLcdAck:
+      return ArduinoLcdAckMessage(ArduinoLcdAck.fromJson(map));
     default:
       return ArduinoUnknownMessage(type is String ? type : null);
   }
