@@ -24,17 +24,16 @@ Map<String, dynamic> _activeRow({
   int id = 5,
   String species = 'Chicken',
   int quantity = 12,
-}) =>
-    {
-      'id': id,
-      'egg_type': species,
-      'start_date': '2026-10-11T10:58:51',
-      'end_date': null,
-      'egg_quantity': quantity,
-      'eggs_hatched': 0,
-      'temperature': 37.5,
-      'status': 'Active',
-    };
+}) => {
+  'id': id,
+  'egg_type': species,
+  'start_date': '2026-10-11T10:58:51',
+  'end_date': null,
+  'egg_quantity': quantity,
+  'eggs_hatched': 0,
+  'temperature': 37.5,
+  'status': 'Active',
+};
 
 /// Stands in for the Supabase REST API so the one-active rule can be tested
 /// without a live database.
@@ -58,13 +57,15 @@ class _FakeSupabaseApi extends http.BaseClient {
     requests.add(row);
 
     final isSessions = row.url.path.contains('incubator_sessions');
-    final isActiveCheck = isSessions &&
+    final isActiveCheck =
+        isSessions &&
         row.method == 'GET' &&
         row.url.query.contains('status=eq.Active');
 
     if (isActiveCheck) {
-      final rows =
-          activeResponses.isEmpty ? const [] : activeResponses.removeAt(0);
+      final rows = activeResponses.isEmpty
+          ? const []
+          : activeResponses.removeAt(0);
       return _reply(row, jsonEncode(rows));
     }
     if (isSessions && row.method == 'GET') {
@@ -78,8 +79,9 @@ class _FakeSupabaseApi extends http.BaseClient {
       return _reply(row, jsonEncode({'id': 42}));
     }
     // Everything else (presets, active_settings, auth): benign defaults.
-    final wantsSingle =
-        (row.headers['Accept'] ?? '').contains('vnd.pgrst.object+json');
+    final wantsSingle = (row.headers['Accept'] ?? '').contains(
+      'vnd.pgrst.object+json',
+    );
     return _reply(row, wantsSingle ? '{"id": 42}' : '[]');
   }
 
@@ -87,17 +89,17 @@ class _FakeSupabaseApi extends http.BaseClient {
     http.Request row,
     String body, {
     int status = 200,
-  }) =>
-      http.StreamedResponse(
-        Stream.value(utf8.encode(body)),
-        status,
-        request: row,
-        headers: {'content-type': 'application/json'},
-      );
+  }) => http.StreamedResponse(
+    Stream.value(utf8.encode(body)),
+    status,
+    request: row,
+    headers: {'content-type': 'application/json'},
+  );
 
   int get sessionInserts => requests
-      .where((r) =>
-          r.method == 'POST' && r.url.path.contains('incubator_sessions'))
+      .where(
+        (r) => r.method == 'POST' && r.url.path.contains('incubator_sessions'),
+      )
       .length;
 }
 
@@ -156,6 +158,7 @@ void main() {
 
   Future<void> tickChecklist(WidgetTester tester) async {
     for (var i = 0; i < 4; i++) {
+      await tester.ensureVisible(find.byType(Checkbox).at(i));
       await tester.tap(find.byType(Checkbox).at(i));
       await tester.pump();
     }
@@ -163,27 +166,31 @@ void main() {
 
   // ── Service layer ────────────────────────────────────────────────────────
 
-  test('starting is refused while a batch of ANY species is incubating',
-      () async {
-    // A Chicken batch is running; the farmer tries to start a Duck batch.
-    api.activeResponses.add([_activeRow(id: 3, species: 'Chicken')]);
+  test(
+    'starting is refused while a batch of ANY species is incubating',
+    () async {
+      // A Chicken batch is running; the farmer tries to start a Duck batch.
+      api.activeResponses.add([_activeRow(id: 3, species: 'Chicken')]);
 
-    await expectLater(
-      SupabaseService().createSession(
-        eggType: 'Duck',
-        startDate: DateTime(2026, 10, 11),
-        eggQuantity: 8,
-        temperature: 37.5,
-      ),
-      throwsA(isA<ActiveBatchException>().having(
-        (e) => e.message,
-        'message',
-        allOf(contains('Batch #3 (Chicken)'), contains('still incubating')),
-      )),
-    );
+      await expectLater(
+        SupabaseService().createSession(
+          eggType: 'Duck',
+          startDate: DateTime(2026, 10, 11),
+          eggQuantity: 8,
+          temperature: 37.5,
+        ),
+        throwsA(
+          isA<ActiveBatchException>().having(
+            (e) => e.message,
+            'message',
+            allOf(contains('Batch #3 (Chicken)'), contains('still incubating')),
+          ),
+        ),
+      );
 
-    expect(api.sessionInserts, 0, reason: 'no session row may be written');
-  });
+      expect(api.sessionInserts, 0, reason: 'no session row may be written');
+    },
+  );
 
   test('the egg quantity rule still runs before anything else', () async {
     await expectLater(
@@ -198,8 +205,7 @@ void main() {
     expect(api.sessionInserts, 0);
   });
 
-  test(
-      'a lost one-active race (database unique index) reads as the same '
+  test('a lost one-active race (database unique index) reads as the same '
       'friendly refusal', () async {
     // The pre-check passes, another device inserts first, the database
     // unique index rejects the second insert with 23505, and the follow-up
@@ -207,7 +213,7 @@ void main() {
     api.activeResponses
       ..add([]) // pre-check: nothing running yet
       ..add([
-        _activeRow(id: 9, species: 'Quail')
+        _activeRow(id: 9, species: 'Quail'),
       ]); // the race winner, read back for the message
     api.insertError = (
       status: 409,
@@ -227,21 +233,27 @@ void main() {
         eggQuantity: 8,
         temperature: 37.5,
       ),
-      throwsA(isA<ActiveBatchException>().having(
-        (e) => e.message,
-        'message',
-        contains('Batch #9 (Quail)'),
-      )),
+      throwsA(
+        isA<ActiveBatchException>().having(
+          (e) => e.message,
+          'message',
+          contains('Batch #9 (Quail)'),
+        ),
+      ),
     );
   });
 
-  test('a lost race without a readable winner still refuses cleanly',
-      () async {
+  test('a lost race without a readable winner still refuses cleanly', () async {
     api.activeResponses.add([]); // pre-check passes
     // No second entry: the follow-up read answers "no active batch".
     api.insertError = (
       status: 409,
-      body: {'code': '23505', 'message': 'duplicate key', 'details': '', 'hint': null},
+      body: {
+        'code': '23505',
+        'message': 'duplicate key',
+        'details': '',
+        'hint': null,
+      },
     );
 
     await expectLater(
@@ -251,84 +263,116 @@ void main() {
         eggQuantity: 8,
         temperature: 37.5,
       ),
-      throwsA(isA<ActiveBatchException>().having(
-        (e) => e.message,
-        'message',
-        contains('another screen'),
-      )),
+      throwsA(
+        isA<ActiveBatchException>().having(
+          (e) => e.message,
+          'message',
+          contains('another screen'),
+        ),
+      ),
     );
   });
 
-  test('getActiveSession reads only the newest Active batch, at most one row',
-      () async {
-    api.activeResponses.add([_activeRow(id: 12, species: 'Duck')]);
+  test(
+    'getActiveSession reads only the newest Active batch, at most one row',
+    () async {
+      api.activeResponses.add([_activeRow(id: 12, species: 'Duck')]);
 
-    final active = await SupabaseService().getActiveSession();
-    expect(active?['id'], 12);
-    expect(active?['egg_type'], 'Duck');
+      final active = await SupabaseService().getActiveSession();
+      expect(active?['id'], 12);
+      expect(active?['egg_type'], 'Duck');
 
-    final check = api.requests.last;
-    expect(check.url.query, contains('status=eq.Active'),
-        reason: 'only the Active batch is considered');
-    expect(check.url.query, contains('limit=1'),
-        reason: 'never more than one row');
+      final check = api.requests.last;
+      expect(
+        check.url.query,
+        contains('status=eq.Active'),
+        reason: 'only the Active batch is considered',
+      );
+      expect(
+        check.url.query,
+        contains('limit=1'),
+        reason: 'never more than one row',
+      );
 
-    expect(await SupabaseService().getActiveSession(), isNull,
-        reason: 'an empty table means no batch is running');
-  });
+      expect(
+        await SupabaseService().getActiveSession(),
+        isNull,
+        reason: 'an empty table means no batch is running',
+      );
+    },
+  );
 
   // ── UI guards ────────────────────────────────────────────────────────────
 
-  testWidgets('setup is blocked while a batch runs and guides the farmer to it',
-      (tester) async {
-    usePhoneScreen(tester);
-    api.activeResponses.add([_activeRow(id: 5, species: 'Chicken')]);
+  testWidgets(
+    'setup is blocked while a batch runs and guides the farmer to it',
+    (tester) async {
+      usePhoneScreen(tester);
+      api.activeResponses.add([_activeRow(id: 5, species: 'Chicken')]);
 
-    await tester.pumpWidget(const MaterialApp(home: IncubationSetupScreen()));
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 350));
+      await tester.pumpWidget(const MaterialApp(home: IncubationSetupScreen()));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 350));
 
-    expect(find.text('A batch is already incubating'), findsOneWidget);
-    expect(find.textContaining('Batch #5 (Chicken)'), findsOneWidget);
-    expect(find.text('What are you hatching?'), findsNothing,
-        reason: 'the setup form stays hidden');
-    expect(find.text('Start Incubation'), findsNothing,
-        reason: 'no start is offered while a batch runs');
+      expect(find.text('Review your current batch'), findsOneWidget);
+      expect(find.textContaining('Batch #5 (Chicken)'), findsOneWidget);
+      expect(
+        find.text('What are you hatching?'),
+        findsNothing,
+        reason: 'the setup form stays hidden',
+      );
+      expect(
+        find.text('Start Incubation'),
+        findsNothing,
+        reason: 'no start is offered while a batch runs',
+      );
 
-    await tester
-        .tap(find.widgetWithText(ElevatedButton, 'View Current Incubation'));
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 350));
+      await tester.tap(
+        find.widgetWithText(ElevatedButton, 'View Current Incubation'),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 350));
 
-    expect(find.text('Current Incubation'), findsOneWidget,
-        reason: 'the farmer lands on the running batch');
-  });
+      expect(
+        find.byType(ActiveIncubationScreen),
+        findsOneWidget,
+        reason: 'opens the existing batch route, not a new Start',
+      );
+    },
+  );
 
-  testWidgets('double-tapping Start creates exactly one session',
-      (tester) async {
+  testWidgets('double-tapping unavailable Start creates no session', (
+    tester,
+  ) async {
     usePhoneScreen(tester);
 
     await tester.pumpWidget(
       const MaterialApp(
-        home: IncubationChecklistScreen(
-          species: chicken,
-          eggCount: 8,
-        ),
+        home: IncubationChecklistScreen(species: chicken, eggCount: 8),
       ),
     );
     await tester.pump();
     await tickChecklist(tester);
 
+    await tester.ensureVisible(
+      find.widgetWithText(ElevatedButton, 'Start Incubation'),
+    );
     await tester.tap(find.widgetWithText(ElevatedButton, 'Start Incubation'));
     // Second tap while the first request is still in flight: the button is
     // already disabled, so the tap must be ignored.
-    await tester.tap(find.widgetWithText(ElevatedButton, 'Start Incubation'),
-        warnIfMissed: false);
+    await tester.tap(
+      find.widgetWithText(ElevatedButton, 'Start Incubation'),
+      warnIfMissed: false,
+    );
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 350));
 
-    expect(api.sessionInserts, 1, reason: 'one tap in flight - one session');
-    expect(find.text('Incubation Started!'), findsOneWidget);
+    expect(
+      api.sessionInserts,
+      0,
+      reason: 'no verified controller Start adapter',
+    );
+    expect(find.text('Batch record saved'), findsNothing);
 
     // Hardware targets were written only AFTER the session row existed, so
     // a refused start can never overwrite a running batch's settings.
@@ -336,38 +380,50 @@ void main() {
         .map((r) => '${r.method} ${r.url.path}')
         .toList(growable: false);
     final sessionPost = calls.indexOf('POST /rest/v1/incubator_sessions');
-    final settingsWrite = calls.indexWhere((c) =>
-        c.startsWith('PATCH /rest/v1/active_settings') ||
-        c.startsWith('POST /rest/v1/active_settings'));
-    expect(sessionPost, greaterThanOrEqualTo(0));
-    expect(settingsWrite, greaterThan(sessionPost),
-        reason: 'settings follow the successful insert');
+    final settingsWrite = calls.indexWhere(
+      (c) =>
+          c.startsWith('PATCH /rest/v1/active_settings') ||
+          c.startsWith('POST /rest/v1/active_settings'),
+    );
+    expect(sessionPost, -1);
+    expect(
+      settingsWrite,
+      -1,
+      reason: 'no settings writes for unavailable Start',
+    );
   });
 
-  testWidgets('a blocked Start shows the farmer-friendly refusal',
-      (tester) async {
+  testWidgets('a blocked Start shows the farmer-friendly refusal', (
+    tester,
+  ) async {
     usePhoneScreen(tester);
     api.activeResponses.add([_activeRow(id: 5, species: 'Chicken')]);
 
     await tester.pumpWidget(
       const MaterialApp(
-        home: IncubationChecklistScreen(
-          species: chicken,
-          eggCount: 8,
-        ),
+        home: IncubationChecklistScreen(species: chicken, eggCount: 8),
       ),
     );
     await tester.pump();
     await tickChecklist(tester);
 
+    await tester.ensureVisible(
+      find.widgetWithText(ElevatedButton, 'Start Incubation'),
+    );
     await tester.tap(find.widgetWithText(ElevatedButton, 'Start Incubation'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 300));
 
-    expect(find.textContaining('is still incubating'), findsOneWidget,
-        reason: 'the refusal reads as a plain sentence');
-    expect(api.sessionInserts, 0,
-        reason: 'the pre-check refused before any write');
+    expect(
+      find.textContaining('Incubation cannot start from this app yet'),
+      findsOneWidget,
+      reason: 'the refusal reads as a plain sentence',
+    );
+    expect(
+      api.sessionInserts,
+      0,
+      reason: 'the pre-check refused before any write',
+    );
   });
 }
 

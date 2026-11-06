@@ -38,8 +38,9 @@ class _FakeSupabaseApi extends http.BaseClient {
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) async {
     final row = request as http.Request;
-    final wantsSingle =
-        (row.headers['Accept'] ?? '').contains('vnd.pgrst.object+json');
+    final wantsSingle = (row.headers['Accept'] ?? '').contains(
+      'vnd.pgrst.object+json',
+    );
     final String body;
     if (row.url.path.contains('incubator_sessions') &&
         row.url.query.contains('status=eq.Active')) {
@@ -48,8 +49,9 @@ class _FakeSupabaseApi extends http.BaseClient {
       // state at each width.
       body = '[]';
     } else if (row.url.path.contains('incubator_sessions')) {
-      body =
-          wantsSingle ? jsonEncode(_savedSession) : jsonEncode([_savedSession]);
+      body = wantsSingle
+          ? jsonEncode(_savedSession)
+          : jsonEncode([_savedSession]);
     } else {
       body = wantsSingle ? '{"id": 42}' : '[]';
     }
@@ -80,11 +82,11 @@ class _MemoryAsyncStorage implements GotrueAsyncStorage {
 }
 
 Finder _logoImages() => find.byWidgetPredicate(
-      (w) =>
-          w is Image &&
-          w.image is AssetImage &&
-          (w.image as AssetImage).assetName == 'assets/logo.png',
-    );
+  (w) =>
+      w is Image &&
+      w.image is AssetImage &&
+      (w.image as AssetImage).assetName == 'assets/logo.png',
+);
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -173,31 +175,37 @@ void main() {
       testWidgets('renders cleanly at $w px', (tester) async {
         await pumpAt(tester, const LandingPage(), w);
         expect(find.text('Smarter Hatching, Better Results.'), findsOneWidget);
-        expect(_logoImages(), findsOneWidget,
-            reason: 'slide 1 shows the SmartHatch logo');
+        expect(
+          _logoImages(),
+          findsOneWidget,
+          reason: 'slide 1 shows the SmartHatch logo',
+        );
         expectClean('onboarding@$w');
       });
     }
 
-    testWidgets('title stays on one line when the width allows',
-        (tester) async {
+    testWidgets('title stays on one line when the width allows', (
+      tester,
+    ) async {
       await pumpAt(tester, const LandingPage(), 1024);
-      final h =
-          tester.getSize(find.text('Smarter Hatching, Better Results.')).height;
+      final h = tester
+          .getSize(find.text('Smarter Hatching, Better Results.'))
+          .height;
       expect(h, lessThan(44), reason: 'one rendered line expected at 1024px');
     });
 
-    testWidgets('title wraps naturally at 320 with no forced line break',
-        (tester) async {
+    testWidgets('title wraps naturally at 320 with no forced line break', (
+      tester,
+    ) async {
       await pumpAt(tester, const LandingPage(), 320);
-      final text =
-          tester.widget<Text>(find.text('Smarter Hatching, Better Results.'));
+      final text = tester.widget<Text>(
+        find.text('Smarter Hatching, Better Results.'),
+      );
       expect(text.maxLines, isNull, reason: 'no forced single line at 320');
       expectClean('onboarding@320 wrap');
     });
 
-    testWidgets('no overflow at 1.3x accessibility text scale',
-        (tester) async {
+    testWidgets('no overflow at 1.3x accessibility text scale', (tester) async {
       await pumpAt(tester, const LandingPage(), 360, scale: 1.3);
       expectClean('onboarding@360@1.3x');
     });
@@ -234,11 +242,17 @@ void main() {
       });
       testWidgets('History@$w', (tester) async {
         await pumpAt(tester, HistoryScreen(), w);
-        expect(find.byType(SpeciesIllustration), findsOneWidget,
-            reason: 'history card uses the species illustration');
-        final chip = tester.widget<Text>(find.text('Active'));
-        expect(chip.style?.color, AppColors.warning,
-            reason: 'a running batch shows an amber status badge');
+        expect(
+          find.byType(SpeciesIllustration),
+          findsOneWidget,
+          reason: 'history card uses the species illustration',
+        );
+        final chip = tester.widget<Text>(find.text('Open'));
+        expect(
+          chip.style?.color,
+          AppColors.warning,
+          reason: 'an open batch record is amber, not proof of Running',
+        );
         expectClean('history@$w');
       });
       testWidgets('Batch Details@$w', (tester) async {
@@ -276,9 +290,13 @@ void main() {
   group('Touch targets', () {
     testWidgets('the History filter button is at least 48x48', (tester) async {
       await pumpAt(tester, HistoryScreen(), 320);
-      final button = tester.renderObject(find.byWidgetPredicate(
-              (w) => w is Semantics && w.properties.label == 'Filters'))
-          as RenderBox;
+      final button =
+          tester.renderObject(
+                find.byWidgetPredicate(
+                  (w) => w is Semantics && w.properties.label == 'Filters',
+                ),
+              )
+              as RenderBox;
       expect(button.size.width, greaterThanOrEqualTo(48));
       expect(button.size.height, greaterThanOrEqualTo(48));
     });

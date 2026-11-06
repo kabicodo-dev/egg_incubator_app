@@ -4,6 +4,45 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:egg_incubator_app/main.dart';
 
 void main() {
+  for (final count in [6, 0, null]) {
+    testWidgets(
+      'Completed record count=$count is results only, not live monitoring',
+      (tester) async {
+        final completed = BatchData(
+          id: 25,
+          batchNumber: 'Batch #25',
+          species: 'Chicken',
+          startDate: '2026-09-01',
+          endDate: '2026-09-22',
+          eggsTotal: 8,
+          eggsHatched: count ?? 0,
+          hasRecordedHatchCount: count != null,
+          temperature: '37.5°C',
+          status: 'Completed',
+          isSuccess: count != null && count > 0,
+        );
+        await tester.pumpWidget(
+          MaterialApp(home: BatchDetailsScreen(batch: completed)),
+        );
+        await tester.pumpAndSettle();
+        expect(find.text('Completed'), findsOneWidget);
+        expect(find.text('Hatched'), findsOneWidget);
+        expect(find.text('Hatchability'), findsOneWidget);
+        expect(find.text('2026-09-22'), findsOneWidget);
+        expect(find.text('Saved temperature setting'), findsOneWidget);
+        expect(find.text('Temperature'), findsNothing);
+        expect(find.text('Humidity'), findsNothing);
+        expect(find.text('BATCH STATUS'), findsNothing);
+        expect(find.text('Incubation Progress'), findsNothing);
+        expect(find.textContaining('Check the incubator'), findsNothing);
+        expect(find.textContaining('No verified reading'), findsNothing);
+        expect(find.byType(LinearProgressIndicator), findsNothing);
+        expect(find.text('Finish Batch'), findsNothing);
+        expect(find.text('View Current Incubation'), findsNothing);
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
   const batch = BatchData(
     id: 24,
     batchNumber: 'Batch #24',
@@ -27,35 +66,30 @@ void main() {
 
     expect(find.text('BATCH STATUS'), findsOneWidget);
 
-    // Card titles: two "Temperature" labels exist (summary row + card).
-    expect(find.text('Temperature'), findsNWidgets(2));
+    expect(find.text('Saved temperature setting'), findsOneWidget);
+    expect(find.text('Temperature'), findsOneWidget);
     expect(find.text('Humidity'), findsOneWidget);
     expect(find.text('Incubation Progress'), findsOneWidget);
-    expect(find.text('Incubator Status'), findsOneWidget);
+    expect(find.text('Batch record'), findsOneWidget);
 
-    // Every card always carries a value, even without sensor readings.
-    expect(find.text('37.7\u00B0C'), findsNWidgets(2)); // session set point
-    expect(find.text('58%'), findsOneWidget); // species target humidity
-    expect(find.text('Set point'), findsOneWidget);
-    expect(find.text('Standby'), findsOneWidget);
-    expect(find.text('Waiting for sensor data'), findsOneWidget);
-
-    // Incubation progress is derived from the start date (17-day species).
-    final start = DateTime.parse(batch.startDate);
-    var day = DateTime.now().difference(start).inDays;
-    if (day < 0) day = 0;
-    if (day > 17) day = 17;
-    final percent = ((day / 17) * 100).round();
-
-    expect(find.text('Day $day of 17'), findsOneWidget);
+    // The session setting remains available, but never fills an actual slot.
+    expect(find.text('37.7\u00B0C'), findsOneWidget);
+    expect(find.text('—'), findsNWidgets(2));
+    expect(find.text('No verified reading for this batch'), findsNWidgets(2));
+    expect(find.text('Set point'), findsNothing);
+    expect(find.text('Open'), findsOneWidget);
     expect(
-      find.text('$percent%'),
-      percent == 0 ? findsWidgets : findsOneWidget,
+      find.text('The app cannot confirm whether the incubator is running.'),
+      findsOneWidget,
     );
+
+    // A date-only legacy record cannot establish a confirmed Start instant.
+    expect(find.text('Day count unavailable'), findsOneWidget);
   });
 
-  testWidgets('Batch details handles a species without a preset match',
-      (tester) async {
+  testWidgets('Batch details handles a species without a preset match', (
+    tester,
+  ) async {
     const unknownSpecies = BatchData(
       id: 2,
       batchNumber: 'Batch #2',
@@ -76,8 +110,9 @@ void main() {
 
     expect(tester.takeException(), isNull);
     expect(find.text('Incubation Progress'), findsOneWidget);
-    expect(find.text('Day 0 of 21'), findsOneWidget);
-    expect(find.text('37.5\u00B0C'), findsWidgets);
-    expect(find.text('Standby'), findsOneWidget);
+    expect(find.text('Day 0 of 21'), findsNothing);
+    expect(find.text('Day count unavailable'), findsOneWidget);
+    expect(find.text('—'), findsNWidgets(2));
+    expect(find.text('Open'), findsOneWidget);
   });
 }
