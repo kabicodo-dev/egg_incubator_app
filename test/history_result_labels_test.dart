@@ -64,8 +64,9 @@ class _FakeSupabaseApi extends http.BaseClient {
     final row = request as http.Request;
     requests.add(row);
 
-    final wantsSingle =
-        (row.headers['Accept'] ?? '').contains('vnd.pgrst.object+json');
+    final wantsSingle = (row.headers['Accept'] ?? '').contains(
+      'vnd.pgrst.object+json',
+    );
 
     final String body;
     if (row.url.path.contains('incubator_sessions')) {
@@ -139,22 +140,20 @@ void main() {
   }
 
   testWidgets(
-      'an active batch reads as incubation in progress, never a 0% result',
-      (tester) async {
-    api.sessions = [_activeRow()];
-    await pumpHistory(tester);
+    'an active batch reads as incubation in progress, never a 0% result',
+    (tester) async {
+      api.sessions = [_activeRow()];
+      await pumpHistory(tester);
 
-    // The in-progress wording with the chosen egg quantity.
-    expect(
-      find.text('Incubation in progress \u00B7 12 eggs'),
-      findsOneWidget,
-    );
-    // No result figures exist yet for a running batch.
-    expect(find.text('0 / 12 eggs hatched'), findsNothing);
-    expect(find.text('0%'), findsNothing);
-    // The amber status badge identifies it as running.
-    expect(find.text('Active'), findsOneWidget);
-  });
+      // The in-progress wording with the chosen egg quantity.
+      expect(find.text('Batch open \u00B7 12 eggs set'), findsOneWidget);
+      // No result figures exist yet for a running batch.
+      expect(find.text('0 / 12 eggs hatched'), findsNothing);
+      expect(find.text('0%'), findsNothing);
+      // The amber status badge identifies it as running.
+      expect(find.text('Open'), findsOneWidget);
+    },
+  );
 
   testWidgets('a completed batch keeps its real hatch result', (tester) async {
     api.sessions = [_completedRow];
@@ -167,54 +166,74 @@ void main() {
     expect(find.text('Eggs set: 8'), findsOneWidget);
     expect(find.text('Saved start: August 1, 2026'), findsOneWidget);
     expect(find.text('Completed: August 18, 2026'), findsOneWidget);
+    expect(find.byType(TextField), findsOneWidget);
+    expect(find.byIcon(Icons.tune), findsOneWidget);
+    expect(
+      tester.getTopLeft(find.text('Hatch result')).dy,
+      tester.getTopLeft(find.text('Batch record')).dy,
+    );
+    expect(find.textContaining('Avg'), findsNothing);
   });
 
-  testWidgets('old batch without a hatch count remains viewable, not fake zero', (
-    tester,
-  ) async {
-    api.sessions = [Map<String, dynamic>.from(_completedRow)
-      ..remove('eggs_hatched')
-      ..['temperature'] = 36.8];
-    await pumpHistory(tester);
-    expect(find.text('Hatched count unavailable'), findsOneWidget);
-    expect(find.text('Hatchability: Unavailable'), findsOneWidget);
-    expect(find.text('Hatchability: 0.0%'), findsNothing);
-    await tester.ensureVisible(find.text('View details'));
-    await tester.tap(find.text('View details'));
-    await tester.pumpAndSettle();
-    expect(find.byType(BatchDetailsScreen), findsOneWidget);
-    expect(find.text('Hatched'), findsOneWidget);
-    expect(find.text('Hatchability'), findsOneWidget);
-    expect(find.text('Unavailable'), findsNWidgets(2));
-    expect(find.text('36.8°C'), findsOneWidget);
-    expect(api.requests.every((r) => r.method == 'GET'), isTrue);
-    expect(tester.takeException(), isNull);
-  });
+  testWidgets(
+    'old batch without a hatch count remains viewable, not fake zero',
+    (tester) async {
+      api.sessions = [
+        Map<String, dynamic>.from(_completedRow)
+          ..remove('eggs_hatched')
+          ..['temperature'] = 36.8,
+      ];
+      await pumpHistory(tester);
+      expect(find.text('Hatched count unavailable'), findsOneWidget);
+      expect(find.text('Hatchability: Unavailable'), findsOneWidget);
+      expect(find.text('Hatchability: 0.0%'), findsNothing);
+      await tester.ensureVisible(find.text('View details'));
+      await tester.tap(find.text('View details'));
+      await tester.pumpAndSettle();
+      expect(find.byType(BatchDetailsScreen), findsOneWidget);
+      expect(find.text('Hatched'), findsOneWidget);
+      expect(find.text('Hatchability'), findsOneWidget);
+      expect(find.text('Unavailable'), findsNWidgets(2));
+      expect(find.text('36.8°C'), findsOneWidget);
+      expect(api.requests.every((r) => r.method == 'GET'), isTrue);
+      expect(tester.takeException(), isNull);
+    },
+  );
 
-  testWidgets('new completed batch opens with stored counts, dates and result', (
-    tester,
-  ) async {
-    api.sessions = [Map<String, dynamic>.from(_completedRow)
-      ..['egg_type'] = 'Duck'
-      ..['eggs_hatched'] = 1];
-    await pumpHistory(tester);
-    expect(find.text('Duck'), findsOneWidget);
-    expect(find.text('1 / 8 eggs hatched'), findsOneWidget);
-    expect(find.text('Hatchability: 12.5%'), findsOneWidget);
-    await tester.ensureVisible(find.text('View details'));
-    await tester.tap(find.text('View details'));
-    await tester.pumpAndSettle();
-    expect(find.byType(BatchDetailsScreen), findsOneWidget);
-    expect(find.text('Eggs set'), findsOneWidget);
-    expect(find.text('8'), findsOneWidget);
-    expect(find.text('1'), findsOneWidget);
-    expect(find.text('12.5%'), findsOneWidget);
-    expect(find.text('2026-08-01'), findsOneWidget);
-    expect(find.text('2026-08-18'), findsOneWidget);
-    expect(find.text('Completed Date'), findsOneWidget);
-    expect(api.requests.every((r) => r.method == 'GET'), isTrue);
-    expect(tester.takeException(), isNull);
-  });
+  testWidgets(
+    'new completed batch opens with stored counts, dates and result',
+    (tester) async {
+      api.sessions = [
+        Map<String, dynamic>.from(_completedRow)
+          ..['egg_type'] = 'Duck'
+          ..['eggs_hatched'] = 1,
+      ];
+      await pumpHistory(tester);
+      expect(find.textContaining('Duck ·'), findsOneWidget);
+      expect(find.text('1 / 8 eggs hatched'), findsOneWidget);
+      expect(find.text('Hatchability: 12.5%'), findsOneWidget);
+      api.requests.clear();
+      await tester.ensureVisible(find.text('View details'));
+      await tester.tap(find.text('View details'));
+      await tester.pumpAndSettle();
+      expect(find.byType(BatchDetailsScreen), findsOneWidget);
+      expect(find.text('Eggs set'), findsOneWidget);
+      expect(find.text('8'), findsOneWidget);
+      expect(find.text('1'), findsOneWidget);
+      expect(find.text('12.5%'), findsOneWidget);
+      expect(find.text('2026-08-01'), findsOneWidget);
+      expect(find.text('2026-08-18'), findsOneWidget);
+      expect(find.text('Completed Date'), findsOneWidget);
+      expect(
+        api.requests,
+        isEmpty,
+        reason:
+            'Completed details must not request current readings or presets',
+      );
+      expect(api.requests.every((r) => r.method == 'GET'), isTrue);
+      expect(tester.takeException(), isNull);
+    },
+  );
 
   for (final values in [
     {'egg_quantity': 0, 'eggs_hatched': 0},
@@ -223,7 +242,9 @@ void main() {
     {'egg_quantity': 8, 'eggs_hatched': -1},
     {'egg_quantity': 8, 'eggs_hatched': '6'},
   ]) {
-    testWidgets('invalid legacy result $values remains readable', (tester) async {
+    testWidgets('invalid legacy result $values remains readable', (
+      tester,
+    ) async {
       api.sessions = [Map<String, dynamic>.from(_completedRow)..addAll(values)];
       await pumpHistory(tester);
       expect(find.text('Hatchability: Unavailable'), findsOneWidget);
@@ -241,9 +262,11 @@ void main() {
     testWidgets('legacy dates and completed result remain readable at $width', (
       tester,
     ) async {
-      api.sessions = [Map<String, dynamic>.from(_completedRow)
-        ..['start_date'] = '2026-99-01'
-        ..['end_date'] = null];
+      api.sessions = [
+        Map<String, dynamic>.from(_completedRow)
+          ..['start_date'] = '2026-99-01'
+          ..['end_date'] = null,
+      ];
       await pumpHistory(tester, width: width);
       expect(find.text('Saved start: 2026-99-01'), findsOneWidget);
       expect(find.text('Completed: Unavailable'), findsOneWidget);
@@ -253,30 +276,35 @@ void main() {
     });
   }
 
-  testWidgets('active and completed batches stay clearly distinct together',
-      (tester) async {
+  testWidgets('active and completed batches stay clearly distinct together', (
+    tester,
+  ) async {
     // Newest first, as the real descending query returns them.
     api.sessions = [_activeRow(), _completedRow];
     await pumpHistory(tester);
 
-    expect(find.text('Incubation in progress \u00B7 12 eggs'), findsOneWidget);
+    expect(find.text('Batch open \u00B7 12 eggs set'), findsOneWidget);
+    await tester.ensureVisible(find.text('Batch #3'));
+    await tester.tap(find.text('Batch #3'));
+    await tester.pumpAndSettle();
     expect(find.text('6 / 8 eggs hatched'), findsOneWidget);
     expect(find.text('Hatchability: 75.0%'), findsOneWidget);
-    expect(find.text('Active'), findsOneWidget);
+    expect(find.text('Open'), findsOneWidget);
     expect(find.text('Completed'), findsOneWidget);
   });
 
   testWidgets(
-      'a completed batch with zero hatched still shows its real 0% result',
-      (tester) async {
-    api.sessions = [_zeroHatchedRow];
-    await pumpHistory(tester);
+    'a completed batch with zero hatched still shows its real 0% result',
+    (tester) async {
+      api.sessions = [_zeroHatchedRow];
+      await pumpHistory(tester);
 
-    // The farmer-entered result of 0 hatched eggs is a genuine outcome and
-    // must remain visible - the fix only removes PREMATURE results.
-    expect(find.text('0 / 10 eggs hatched'), findsOneWidget);
-    expect(find.text('Hatchability: 0.0%'), findsOneWidget);
-    expect(find.text('Incubation in progress'), findsNothing);
-    expect(find.text('Completed'), findsOneWidget);
-  });
+      // The farmer-entered result of 0 hatched eggs is a genuine outcome and
+      // must remain visible - the fix only removes PREMATURE results.
+      expect(find.text('0 / 10 eggs hatched'), findsOneWidget);
+      expect(find.text('Hatchability: 0.0%'), findsOneWidget);
+      expect(find.text('Incubation in progress'), findsNothing);
+      expect(find.text('Completed'), findsOneWidget);
+    },
+  );
 }

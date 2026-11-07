@@ -10,7 +10,7 @@ import 'package:egg_incubator_app/main.dart';
 /// The batch that is incubating RIGHT NOW: 12 chicken eggs started two
 /// days ago. Built at call time so the "Day N" maths stays stable.
 Map<String, dynamic> _activeRow() {
-  final start = DateTime.now().subtract(const Duration(days: 2));
+  final start = DateTime.now().toUtc().subtract(const Duration(days: 2));
   return <String, dynamic>{
     'id': 9,
     'egg_type': 'Chicken',
@@ -50,8 +50,9 @@ class _FakeSupabaseApi extends http.BaseClient {
       );
     }
 
-    final wantsSingle =
-        (row.headers['Accept'] ?? '').contains('vnd.pgrst.object+json');
+    final wantsSingle = (row.headers['Accept'] ?? '').contains(
+      'vnd.pgrst.object+json',
+    );
 
     String body;
     if (row.url.path.contains('incubator_sessions')) {
@@ -142,8 +143,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 300));
   }
 
-  testWidgets(
-      'the console names the real batch and labels the simulator as '
+  testWidgets('the console names the real batch and labels the simulator as '
       'simulation', (tester) async {
     api.sessions = [_activeRow()];
     await pumpAt(tester, const IncubatorDashboardPage());
@@ -152,55 +152,52 @@ void main() {
 
     // The ONE real batch is identified first, with its calculated day.
     expect(
-      find.text('INCUBATING NOW \u00B7 Batch #9 \u00B7 Chicken'),
+      find.text('SAVED APP BATCH \u00B7 Batch #9 \u00B7 Chicken'),
       findsOneWidget,
     );
-    expect(
-      find.text('Waiting for confirmed start \u00B7 saved batch'),
-      findsOneWidget,
-    );
+    expect(find.textContaining('Saved start:'), findsOneWidget);
 
     // The simulator is labeled everywhere and its phase never claims to be
     // a real incubation.
     expect(find.text('SIMULATION'), findsOneWidget);
     expect(find.text('SIMULATOR PROFILE'), findsOneWidget);
-    expect(find.text('ACTIVE PHASE'), findsOneWidget);
+    expect(find.text('SIMULATED PHASE'), findsOneWidget);
     expect(find.text('ACTIVE INCUBATION'), findsNothing);
     expect(find.text('Profile: Chicken'), findsOneWidget);
     expect(find.text('Species: Chicken'), findsNothing);
   });
 
   testWidgets(
-      'with no real batch the console states that progress is simulated',
-      (tester) async {
-    api.sessions = [];
-    await pumpAt(tester, const IncubatorDashboardPage());
+    'with no real batch the console states that progress is simulated',
+    (tester) async {
+      api.sessions = [];
+      await pumpAt(tester, const IncubatorDashboardPage());
 
-    expect(
-      find.textContaining('No real batch incubating'),
-      findsOneWidget,
-    );
-    expect(find.textContaining('INCUBATING NOW'), findsNothing);
-    expect(find.text('SIMULATION'), findsOneWidget);
-    expect(find.text('SIMULATOR PROFILE'), findsOneWidget);
-  });
+      expect(
+        find.textContaining('No app batch data available'),
+        findsOneWidget,
+      );
+      expect(find.textContaining('SAVED APP BATCH'), findsNothing);
+      expect(find.text('SIMULATION'), findsOneWidget);
+      expect(find.text('SIMULATOR PROFILE'), findsOneWidget);
+    },
+  );
 
-  testWidgets(
-      'switching the simulator profile never touches the real batch or '
+  testWidgets('switching the simulator profile never touches the real batch or '
       'the database', (tester) async {
     api.sessions = [_activeRow()];
     await pumpAt(tester, const IncubatorDashboardPage());
 
     // Change the simulated profile to Duck. (The chip label carries the
     // merged Day-7 candling suffix from development's controller work.)
-    await tester.ensureVisible(find.text('28 Days (Day 7+)'));
-    await tester.tap(find.text('28 Days (Day 7+)'));
+    await tester.ensureVisible(find.text('Duck'));
+    await tester.tap(find.text('Duck'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 300));
 
     // The real batch is still the same chicken batch, untouched...
     expect(
-      find.text('INCUBATING NOW \u00B7 Batch #9 \u00B7 Chicken'),
+      find.text('SAVED APP BATCH \u00B7 Batch #9 \u00B7 Chicken'),
       findsOneWidget,
     );
     // ...while only the simulator preview switched.
@@ -212,13 +209,14 @@ void main() {
     expect(api.sessions.single['egg_type'], 'Chicken');
   });
 
-  testWidgets('the real batch band opens the actual incubation screen',
-      (tester) async {
+  testWidgets('the real batch band opens the actual incubation screen', (
+    tester,
+  ) async {
     api.sessions = [_activeRow()];
     await pumpAt(tester, const IncubatorDashboardPage());
 
-    await tester.ensureVisible(find.textContaining('INCUBATING NOW'));
-    await tester.tap(find.textContaining('INCUBATING NOW'));
+    await tester.ensureVisible(find.textContaining('SAVED APP BATCH'));
+    await tester.tap(find.textContaining('SAVED APP BATCH'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
 
@@ -226,8 +224,9 @@ void main() {
     expect(find.text('Batch #9'), findsOneWidget);
   });
 
-  testWidgets('the profile dialog is clearly a simulator control',
-      (tester) async {
+  testWidgets('the profile dialog is clearly a simulator control', (
+    tester,
+  ) async {
     api.sessions = [];
     await pumpAt(tester, const IncubatorDashboardPage());
 
@@ -236,23 +235,19 @@ void main() {
     await tester.pump(const Duration(milliseconds: 300));
 
     expect(find.text('Simulator Profile'), findsOneWidget);
-    expect(
-      find.textContaining('changes the simulator only'),
-      findsOneWidget,
-    );
+    expect(find.textContaining('changes the simulator only'), findsOneWidget);
     expect(find.text('Select Species & Start Batch'), findsNothing);
   });
 
-  testWidgets(
-      'a batch finished from History details uses the same validated '
+  testWidgets('a batch finished from History details uses the same validated '
       'completion flow', (tester) async {
     api.sessions = [_activeRow()];
     await pumpAt(tester, const HistoryScreen());
 
     // The running batch is clearly identified in History: the amber Active
     // badge plus the in-progress wording, never a fabricated result line.
-    expect(find.text('Active'), findsOneWidget);
-    expect(find.text('Incubation in progress \u00B7 12 eggs'), findsOneWidget);
+    expect(find.text('Open'), findsOneWidget);
+    expect(find.text('Batch open \u00B7 12 eggs set'), findsOneWidget);
     expect(find.text('0 / 12 eggs hatched'), findsNothing);
 
     await tester.ensureVisible(find.text('View details'));
@@ -273,13 +268,12 @@ void main() {
     await tester.pump(const Duration(milliseconds: 300));
 
     // The validated dialog asks for the real hatched count.
-    expect(find.text('Complete Incubation'), findsOneWidget);
+    expect(find.text('Finish batch record?'), findsOneWidget);
     await tester.enterText(find.byType(TextField), '12');
     await tester.pump();
     expect(find.text('Hatchability: 100.0%'), findsOneWidget);
 
-    await tester
-        .tap(find.widgetWithText(ElevatedButton, 'Finish Batch').last);
+    await tester.tap(find.widgetWithText(ElevatedButton, 'Finish Batch').last);
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
     await tester.pump(const Duration(milliseconds: 300));
@@ -295,11 +289,12 @@ void main() {
     expect(find.byType(BatchDetailsScreen), findsNothing);
     expect(find.text('12 / 12 eggs hatched'), findsOneWidget);
     expect(find.text('Completed'), findsOneWidget);
-    expect(find.text('Active'), findsNothing);
+    expect(find.text('Open'), findsNothing);
   });
 
-  testWidgets('a completed batch offers no incubation controls',
-      (tester) async {
+  testWidgets('a completed batch offers no incubation controls', (
+    tester,
+  ) async {
     const completed = BatchData(
       id: 3,
       batchNumber: 'Batch #3',
@@ -337,7 +332,8 @@ void main() {
         FlutterError.onError = (d) => errors.add(d);
         try {
           await tester.pumpWidget(
-              const MaterialApp(home: IncubatorDashboardPage()));
+            const MaterialApp(home: IncubatorDashboardPage()),
+          );
           await tester.pump();
           await tester.pump(const Duration(milliseconds: 300));
         } finally {
@@ -345,7 +341,7 @@ void main() {
         }
 
         expect(find.text('Hardware Console'), findsOneWidget);
-        expect(find.textContaining('INCUBATING NOW'), findsOneWidget);
+        expect(find.textContaining('SAVED APP BATCH'), findsOneWidget);
         expect(find.text('SIMULATION'), findsOneWidget);
         expect(find.text('SIMULATOR PROFILE'), findsOneWidget);
 

@@ -28,6 +28,8 @@ void main() {
                 reading: reading,
                 targetTemperature: temperatureTarget,
                 targetHumidity: humidityTarget,
+                // Synthetic approval input; not a real species approval.
+                targetsApproved: true,
               ),
             ),
           ),
@@ -39,27 +41,28 @@ void main() {
   String value(WidgetTester tester, String key) =>
       tester.widget<Text>(find.byKey(ValueKey(key))).data!;
 
-  testWidgets('recent reported actuals and configured targets stay separate', (
-    tester,
-  ) async {
-    await showReading(
-      tester,
-      const ActualReadingSnapshot(
-        state: ActualReadingState.recentReceipt,
-        temperature: 36.2,
-        humidity: 48,
-      ),
-    );
-    expect(value(tester, 'actual-temperature'), '36.2 °C');
-    expect(value(tester, 'actual-humidity'), '48.0 %');
-    expect(value(tester, 'target-temperature'), targetTemperature);
-    expect(value(tester, 'target-humidity'), targetHumidity);
-    expect(find.textContaining('Not verified live'), findsOneWidget);
-    expect(find.text('Actual'), findsOneWidget);
-    expect(find.text('Target'), findsOneWidget);
-    expect(find.byType(TextField), findsNothing);
-    expect(find.byType(Slider), findsNothing);
-  });
+  testWidgets(
+    'classified fixture actuals and approved-fixture targets stay separate',
+    (tester) async {
+      await showReading(
+        tester,
+        const ActualReadingSnapshot(
+          state: ActualReadingState.fresh,
+          temperature: 36.2,
+          humidity: 48,
+        ),
+      );
+      expect(value(tester, 'actual-temperature'), '36.2 °C');
+      expect(value(tester, 'actual-humidity'), '48.0 %');
+      expect(value(tester, 'target-temperature'), targetTemperature);
+      expect(value(tester, 'target-humidity'), targetHumidity);
+      expect(find.textContaining('not confirmation'), findsOneWidget);
+      expect(find.text('Current readings'), findsOneWidget);
+      expect(find.text('Batch settings'), findsOneWidget);
+      expect(find.byType(TextField), findsNothing);
+      expect(find.byType(Slider), findsNothing);
+    },
+  );
 
   for (final state in [
     ActualReadingState.stale,
@@ -90,14 +93,17 @@ void main() {
       await showReading(
         tester,
         ActualReadingSnapshot(
-          state: ActualReadingState.recentReceipt,
+          state: ActualReadingState.fresh,
           temperature: invalid,
           humidity: invalid,
         ),
       );
       expect(value(tester, 'actual-temperature'), '—');
       expect(value(tester, 'actual-humidity'), '—');
-      expect(find.textContaining('missing or invalid'), findsOneWidget);
+      expect(
+        find.text('Some sensor readings are unavailable.'),
+        findsOneWidget,
+      );
       expect(value(tester, 'target-temperature'), targetTemperature);
     });
   }
@@ -108,7 +114,7 @@ void main() {
     await showReading(
       tester,
       const ActualReadingSnapshot(
-        state: ActualReadingState.recentReceipt,
+        state: ActualReadingState.fresh,
         temperature: null,
         humidity: 0,
       ),
@@ -123,7 +129,7 @@ void main() {
     await showReading(
       tester,
       const ActualReadingSnapshot(
-        state: ActualReadingState.recentReceipt,
+        state: ActualReadingState.fresh,
         temperature: 36.2,
         humidity: 48,
       ),
@@ -132,10 +138,7 @@ void main() {
     );
     expect(value(tester, 'target-temperature'), '—');
     expect(value(tester, 'target-humidity'), '—');
-    expect(
-      find.textContaining('approved active profile required'),
-      findsOneWidget,
-    );
+    expect(find.text('Batch settings are not available.'), findsOneWidget);
   });
 
   for (final width in [320.0, 390.0, 768.0, 1440.0]) {
@@ -148,7 +151,7 @@ void main() {
         width: width,
         textScale: 2,
       );
-      expect(find.text('Reading Not Updated'), findsOneWidget);
+      expect(find.text('Reading not updated'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
   }

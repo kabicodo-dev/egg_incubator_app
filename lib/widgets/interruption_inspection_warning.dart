@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../controllers/interruption_inspection_controller.dart';
+import '../theme/app_theme.dart';
 
 /// A persistent dashboard block, not a snackbar or dismissible notification.
 class InterruptionInspectionWarning extends StatelessWidget {
@@ -27,24 +28,33 @@ class InterruptionInspectionWarning extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              pending.isEmpty
-                  ? 'Restart/interruption status unverified'
-                  : 'Inspection required after interruption',
-              style: const TextStyle(fontWeight: FontWeight.w700),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Icon(
+                  Icons.warning_amber_rounded,
+                  color: AppColors.warning,
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    pending.isEmpty
+                        ? 'Incubator status unavailable'
+                        : 'Check after interruption',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.warning,
+                    ),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 8),
-            const Text(
-              'Inspect the incubator and eggs. Egg condition and survival '
-              'are not verified. Reconnection does not clear this warning '
-              'or establish physical Running or Stop.',
+            Text(
+              pending.isEmpty
+                  ? 'Check the incubator and eggs before continuing.'
+                  : 'An interruption was reported. Check the incubator and eggs.',
             ),
-            if (pending.isEmpty)
-              const Text(
-                'The approved inspection-status backend adapter is not '
-                'available or its status could not be read. This is not '
-                'evidence that an interruption occurred.',
-              ),
             for (final incident in pending) ...[
               const SizedBox(height: 12),
               ElevatedButton(
@@ -55,13 +65,21 @@ class InterruptionInspectionWarning extends StatelessWidget {
                 child: const Text('I inspected the incubator and eggs'),
               ),
             ],
-            if (controller.busy)
-              const Text('Verifying saved inspection status…'),
-            if (controller.error != null) Text(controller.error!),
-            const Text(
-              'Inspection acknowledgment does not certify egg survival, '
-              'electrical safety or successful recovery. No Start is replayed.',
-            ),
+            if (controller.busy) const Text('Checking status…'),
+            if (controller.error != null && pending.isNotEmpty)
+              const Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(Icons.error_outline, color: AppColors.danger, size: 20),
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Couldn’t confirm the update. Please try again.',
+                      style: TextStyle(color: AppColors.danger),
+                    ),
+                  ),
+                ],
+              ),
           ],
         ),
       );

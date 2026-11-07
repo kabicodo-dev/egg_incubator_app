@@ -113,7 +113,7 @@ void main() {
     tester,
   ) async {
     await show(tester, null);
-    expect(find.text('Waiting for confirmed start'), findsOneWidget);
+    expect(find.text('Start time not confirmed'), findsOneWidget);
     expect(find.text('Day 1'), findsNothing);
     expect(find.byType(LinearProgressIndicator), findsNothing);
     expect(find.byType(ElevatedButton), findsNothing);

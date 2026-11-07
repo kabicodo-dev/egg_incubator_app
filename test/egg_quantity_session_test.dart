@@ -19,8 +19,9 @@ class _FakeSupabaseApi extends http.BaseClient {
     final row = request as http.Request;
     requests.add(row);
 
-    final wantsSingle =
-        (row.headers['Accept'] ?? '').contains('vnd.pgrst.object+json');
+    final wantsSingle = (row.headers['Accept'] ?? '').contains(
+      'vnd.pgrst.object+json',
+    );
     return http.StreamedResponse(
       Stream.value(utf8.encode(wantsSingle ? '{"id": 42}' : '[]')),
       200,
@@ -31,8 +32,9 @@ class _FakeSupabaseApi extends http.BaseClient {
 
   /// The rows the app actually wrote to incubator_sessions.
   List<Map<String, dynamic>> get sessionInserts => requests
-      .where((r) =>
-          r.method == 'POST' && r.url.path.contains('incubator_sessions'))
+      .where(
+        (r) => r.method == 'POST' && r.url.path.contains('incubator_sessions'),
+      )
       .map((r) => jsonDecode(r.body) as Map<String, dynamic>)
       .toList();
 
@@ -119,61 +121,80 @@ void main() {
         throwsA(isA<EggQuantityException>()),
       );
 
-      expect(api.sessionInsertCount, before,
-          reason: '$value eggs must not reach the database');
+      expect(
+        api.sessionInsertCount,
+        before,
+        reason: '$value eggs must not reach the database',
+      );
     }
   });
 
-  testWidgets('the chosen quantity travels from the quantity screen to the '
-      'database', (tester) async {
-    useScreen(tester);
+  testWidgets(
+    'the chosen quantity reaches the checklist without a cloud Start',
+    (tester) async {
+      final insertsBefore = api.sessionInsertCount;
+      useScreen(tester);
 
-    await tester.pumpWidget(
-      const MaterialApp(
-        home: IncubationSetupScreen(
-          selectedSpecies: SpeciesData(
-            name: 'Chicken',
-            emoji: '\uD83D\uDC14',
-            incubationDays: 21,
-            temperature: '37.5\u00B0C',
-            targetHumidity: 55,
-            description: 'Chicken eggs typically require 21 days.',
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: IncubationSetupScreen(
+            selectedSpecies: SpeciesData(
+              name: 'Chicken',
+              emoji: '\uD83D\uDC14',
+              incubationDays: 21,
+              temperature: '37.5\u00B0C',
+              targetHumidity: 55,
+              description: 'Chicken eggs typically require 21 days.',
+            ),
           ),
         ),
-      ),
-    );
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 300));
-
-    // 1. Quantity screen: pick the maximum capacity.
-    await tester.tap(find.text('12 eggs'));
-    await tester.pump();
-
-    await tester.tap(find.widgetWithText(ElevatedButton, 'Continue'));
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 350));
-
-    // 2. Checklist shows the same amount.
-    expect(find.text('Incubation Checklist'), findsOneWidget);
-    expect(find.text('12 eggs \u2022 21 days'), findsOneWidget);
-
-    // 3. Complete the checklist and start the incubation.
-    for (var i = 0; i < 4; i++) {
-      await tester.tap(find.byType(Checkbox).at(i));
+      );
       await tester.pump();
-    }
+      await tester.pump(const Duration(milliseconds: 300));
 
-    await tester.tap(find.widgetWithText(ElevatedButton, 'Start Incubation'));
-    await tester.pump();
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 350));
+      // 1. Quantity screen: pick the maximum capacity.
+      await tester.tap(find.text('12 eggs'));
+      await tester.pump();
 
-    // 4. The session was created with the chosen quantity.
-    expect(find.text('Incubation Started!'), findsOneWidget);
-    expect(find.text('Batch #42'), findsOneWidget);
+      await tester.tap(find.widgetWithText(ElevatedButton, 'Continue'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 350));
 
-    expect(api.sessionInsertCount, greaterThanOrEqualTo(1));
-    expect(api.sessionInserts.last['egg_quantity'], 12);
-    expect(api.sessionInserts.last['egg_type'], 'Chicken');
-  });
+      // 2. Checklist shows the same amount.
+      expect(find.text('Incubation Checklist'), findsOneWidget);
+      expect(find.text('12 eggs \u2022 21 days'), findsOneWidget);
+
+      // 3. Complete the checklist and start the incubation.
+      for (var i = 0; i < 4; i++) {
+        await tester.ensureVisible(find.byType(Checkbox).at(i));
+        await tester.tap(find.byType(Checkbox).at(i));
+        await tester.pump();
+      }
+
+      await tester.ensureVisible(
+        find.widgetWithText(ElevatedButton, 'Start Incubation'),
+      );
+      await tester.tap(find.widgetWithText(ElevatedButton, 'Start Incubation'));
+      await tester.pump();
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 350));
+
+      expect(
+        tester
+            .widget<ElevatedButton>(
+              find.widgetWithText(ElevatedButton, 'Start Incubation'),
+            )
+            .onPressed,
+        isNull,
+      );
+      expect(find.text('Batch record saved'), findsNothing);
+      expect(
+        find.textContaining(
+          'This version cannot send a Start command to the incubator.',
+        ),
+        findsOneWidget,
+      );
+      expect(api.sessionInsertCount, insertsBefore);
+    },
+  );
 }

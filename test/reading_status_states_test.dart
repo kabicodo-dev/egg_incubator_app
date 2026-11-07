@@ -4,11 +4,11 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   final cases = <BackendReadingFreshness?, String>{
-    BackendReadingFreshness.fresh: 'Fresh',
-    BackendReadingFreshness.notUpdated: 'Reading Not Updated',
-    BackendReadingFreshness.sensorUnavailable: 'Sensor Unavailable',
-    BackendReadingFreshness.unknown: 'Unknown Freshness',
-    null: 'Unknown Freshness',
+    BackendReadingFreshness.fresh: 'Reading up to date',
+    BackendReadingFreshness.notUpdated: 'Reading not updated',
+    BackendReadingFreshness.sensorUnavailable: 'Reading unavailable',
+    BackendReadingFreshness.unknown: 'Reading time unavailable',
+    null: 'Reading time unavailable',
   };
 
   Future<void> show(WidgetTester tester, ActualReadingSnapshot snapshot) async {
@@ -45,8 +45,8 @@ void main() {
       final fresh = entry.key == BackendReadingFreshness.fresh;
       expect(text(tester, 'actual-temperature'), fresh ? '36.2 °C' : '—');
       expect(text(tester, 'actual-humidity'), fresh ? '48.0 %' : '—');
-      expect(text(tester, 'target-temperature'), 'target temperature fixture');
-      expect(find.text('Incubator Disconnected'), findsNothing);
+      expect(text(tester, 'target-temperature'), '—');
+      expect(find.text('Incubator disconnected'), findsNothing);
       expect(find.text('LIVE'), findsNothing);
       expect(tester.takeException(), isNull);
     });
@@ -62,10 +62,10 @@ void main() {
         verifiedIncubatorDisconnected: true,
       ),
     );
-    expect(text(tester, 'reading-status-label'), 'Incubator Disconnected');
+    expect(text(tester, 'reading-status-label'), 'Incubator disconnected');
     expect(text(tester, 'actual-temperature'), '—');
     expect(text(tester, 'actual-humidity'), '—');
-    expect(find.textContaining('does not confirm Stop'), findsOneWidget);
+    expect(find.textContaining('may still be running'), findsOneWidget);
   });
 
   testWidgets('mock transitions replace old values without replay or writes', (
@@ -108,7 +108,7 @@ void main() {
     );
     expect(text(tester, 'actual-temperature'), '—');
     expect(text(tester, 'actual-humidity'), '—');
-    expect(find.textContaining('missing or invalid'), findsOneWidget);
+    expect(find.text('Some sensor readings are unavailable.'), findsOneWidget);
   });
 
   test('unverified transport loss and receipt age never establish Fresh', () {
@@ -120,12 +120,12 @@ void main() {
       now: DateTime.utc(2026),
       staleAfter: Duration.zero,
     );
-    expect(reading.label, 'Sensor Unavailable');
+    expect(reading.label, 'Reading unavailable');
     expect(
       const ActualReadingSnapshot(
         state: ActualReadingState.recentReceipt,
       ).label,
-      'Unknown Freshness',
+      'Reading time unavailable',
     );
   });
 }

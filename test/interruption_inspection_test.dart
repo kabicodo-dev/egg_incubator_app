@@ -152,18 +152,21 @@ void main() {
     expect(find.byIcon(Icons.close), findsNothing);
     await tester.tapAt(const Offset(380, 900));
     await tester.drag(
-      find.text('Inspection required after interruption'),
+      find.text('Check after interruption'),
       const Offset(200, 0),
     );
     await tester.pumpAndSettle();
     await show(tester, controller);
-    expect(find.text('Inspection required after interruption'), findsOneWidget);
+    expect(find.text('Check after interruption'), findsOneWidget);
     expect(store.acknowledgments, isEmpty);
-    expect(find.textContaining('survival are not verified'), findsOneWidget);
+    expect(
+      find.text('An interruption was reported. Check the incubator and eggs.'),
+      findsOneWidget,
+    );
     await tester.tap(find.text('I inspected the incubator and eggs'));
     await tester.pumpAndSettle();
     expect(store.acknowledgments, ['incident-a']);
-    expect(find.text('Inspection required after interruption'), findsNothing);
+    expect(find.text('Check after interruption'), findsNothing);
   });
 
   testWidgets('failed save retains warning and action', (tester) async {
@@ -174,8 +177,11 @@ void main() {
     await show(tester, controller);
     await tester.tap(find.text('I inspected the incubator and eggs'));
     await tester.pumpAndSettle();
-    expect(find.text('Inspection required after interruption'), findsOneWidget);
-    expect(find.textContaining('acknowledgment not confirmed'), findsOneWidget);
+    expect(find.text('Check after interruption'), findsOneWidget);
+    expect(
+      find.text('Couldn’t confirm the update. Please try again.'),
+      findsOneWidget,
+    );
   });
 
   testWidgets('without approved adapter no acknowledgment can be invented', (
@@ -184,7 +190,13 @@ void main() {
     final controller = InterruptionInspectionController();
     addTearDown(controller.dispose);
     await show(tester, controller);
-    expect(find.text('Restart/interruption status unverified'), findsOneWidget);
+    expect(find.text('Incubator status unavailable'), findsOneWidget);
+    expect(
+      find.text('Check the incubator and eggs before continuing.'),
+      findsOneWidget,
+    );
+    expect(find.textContaining('backend adapter'), findsNothing);
+    expect(find.textContaining('interruption was reported'), findsNothing);
     expect(find.byType(ElevatedButton), findsNothing);
   });
 

@@ -12,7 +12,7 @@
 //
 // These assert current behavior, not desired behavior: they are expected to
 // fail once per-device ownership (migration M2 in
-// docs/BE-01-session-ownership-audit.md) is approved and implemented.
+// docs/security/BE-01-session-ownership-audit.md) is approved and implemented.
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';

@@ -16,11 +16,19 @@ class ConfirmedStartProgress extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          time?.dayLabel ?? 'Waiting for confirmed start',
+          time?.startUtc == null
+              ? 'Start time not confirmed'
+              : time?.day == null
+              ? 'Day count unavailable'
+              : time!.dayLabel,
           key: const ValueKey('confirmed-incubation-day'),
           style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
         ),
-        if (start != null) Text('Confirmed Start: $start'),
+        if (start != null) Text('Started: $start'),
+        if (time?.day == null)
+          const Text(
+            'The day count will appear when the start time is confirmed.',
+          ),
       ],
     );
   }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../models/farmer_notice.dart';
+import 'common/farmer_notice_card.dart';
 
 /// Presentation state only; receipt freshness is not measurement-time proof.
 enum ActualReadingState {
@@ -72,17 +74,15 @@ class ActualReadingSnapshot {
   final double? temperature;
   final double? humidity;
 
-  bool get canShowReportedValues =>
-      state == ActualReadingState.recentReceipt ||
-      state == ActualReadingState.fresh;
+  bool get canShowReportedValues => state == ActualReadingState.fresh;
 
   String get label => switch (state) {
-    ActualReadingState.fresh => 'Fresh',
-    ActualReadingState.stale => 'Reading Not Updated',
-    ActualReadingState.unavailable => 'Sensor Unavailable',
-    ActualReadingState.disconnected => 'Incubator Disconnected',
+    ActualReadingState.fresh => 'Reading up to date',
+    ActualReadingState.stale => 'Reading not updated',
+    ActualReadingState.unavailable => 'Reading unavailable',
+    ActualReadingState.disconnected => 'Incubator disconnected',
     ActualReadingState.unknown ||
-    ActualReadingState.recentReceipt => 'Unknown Freshness',
+    ActualReadingState.recentReceipt => 'Reading time unavailable',
   };
 
   String valueText(double? value, String unit) =>
@@ -92,21 +92,17 @@ class ActualReadingSnapshot {
 
   String get message => switch (state) {
     ActualReadingState.fresh =>
-      'Backend classifies this reading as fresh; this does not verify '
-          'physical Running or target application.',
+      'These are sensor readings, not confirmation that the incubator is running.',
     ActualReadingState.recentReceipt =>
-      'Recently received; measurement age and source/batch association are '
-          'unverified. Not verified live.',
+      'An update arrived, but its reading time could not be checked.',
     ActualReadingState.stale =>
-      'Reading Not Updated — last received data is not live.',
+      'No recent reading. Check the incubator before relying on the app.',
     ActualReadingState.unknown =>
-      'Unknown Freshness — waiting for a trustworthy reading time.',
+      'The app cannot check when this reading was taken.',
     ActualReadingState.unavailable =>
-      'Sensor Unavailable — no current physical reading. '
-          'Connection loss does not prove incubation stopped.',
+      'No current reading. Check the incubator and the connection.',
     ActualReadingState.disconnected =>
-      'Incubator link disconnection verified; autonomous incubation may '
-          'continue. This does not confirm Stop.',
+      'Check the Bluetooth connection. The incubator may still be running.',
   };
 }
 
@@ -118,11 +114,14 @@ class IncubatorReadings extends StatelessWidget {
     required this.reading,
     this.targetTemperature,
     this.targetHumidity,
+    this.targetsApproved = false,
   });
 
   final ActualReadingSnapshot reading;
   final String? targetTemperature;
   final String? targetHumidity;
+  // Presentation input only. No production caller sets this without approval.
+  final bool targetsApproved;
 
   @override
   Widget build(BuildContext context) {
@@ -130,7 +129,7 @@ class IncubatorReadings extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          actual ? 'Actual' : 'Target',
+          actual ? 'Current readings' : 'Batch settings',
           style: const TextStyle(fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: 8),
@@ -138,7 +137,9 @@ class IncubatorReadings extends StatelessWidget {
         Text(
           actual
               ? reading.valueText(reading.temperature, '°C')
-              : targetTemperature ?? '—',
+              : targetsApproved
+              ? targetTemperature ?? '—'
+              : '—',
           key: ValueKey(actual ? 'actual-temperature' : 'target-temperature'),
           style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
         ),
@@ -147,7 +148,9 @@ class IncubatorReadings extends StatelessWidget {
         Text(
           actual
               ? reading.valueText(reading.humidity, '%')
-              : targetHumidity ?? '—',
+              : targetsApproved
+              ? targetHumidity ?? '—'
+              : '—',
           key: ValueKey(actual ? 'actual-humidity' : 'target-humidity'),
           style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
         ),
@@ -157,6 +160,17 @@ class IncubatorReadings extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        FarmerNoticeCard(
+          titleKey: const ValueKey('reading-status-label'),
+          notice: FarmerNotice(
+            title: reading.label,
+            message: reading.message,
+            tone: reading.canShowReportedValues
+                ? FarmerNoticeTone.information
+                : FarmerNoticeTone.warning,
+          ),
+        ),
+        const SizedBox(height: 12),
         LayoutBuilder(
           builder: (context, constraints) {
             Widget block(bool actual) => Container(
@@ -189,24 +203,26 @@ class IncubatorReadings extends StatelessWidget {
           },
         ),
         const SizedBox(height: 8),
-        Text(
-          reading.label,
-          key: const ValueKey('reading-status-label'),
-          style: const TextStyle(fontWeight: FontWeight.w700),
-        ),
-        Text(reading.message),
         if (reading.canShowReportedValues &&
             (reading.temperature == null ||
                 !reading.temperature!.isFinite ||
                 reading.humidity == null ||
                 !reading.humidity!.isFinite))
-          const Text('Sensor Unavailable — missing or invalid actual values.'),
+          const FarmerNoticeCard(
+            notice: FarmerNotice(
+              title: 'Some sensor readings are unavailable.',
+              message:
+                  'A sensor value is missing or invalid. Check the incubator before relying on the available readings.',
+              tone: FarmerNoticeTone.warning,
+            ),
+          ),
         const SizedBox(height: 4),
         Text(
-          targetTemperature == null || targetHumidity == null
-              ? 'Target unavailable — approved active profile required.'
-              : 'Read-only configured targets; approval and physical '
-                    'application are not verified.',
+          !targetsApproved ||
+                  targetTemperature == null ||
+                  targetHumidity == null
+              ? 'Batch settings are not available.'
+              : 'Settings are shown for comparison, not as sensor readings.',
         ),
       ],
     );

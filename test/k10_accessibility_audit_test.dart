@@ -160,10 +160,36 @@ void main() {
         addTearDown(tester.view.reset);
         addTearDown(tester.platformDispatcher.clearAllTestValues);
         final errors = <String>[];
+        final diagnostics = <String>[];
         final previous = FlutterError.onError;
-        FlutterError.onError = (details) => errors.add(details.exceptionAsString());
+        FlutterError.onError = (details) {
+          errors.add(details.exceptionAsString());
+          diagnostics.add(details.informationCollector?.call()
+              .map((entry) => entry.toStringDeep()).join('\n') ?? '');
+        };
         final capture = GlobalKey();
         final label = '${page.key.replaceAll(' ', '-')}-${size.$1.toInt()}-${size.$2}x';
+        final brandButtonContrasts = <double>[];
+        void checkBrandButtons() {
+          for (final button in tester.widgetList<ButtonStyleButton>(
+              find.byWidgetPredicate((widget) => widget is ButtonStyleButton))) {
+            if (!button.enabled) continue; // Disabled controls have separate rules.
+            final states = <WidgetState>{};
+            final background = button.style?.backgroundColor?.resolve(states);
+            if (background == null) continue;
+            expect(background, isNot(const Color(0xFFE8752A)),
+                reason: '${page.key}: bright accent cannot carry a white button label');
+            if (background != AppColors.primaryDark) continue;
+            final foreground = button.style?.foregroundColor?.resolve(states);
+            expect(foreground, Colors.white,
+                reason: '${page.key}: explicit white label on accessible brand button');
+            final a = foreground!.computeLuminance();
+            final b = background.computeLuminance();
+            final ratio = ((a > b ? a : b) + 0.05) / ((a < b ? a : b) + 0.05);
+            brandButtonContrasts.add(ratio);
+            expect(ratio, greaterThanOrEqualTo(4.5));
+          }
+        }
         Future<void> screenshot(String part) async {
           if (output == null) return;
           await tester.pump();
@@ -191,11 +217,13 @@ void main() {
           await tester.pump();
           await tester.pump(const Duration(milliseconds: 500));
           if (page.key == 'setup-quantity') {
+            await tester.ensureVisible(find.text('Chicken').first);
             await tester.tap(find.text('Chicken').first);
             await tester.pump(const Duration(milliseconds: 250));
             await tester.ensureVisible(find.text('Continue'));
             await tester.tap(find.text('Continue'));
             await tester.pump(const Duration(milliseconds: 250));
+            expect(find.text('How many eggs?'), findsOneWidget);
           }
           if (page.key == 'history-filters') {
             await tester.tap(find.byWidgetPredicate((widget) =>
@@ -208,6 +236,7 @@ void main() {
             await tester.enterText(find.byType(TextField), '5');
             await tester.pump();
           }
+          checkBrandButtons();
           await screenshot('top');
           final vertical = find.byWidgetPredicate((widget) => widget is Scrollable &&
               (widget.axisDirection == AxisDirection.down || widget.axisDirection == AxisDirection.up));
@@ -215,17 +244,15 @@ void main() {
             final state = tester.state<ScrollableState>(vertical.first);
             state.position.jumpTo(state.position.maxScrollExtent);
             await tester.pump(const Duration(milliseconds: 100));
+            checkBrandButtons();
             await screenshot('bottom');
           }
           findings.add({'screen': page.key, 'width': size.$1, 'scale': size.$2,
-            'renderingErrors': List<String>.from(errors)});
-          // Exploratory audit: overflow is RECORDED, never called a clean pass.
-          // Unexpected exceptions fail this test, rather than being suppressed.
-          expect(errors.where((e) => !e.contains('A RenderFlex overflowed')), isEmpty);
-          if (['setup', 'setup-quantity', 'occupied-setup', 'checklist',
-            'active-details', 'completed-details'].contains(page.key)) {
-            expect(errors, isEmpty, reason: 'Regression check for the small layout fixes');
-          }
+            'renderingErrors': List<String>.from(errors),
+            'enabledBrandButtonContrastRatios': brandButtonContrasts,
+            'renderingDiagnostics': List<String>.from(diagnostics)});
+          // Layout regressions now fail every route, not just selected routes.
+          expect(errors, isEmpty, reason: '$label must not hide overflow failures');
         } finally {
           await tester.pumpWidget(const SizedBox.shrink());
           await tester.pump(const Duration(seconds: 7));
@@ -260,6 +287,12 @@ void main() {
   test('measure token contrasts against actual paired surfaces', () {
     final pairs = <String, (Color, Color)>{
       'primaryDark/white': (AppColors.primaryDark, Colors.white),
+      'dark orange text/white': (AppColors.primaryDarkPressed, Colors.white),
+      'dark orange text/cream': (AppColors.primaryDarkPressed, AppColors.background),
+      'dark orange text/legacy orange 15% tint': (AppColors.primaryDarkPressed,
+          Color.alphaBlend(const Color(0xFFE8752A).withValues(alpha: 0.15), Colors.white)),
+      'dark orange text/legacy orange 12% tint on cream': (AppColors.primaryDarkPressed,
+          Color.alphaBlend(const Color(0xFFE8752A).withValues(alpha: 0.12), AppColors.background)),
       'secondary/white': (AppColors.textSecondary, Colors.white),
       'warning/white': (AppColors.warning, Colors.white),
       'success/tinted badge': (AppColors.success,

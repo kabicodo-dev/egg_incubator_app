@@ -64,8 +64,9 @@ class _FakeSupabaseApi extends http.BaseClient {
       );
     }
 
-    final wantsSingle =
-        (row.headers['Accept'] ?? '').contains('vnd.pgrst.object+json');
+    final wantsSingle = (row.headers['Accept'] ?? '').contains(
+      'vnd.pgrst.object+json',
+    );
 
     String body;
     if (row.url.path.contains('incubator_sessions')) {
@@ -186,11 +187,16 @@ void main() {
       await openCompletion(tester, row);
       expect(find.byType(TextField), findsOneWidget);
       expect(tester.widget<TextField>(find.byType(TextField)).enabled, isFalse);
-      expect(find.textContaining('Original eggs set is missing'), findsOneWidget);
       expect(
-        tester.widget<ElevatedButton>(
-          find.widgetWithText(ElevatedButton, 'Finish Batch'),
-        ).onPressed,
+        find.textContaining('Original eggs set is missing'),
+        findsOneWidget,
+      );
+      expect(
+        tester
+            .widget<ElevatedButton>(
+              find.widgetWithText(ElevatedButton, 'Finish Batch'),
+            )
+            .onPressed,
         isNull,
       );
       expect(find.text('Confirmation summary'), findsNothing);
@@ -213,11 +219,13 @@ void main() {
     await tester.tap(find.widgetWithText(ElevatedButton, 'Finish Batch'));
     await tester.pumpAndSettle();
     expect(api.sessions.single['eggs_hatched'], 8);
-    expect(find.text('Complete Incubation'), findsNothing);
+    expect(find.text('Finish batch record?'), findsNothing);
     expect(api.requests.where((r) => r.method == 'PATCH'), hasLength(1));
   });
 
-  testWidgets('pending save cannot show success or submit twice', (tester) async {
+  testWidgets('pending save cannot show success or submit twice', (
+    tester,
+  ) async {
     api.sessions = [_activeRow()];
     api.completionGate = Completer<void>();
     await openCompletion(tester, api.sessions.single);
@@ -227,41 +235,51 @@ void main() {
     await tester.tap(find.widgetWithText(ElevatedButton, 'Finish Batch'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 100));
-    expect(find.text('Complete Incubation'), findsOneWidget);
+    expect(find.text('Finish batch record?'), findsOneWidget);
     expect(api.sessions.single['status'], 'Active');
     expect(api.requests.where((r) => r.method == 'PATCH'), hasLength(1));
-    expect(tester.widget<ElevatedButton>(find.byType(ElevatedButton).last)
-        .onPressed, isNull);
+    expect(
+      tester.widget<ElevatedButton>(find.byType(ElevatedButton).last).onPressed,
+      isNull,
+    );
     api.completionGate!.complete();
     await tester.pumpAndSettle();
-    expect(find.text('Complete Incubation'), findsNothing);
+    expect(find.text('Finish batch record?'), findsNothing);
   });
 
-  testWidgets('HTTP success without matching persisted result is not completion', (
-    tester,
-  ) async {
-    api.sessions = [_activeRow()];
-    api.ignoreComplete = true;
-    await openCompletion(tester, api.sessions.single);
-    await tester.enterText(find.byType(TextField), '6');
-    await tester.pump();
-    await tester.tap(find.widgetWithText(ElevatedButton, 'Finish Batch'));
-    await tester.pumpAndSettle();
-    expect(find.text('Complete Incubation'), findsOneWidget);
-    expect(find.textContaining('Could not save the results'), findsOneWidget);
-    expect(api.sessions.single['status'], 'Active');
-  });
+  testWidgets(
+    'HTTP success without matching persisted result is not completion',
+    (tester) async {
+      api.sessions = [_activeRow()];
+      api.ignoreComplete = true;
+      await openCompletion(tester, api.sessions.single);
+      await tester.enterText(find.byType(TextField), '6');
+      await tester.pump();
+      await tester.tap(find.widgetWithText(ElevatedButton, 'Finish Batch'));
+      await tester.pumpAndSettle();
+      expect(find.text('Finish batch record?'), findsOneWidget);
+      expect(find.text('Save not confirmed'), findsOneWidget);
+      expect(
+        tester.getTopLeft(find.text('Save not confirmed')).dy,
+        lessThan(tester.getTopLeft(find.byType(TextField)).dy),
+      );
+      expect(api.sessions.single['status'], 'Active');
+    },
+  );
 
   testWidgets('changed original eggs set blocks the write', (tester) async {
     api.sessions = [_activeRow()];
-    await openCompletion(tester, Map<String, dynamic>.from(api.sessions.single));
+    await openCompletion(
+      tester,
+      Map<String, dynamic>.from(api.sessions.single),
+    );
     api.sessions.single['egg_quantity'] = 7;
     await tester.enterText(find.byType(TextField), '8');
     await tester.pump();
     await tester.tap(find.widgetWithText(ElevatedButton, 'Finish Batch'));
     await tester.pumpAndSettle();
     expect(api.requests.where((r) => r.method == 'PATCH'), isEmpty);
-    expect(find.textContaining('Could not save the results'), findsOneWidget);
+    expect(find.text('Save not confirmed'), findsOneWidget);
   });
 
   testWidgets('cancel never persists a manual count', (tester) async {
@@ -275,106 +293,116 @@ void main() {
     expect(api.sessions.single['status'], 'Active');
   });
 
-  testWidgets(
-      'saved session date is not confirmed physical Start', (tester) async {
+  testWidgets('saved session date is not confirmed physical Start', (
+    tester,
+  ) async {
     api.sessions = [_activeRow(daysAgo: 3)];
     await pumpAt(tester, activeIncubationScreenFor(api.sessions.first));
 
     expect(find.text('Day 4 of 21'), findsNothing);
-    expect(find.text('Waiting for confirmed start'), findsWidgets);
+    expect(find.text('—/21'), findsOneWidget);
     // The farmer can end this batch whenever they choose.
     expect(find.text('Finish Batch'), findsOneWidget);
     expect(
-      find.textContaining('Finishing ends this incubation'),
+      find.textContaining('does not switch off the incubator'),
       findsOneWidget,
     );
   });
 
   testWidgets(
-      'finishing saves the exact hatched count and completes the batch',
-      (tester) async {
-    api.sessions = [_activeRow()];
-    await pumpAt(tester, activeIncubationScreenFor(api.sessions.first));
+    'finishing saves the exact hatched count and completes the batch',
+    (tester) async {
+      api.sessions = [_activeRow()];
+      await pumpAt(tester, activeIncubationScreenFor(api.sessions.first));
 
-    await tester.ensureVisible(find.text('Finish Batch'));
-    await tester.tap(find.text('Finish Batch'));
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 300));
-
-    // The dialog opens with the batch details and a preview placeholder.
-    expect(find.text('Complete Incubation'), findsOneWidget);
-    expect(find.textContaining('Chicken \u00B7 8 eggs'), findsOneWidget);
-    expect(
-      find.textContaining('Enter the hatched count to preview'),
-      findsOneWidget,
-    );
-
-    await tester.enterText(find.byType(TextField), '6');
-    await tester.pump();
-    expect(find.text('Hatchability: 75.0%'), findsOneWidget);
-    expect(find.text('Confirmation summary'), findsOneWidget);
-    expect(find.text('Eggs set: 8; manually hatched: 6'), findsOneWidget);
-
-    await tester
-        .tap(find.widgetWithText(ElevatedButton, 'Finish Batch').last);
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 400));
-    await tester.pump(const Duration(milliseconds: 300));
-
-    // Exactly one UPDATE: the entered count, Completed, a real timestamp.
-    final patch =
-        api.requests.lastWhere((r) => r.method == 'PATCH');
-    final body = jsonDecode(patch.body) as Map<String, dynamic>;
-    expect(patch.url.queryParameters['id'], 'eq.7');
-    expect(body['status'], 'Completed');
-    expect(body['eggs_hatched'], 6);
-    expect(body['end_date'], isNotNull);
-
-    // The farmer lands on a fresh dashboard: the batch is finished, so a
-    // new incubation may start.
-    expect(find.byType(ActiveIncubationScreen), findsNothing);
-    expect(find.text('Start New Incubation'), findsOneWidget);
-
-    // Drain the confirmation snackbar's auto-hide timer.
-    await tester.pump(const Duration(seconds: 6));
-    await tester.pump(const Duration(seconds: 1));
-  });
-
-  testWidgets(
-      'invalid counts are rejected before anything is sent to the database',
-      (tester) async {
-    api.sessions = [_activeRow()];
-    await pumpAt(tester, activeIncubationScreenFor(api.sessions.first));
-
-    await tester.ensureVisible(find.text('Finish Batch'));
-    await tester.tap(find.text('Finish Batch'));
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 300));
-
-    Future<void> check(String input) async {
-      await tester.enterText(find.byType(TextField), input);
+      await tester.ensureVisible(find.text('Finish Batch'));
+      await tester.tap(find.text('Finish Batch'));
       await tester.pump();
-      final button = tester.widget<ElevatedButton>(
+      await tester.pump(const Duration(milliseconds: 300));
+
+      // The dialog opens with the batch details and a preview placeholder.
+      expect(find.text('Finish batch record?'), findsOneWidget);
+      expect(find.textContaining('Chicken \u00B7 8 eggs'), findsOneWidget);
+      expect(
+        find.textContaining('Enter the hatched count to preview'),
+        findsOneWidget,
+      );
+
+      await tester.enterText(find.byType(TextField), '6');
+      await tester.pump();
+      expect(find.text('Hatchability: 75.0%'), findsOneWidget);
+      expect(find.text('Confirmation summary'), findsOneWidget);
+      expect(find.text('Eggs set: 8; manually hatched: 6'), findsOneWidget);
+
+      await tester.tap(
         find.widgetWithText(ElevatedButton, 'Finish Batch').last,
       );
-      expect(button.onPressed, isNull, reason: 'input "$input" must be invalid');
-    }
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+      await tester.pump(const Duration(milliseconds: 300));
 
-    await check('9'); // above the original 8 eggs
-    expect(
-      find.text('Enter a whole number from 0 to 8.'),
-      findsOneWidget,
-    );
-    await check('-1'); // negative
-    await check('1.5'); // decimal
-    await check('+1'); // signed/non-digit input
-    await check('0x2'); // hexadecimal is not a manual decimal count
-    await check('abc'); // not a number
-    await check(''); // nothing entered
+      // Exactly one UPDATE: the entered count, Completed, a real timestamp.
+      final patch = api.requests.lastWhere((r) => r.method == 'PATCH');
+      final body = jsonDecode(patch.body) as Map<String, dynamic>;
+      expect(patch.url.queryParameters['id'], 'eq.7');
+      expect(body['status'], 'Completed');
+      expect(body['eggs_hatched'], 6);
+      expect(body['end_date'], isNotNull);
 
-    // Nothing ever reached the database.
-    expect(api.requests.where((r) => r.method == 'PATCH'), isEmpty);
-  });
+      // The farmer lands on a fresh dashboard: the batch is finished, so a
+      // new incubation may start.
+      expect(find.byType(ActiveIncubationScreen), findsNothing);
+      expect(find.text('Start a new incubation'), findsOneWidget);
+
+      // The prominent saved-result card persists; it is not a timed snackbar.
+      await tester.pump(const Duration(seconds: 6));
+      await tester.pump(const Duration(seconds: 1));
+      expect(find.byType(SnackBar), findsNothing);
+      expect(find.text('Hatch results saved'), findsOneWidget);
+      expect(
+        tester.getTopLeft(find.text('Hatch results saved')).dy,
+        lessThan(tester.getTopLeft(find.text('Start a new incubation')).dy),
+      );
+    },
+  );
+
+  testWidgets(
+    'invalid counts are rejected before anything is sent to the database',
+    (tester) async {
+      api.sessions = [_activeRow()];
+      await pumpAt(tester, activeIncubationScreenFor(api.sessions.first));
+
+      await tester.ensureVisible(find.text('Finish Batch'));
+      await tester.tap(find.text('Finish Batch'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      Future<void> check(String input) async {
+        await tester.enterText(find.byType(TextField), input);
+        await tester.pump();
+        final button = tester.widget<ElevatedButton>(
+          find.widgetWithText(ElevatedButton, 'Finish Batch').last,
+        );
+        expect(
+          button.onPressed,
+          isNull,
+          reason: 'input "$input" must be invalid',
+        );
+      }
+
+      await check('9'); // above the original 8 eggs
+      expect(find.text('Enter a whole number from 0 to 8.'), findsOneWidget);
+      await check('-1'); // negative
+      await check('1.5'); // decimal
+      await check('+1'); // signed/non-digit input
+      await check('0x2'); // hexadecimal is not a manual decimal count
+      await check('abc'); // not a number
+      await check(''); // nothing entered
+
+      // Nothing ever reached the database.
+      expect(api.requests.where((r) => r.method == 'PATCH'), isEmpty);
+    },
+  );
 
   testWidgets('zero hatched eggs is a valid, saved result', (tester) async {
     api.sessions = [_activeRow()];
@@ -389,8 +417,7 @@ void main() {
     await tester.pump();
     expect(find.text('Hatchability: 0.0%'), findsOneWidget);
 
-    await tester
-        .tap(find.widgetWithText(ElevatedButton, 'Finish Batch').last);
+    await tester.tap(find.widgetWithText(ElevatedButton, 'Finish Batch').last);
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
 
@@ -404,8 +431,9 @@ void main() {
     await tester.pump(const Duration(seconds: 1));
   });
 
-  testWidgets('a failed save keeps the batch incubating and explains why',
-      (tester) async {
+  testWidgets('a failed save keeps the batch incubating and explains why', (
+    tester,
+  ) async {
     api.sessions = [_activeRow()];
     api.failComplete = true;
     await pumpAt(tester, activeIncubationScreenFor(api.sessions.first));
@@ -417,25 +445,20 @@ void main() {
 
     await tester.enterText(find.byType(TextField), '6');
     await tester.pump();
-    await tester
-        .tap(find.widgetWithText(ElevatedButton, 'Finish Batch').last);
+    await tester.tap(find.widgetWithText(ElevatedButton, 'Finish Batch').last);
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
 
     // A clear error is shown and the dialog stays open for a retry.
-    expect(
-      find.textContaining('Could not save the results'),
-      findsOneWidget,
-    );
-    expect(find.text('Complete Incubation'), findsOneWidget);
+    expect(find.text('Save not confirmed'), findsOneWidget);
+    expect(find.text('Finish batch record?'), findsOneWidget);
 
     // The stored batch is untouched - still Active.
     expect(api.sessions.single['status'], 'Active');
     expect(api.sessions.single['eggs_hatched'], 0);
   });
 
-  testWidgets(
-      'an overdue batch is never completed automatically - only the '
+  testWidgets('an overdue batch is never completed automatically - only the '
       'farmer ends it', (tester) async {
     // Started 40 days ago: far beyond the 21-day cycle, yet the record is
     // still Active and nothing completes it by itself.
@@ -448,8 +471,7 @@ void main() {
     expect(api.sessions.single['status'], 'Active');
   });
 
-  testWidgets(
-      'a batch that is already finished cannot be incubated or '
+  testWidgets('a batch that is already finished cannot be incubated or '
       're-completed', (tester) async {
     final row = _activeRow()
       ..addAll({
@@ -460,13 +482,14 @@ void main() {
     api.sessions = [row];
     await pumpAt(tester, activeIncubationScreenFor(row));
 
-    expect(find.text('This batch is no longer incubating'), findsOneWidget);
+    expect(find.text('This batch record is closed'), findsOneWidget);
     expect(find.text('Finish Batch'), findsNothing);
     expect(find.text('Day 1 of 21'), findsNothing);
   });
 
-  testWidgets('after a successful finish a new incubation can start',
-      (tester) async {
+  testWidgets('after a successful finish a new incubation can start', (
+    tester,
+  ) async {
     api.sessions = [_activeRow()];
     await pumpAt(tester, activeIncubationScreenFor(api.sessions.first));
 
@@ -476,8 +499,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 300));
     await tester.enterText(find.byType(TextField), '7');
     await tester.pump();
-    await tester
-        .tap(find.widgetWithText(ElevatedButton, 'Finish Batch').last);
+    await tester.tap(find.widgetWithText(ElevatedButton, 'Finish Batch').last);
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
     expect(api.sessions.single['status'], 'Completed');
@@ -488,12 +510,12 @@ void main() {
 
     // The farmer starts the next batch through Home's primary button, the
     // same path the app offers after a completion.
-    await tester.tap(find.text('Start New Incubation'));
+    await tester.tap(find.text('Start a new incubation'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
 
     // With no Active row left, setup opens straight to the form.
     expect(find.text('What are you hatching?'), findsOneWidget);
-    expect(find.text('A batch is already incubating'), findsNothing);
+    expect(find.text('A saved batch already exists'), findsNothing);
   });
 }

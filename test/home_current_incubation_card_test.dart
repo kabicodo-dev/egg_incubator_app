@@ -49,8 +49,9 @@ class _FakeSupabaseApi extends http.BaseClient {
     final row = request as http.Request;
     requests.add(row);
 
-    final wantsSingle =
-        (row.headers['Accept'] ?? '').contains('vnd.pgrst.object+json');
+    final wantsSingle = (row.headers['Accept'] ?? '').contains(
+      'vnd.pgrst.object+json',
+    );
 
     String body;
     if (row.url.path.contains('incubator_sessions')) {
@@ -137,36 +138,40 @@ void main() {
   }
 
   testWidgets(
-      'an active batch shows a Current Incubation card with real data and '
-      'no Start button', (tester) async {
-    api.sessions = [_activeSession()];
-    await pumpHome(tester);
+    'an active batch shows a Current Incubation card with real data and '
+    'no Start button',
+    (tester) async {
+      api.sessions = [_activeSession()];
+      await pumpHome(tester);
 
-    // The card names the real batch, species, quantity and start date.
-    expect(find.text('CURRENT INCUBATION'), findsOneWidget);
-    expect(find.text('Batch #9 \u00B7 Chicken'), findsOneWidget);
-    expect(find.textContaining('12 eggs \u00B7 Started'), findsOneWidget);
-    expect(find.text('Day 3 of 21'), findsNothing);
-    expect(find.text('18 days left'), findsNothing);
-    expect(find.text('Waiting for confirmed start'), findsOneWidget);
-    expect(find.text('Incubating'), findsOneWidget);
+      // The card names the real batch, species, quantity and start date.
+      expect(find.text('CURRENT INCUBATION'), findsOneWidget);
+      expect(find.text('Batch #9 \u00B7 Chicken'), findsOneWidget);
+      expect(
+        find.textContaining('12 eggs \u00B7 Start date unavailable'),
+        findsOneWidget,
+      );
+      expect(find.text('Day 3 of 21'), findsNothing);
+      expect(find.text('18 days left'), findsNothing);
+      expect(find.text('Saved start date unavailable'), findsOneWidget);
+      expect(find.text('Open batch'), findsOneWidget);
 
-    // The primary action opens the running batch - Start is not offered.
-    expect(find.text('View Active Incubation'), findsOneWidget);
-    expect(find.text('Start New Incubation'), findsNothing);
+      // The primary action opens the running batch - Start is not offered.
+      expect(find.text('View Active Incubation'), findsOneWidget);
+      expect(find.text('Start a new incubation'), findsNothing);
 
-    // No completed batch exists yet, so Last Completed shows an empty state
-    // instead of pretending the running batch is a finished result.
-    await tester.ensureVisible(
-        find.textContaining('No completed batches yet'));
-    expect(
-      find.textContaining('No completed batches yet'),
-      findsOneWidget,
-    );
-  });
+      // No completed batch exists yet, so Last Completed shows an empty state
+      // instead of pretending the running batch is a finished result.
+      await tester.ensureVisible(
+        find.textContaining('No completed batches yet'),
+      );
+      expect(find.textContaining('No completed batches yet'), findsOneWidget);
+    },
+  );
 
-  testWidgets('the Current Incubation card opens the running batch',
-      (tester) async {
+  testWidgets('the Current Incubation card opens the running batch', (
+    tester,
+  ) async {
     api.sessions = [_activeSession()];
     await pumpHome(tester);
 
@@ -179,20 +184,22 @@ void main() {
     expect(find.text('Batch #9'), findsOneWidget);
   });
 
-  testWidgets('with no active batch Home offers Start New Incubation',
-      (tester) async {
+  testWidgets('with no active batch Home offers Start New Incubation', (
+    tester,
+  ) async {
     api.sessions = [_completedSession];
     await pumpHome(tester);
 
-    expect(find.text('Start New Incubation'), findsOneWidget);
+    expect(find.text('Start a new incubation'), findsOneWidget);
     expect(find.text('View Active Incubation'), findsNothing);
     expect(find.text('CURRENT INCUBATION'), findsNothing);
-    expect(find.text('No batches yet. Start your first incubation!'),
-        findsNothing);
+    expect(
+      find.text('No batches yet. Start your first incubation!'),
+      findsNothing,
+    );
   });
 
-  testWidgets(
-      'Last Completed Batch shows only the completed batch, never the '
+  testWidgets('Last Completed Batch shows only the completed batch, never the '
       'active one', (tester) async {
     // Newest first, as the real descending query returns it.
     api.sessions = [_activeSession(), _completedSession];
@@ -222,17 +229,19 @@ void main() {
     );
   });
 
-  testWidgets('with no batches at all Home offers Start and an empty state',
-      (tester) async {
+  testWidgets('with no batches at all Home offers Start and an empty state', (
+    tester,
+  ) async {
     api.sessions = [];
     await pumpHome(tester);
 
-    expect(find.text('Start New Incubation'), findsOneWidget);
+    expect(find.text('Start a new incubation'), findsOneWidget);
     expect(find.text('View Active Incubation'), findsNothing);
     expect(find.text('CURRENT INCUBATION'), findsNothing);
 
     await tester.ensureVisible(
-        find.text('No batches yet. Start your first incubation!'));
+      find.text('No batches yet. Start your first incubation!'),
+    );
     expect(
       find.text('No batches yet. Start your first incubation!'),
       findsOneWidget,

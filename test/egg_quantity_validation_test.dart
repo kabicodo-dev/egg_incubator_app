@@ -12,18 +12,11 @@ void main() {
     addTearDown(tester.view.reset);
   }
 
-  // The screen tries to load its species presets from Supabase, which fails
-  // straight away in tests and puts up a SnackBar at the bottom of the screen.
-  // Advance time until it has disappeared so taps reach the buttons instead
-  // of landing on the snack bar.
+  // Preset loading fails without Supabase in this isolated test. Its persistent
+  // notice stays visible; scroll each control into view rather than hiding it.
   Future<void> pumpScreen(WidgetTester tester, Widget screen) async {
     await tester.pumpWidget(MaterialApp(home: screen));
     await tester.pump();
-    for (var i = 0;
-        i < 20 && find.byType(SnackBar).evaluate().isNotEmpty;
-        i++) {
-      await tester.pump(const Duration(seconds: 1));
-    }
     await tester.pump(const Duration(milliseconds: 300));
   }
 
@@ -37,6 +30,12 @@ void main() {
   );
 
   Finder continueButton() => find.widgetWithText(ElevatedButton, 'Continue');
+
+  Future<void> tapVisible(WidgetTester tester, Finder control) async {
+    await tester.ensureVisible(control);
+    await tester.pumpAndSettle();
+    await tester.tap(control);
+  }
 
   bool canContinue(WidgetTester tester) =>
       tester.widget<ElevatedButton>(continueButton()).onPressed != null;
@@ -73,8 +72,11 @@ void main() {
   group('egg quantity rule -6 to 12 eggs is accepted', () {
     for (final value in [6, 7, 8, 9, 10, 11, 12]) {
       test('$value eggs is accepted', () {
-        expect(SupabaseService.eggQuantityError(value), isNull,
-            reason: '$value eggs fits the incubator');
+        expect(
+          SupabaseService.eggQuantityError(value),
+          isNull,
+          reason: '$value eggs fits the incubator',
+        );
       });
     }
   });
@@ -137,14 +139,14 @@ void main() {
       await openQuantityScreen(tester);
 
       // Below the minimum batch size.
-      await tester.tap(find.byIcon(Icons.remove));
+      await tapVisible(tester, find.byIcon(Icons.remove));
       await tester.pump();
       expect(find.text('6'), findsOneWidget);
       expect(find.text('5'), findsNothing);
 
       // Above the maximum capacity.
       for (var i = 0; i < 15; i++) {
-        await tester.tap(find.byIcon(Icons.add));
+        await tapVisible(tester, find.byIcon(Icons.add));
         await tester.pump();
       }
       expect(find.text('12'), findsWidgets);
@@ -153,7 +155,7 @@ void main() {
 
       // Coming back down stops at the minimum too.
       for (var i = 0; i < 15; i++) {
-        await tester.tap(find.byIcon(Icons.remove));
+        await tapVisible(tester, find.byIcon(Icons.remove));
         await tester.pump();
       }
       expect(find.text('6'), findsWidgets);
@@ -166,7 +168,7 @@ void main() {
 
       await tester.tap(find.text('12 eggs'));
       await tester.pump();
-      await tester.tap(continueButton());
+      await tapVisible(tester, continueButton());
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 350));
 
@@ -264,8 +266,7 @@ void main() {
       expect(canContinue(tester), isFalse);
     });
 
-    testWidgets('a valid custom amount reaches the checklist',
-        (tester) async {
+    testWidgets('a valid custom amount reaches the checklist', (tester) async {
       await openQuantityScreen(tester);
       await openCustomChoice(tester);
 
@@ -273,7 +274,7 @@ void main() {
       await tester.pump();
       expect(canContinue(tester), isTrue);
 
-      await tester.tap(continueButton());
+      await tapVisible(tester, continueButton());
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 350));
 
@@ -281,8 +282,9 @@ void main() {
       expect(find.text('9 eggs \u2022 21 days'), findsOneWidget);
     });
 
-    testWidgets('the +/− buttons keep the cursor in the custom field',
-        (tester) async {
+    testWidgets('the +/− buttons keep the cursor in the custom field', (
+      tester,
+    ) async {
       await openQuantityScreen(tester);
       await openCustomChoice(tester);
 
@@ -296,17 +298,23 @@ void main() {
 
       // Stepping down rewrites the amount from 10 to 9: the caret follows the
       // text instead of being dropped and jumping back to position zero.
-      await tester.tap(find.byIcon(Icons.remove));
+      await tapVisible(tester, find.byIcon(Icons.remove));
       await tester.pump();
 
       expect(controller.text, '9');
-      expect(controller.selection.isValid, isTrue,
-          reason: 'the caret must stay in the field');
-      expect(controller.selection.baseOffset, controller.text.length,
-          reason: 'the caret must follow the text, not reset to position 0');
+      expect(
+        controller.selection.isValid,
+        isTrue,
+        reason: 'the caret must stay in the field',
+      );
+      expect(
+        controller.selection.baseOffset,
+        controller.text.length,
+        reason: 'the caret must follow the text, not reset to position 0',
+      );
 
       // Stepping back up grows the amount to two digits again.
-      await tester.tap(find.byIcon(Icons.add));
+      await tapVisible(tester, find.byIcon(Icons.add));
       await tester.pump();
 
       expect(controller.text, '10');
@@ -318,7 +326,7 @@ void main() {
       await tester.pump();
       expect(find.text('Please enter the number of eggs.'), findsOneWidget);
 
-      await tester.tap(find.byIcon(Icons.add));
+      await tapVisible(tester, find.byIcon(Icons.add));
       await tester.pump();
 
       expect(controller.text, '6');
@@ -347,6 +355,7 @@ void main() {
       isNotNull,
     );
 
+    await tester.ensureVisible(continueButton());
     await tester.tap(continueButton());
     await tester.pump();
 

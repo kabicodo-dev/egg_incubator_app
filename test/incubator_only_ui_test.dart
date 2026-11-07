@@ -207,8 +207,13 @@ void main() {
   ) async {
     await open(tester, const HistoryScreen());
     expect(find.text('Batch #41'), findsOneWidget);
-    expect(find.text('5 / 8 eggs hatched'), findsOneWidget);
+    await tester.ensureVisible(find.text('Batch #41'));
     await tester.tap(find.text('Batch #41'));
+    await settle(tester);
+    expect(find.text('5 / 8 eggs hatched'), findsOneWidget);
+    final details = find.text('View details').last;
+    await tester.ensureVisible(details);
+    await tester.tap(details);
     await settle(tester);
     expect(find.byType(BatchDetailsScreen), findsOneWidget);
     expect(find.text('Hatched'), findsOneWidget);
@@ -231,7 +236,21 @@ void main() {
   test(
     'remaining brooder string literals are internal telemetry keys only',
     () {
-      final source = File('lib/main.dart').readAsStringSync();
+      final source = Directory('lib')
+          .listSync(recursive: true)
+          .whereType<File>()
+          .where((file) => file.path.endsWith('.dart'))
+          .where(
+            (file) =>
+                file.path.contains(
+                  '${Platform.pathSeparator}screens${Platform.pathSeparator}',
+                ) ||
+                file.path.contains(
+                  '${Platform.pathSeparator}widgets${Platform.pathSeparator}',
+                ),
+          )
+          .map((file) => file.readAsStringSync())
+          .join('\n');
       final literals = RegExp(
         r'''['"][^'"\n]*brood[^'"\n]*['"]''',
         caseSensitive: false,

@@ -12,7 +12,7 @@ void main() {
     expect(find.text('Skip'), findsOneWidget);
   });
 
-  testWidgets('SmartHatch Incubator Dashboard smoke test with Day 7 start and 6-12 egg capacity', (WidgetTester tester) async {
+  testWidgets('SmartHatch console identifies simulation without fabricated physical day', (WidgetTester tester) async {
     await tester.pumpWidget(
       const MaterialApp(home: IncubatorDashboardPage()),
     );
@@ -20,11 +20,12 @@ void main() {
     // Verify key titles, Day 7 post-candling start, and egg capacity card are displayed
     // UI-01/P6.4: the console was renamed 'Hardware Console' (PR #42 side).
     expect(find.text('Hardware Console'), findsOneWidget);
-    expect(find.text('Day 7'), findsOneWidget);
+    expect(find.text('Day 7'), findsNothing);
+    expect(find.text('SIMULATION'), findsOneWidget);
     expect(find.text('Fertile Egg Tray & Capacity'), findsOneWidget);
     expect(find.text('Incubator Chamber'), findsOneWidget);
     expect(find.textContaining('Brooder'), findsNothing);
-    expect(find.textContaining('Fertile Verified'), findsWidgets);
+    expect(find.textContaining('Fertile Verified'), findsNothing);
 
     // Dispose the dashboard so the incubator controller's ticker is released.
     await tester.pumpWidget(const SizedBox.shrink());
@@ -300,7 +301,7 @@ void main() {
     await tester.pumpWidget(const MaterialApp(home: IncubatorDashboardPage()));
 
     // Verify LCD header
-    expect(find.text('INCUBATOR LCD 16×2 DISPLAY'), findsOneWidget);
+    expect(find.text('SIMULATOR LCD PREVIEW'), findsOneWidget);
     expect(find.text('I2C: 0x27 (A4/A5)'), findsOneWidget);
 
     // Verify Temperature & Humidity display
@@ -308,8 +309,9 @@ void main() {
     expect(find.textContaining('H: 48%'), findsOneWidget);
 
     // Verify Day of the eggs display (starts on Day 7)
-    expect(find.textContaining('DAY: 7/21'), findsOneWidget);
-    expect(find.textContaining('[ACTIVE]'), findsOneWidget);
+    expect(find.textContaining('DAY: 7/21'), findsNothing);
+    expect(find.textContaining('DAY: —'), findsOneWidget);
+    expect(find.textContaining('[PREVIEW]'), findsOneWidget);
 
     // Dispose the dashboard so the incubator controller's ticker is released.
     await tester.pumpWidget(const SizedBox.shrink());

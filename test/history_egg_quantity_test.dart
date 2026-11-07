@@ -33,13 +33,15 @@ class _FakeSupabaseApi extends http.BaseClient {
     final row = request as http.Request;
     requests.add(row);
 
-    final wantsSingle =
-        (row.headers['Accept'] ?? '').contains('vnd.pgrst.object+json');
+    final wantsSingle = (row.headers['Accept'] ?? '').contains(
+      'vnd.pgrst.object+json',
+    );
 
     final String body;
     if (row.url.path.contains('incubator_sessions')) {
-      body =
-          wantsSingle ? jsonEncode(_savedSession) : jsonEncode([_savedSession]);
+      body = wantsSingle
+          ? jsonEncode(_savedSession)
+          : jsonEncode([_savedSession]);
     } else {
       body = wantsSingle ? '{"id": 42}' : '[]';
     }
@@ -94,8 +96,9 @@ void main() {
     );
   });
 
-  testWidgets('the History screen shows the saved egg quantity of a batch',
-      (tester) async {
+  testWidgets('the History screen shows the saved egg quantity of a batch', (
+    tester,
+  ) async {
     // Phone-sized surface, same as the other suites.
     tester.view.physicalSize = const Size(450, 836);
     tester.view.devicePixelRatio = 1.0;
@@ -113,8 +116,8 @@ void main() {
     // incubation - never as a finished 0% hatch result.
     expect(find.text('Incubation History'), findsOneWidget);
     expect(find.text('Batch #7'), findsOneWidget);
-    expect(find.text('Chicken'), findsOneWidget);
-    expect(find.text('Incubation in progress \u00B7 8 eggs'), findsOneWidget);
+    expect(find.textContaining('Chicken ·'), findsOneWidget);
+    expect(find.text('Batch open \u00B7 8 eggs set'), findsOneWidget);
     expect(find.text('0 / 8 eggs hatched'), findsNothing);
     expect(find.text('0%'), findsNothing);
     expect(find.text('No batches yet'), findsNothing);
