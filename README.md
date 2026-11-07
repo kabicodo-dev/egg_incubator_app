@@ -81,11 +81,19 @@ Arduino -> App : {"type":"telemetry","incubator":{"temperature":37.6,"humidity":
 1. Enable **Developer Mode** (Windows Settings > Update & Security > For
    developers) so `flutter pub get` can create the plugin symlinks needed by
    `flutter_libserialport`.
-2. Upload `arduino/SmartHatch_Uno/SmartHatch_Uno.ino` to the Uno with the
+2. Supply the public Supabase settings without committing them: copy
+   `.env.example` to `.env` and fill in your project URL and publishable/anon
+   key. Only those two public client values belong there.
+3. Upload `arduino/SmartHatch_Uno/SmartHatch_Uno.ino` to the Uno with the
    Arduino IDE, then plug it in over USB.
-3. `flutter pub get && flutter run -d windows`
-4. In the app, open the hardware console / incubation screen, pick the COM port
+4. `flutter pub get && flutter run -d windows --dart-define-from-file=.env`
+5. In the app, open the hardware console / incubation screen, pick the COM port
    (e.g. `COM3`), tap **Connect**.
+
+Configuration is read at build/run time; no `.env` file is packaged into the
+app, and CI needs no environment file to run tests. Starting without the
+definitions shows a settings screen that names what is missing instead of
+crashing or opening a half-configured cloud session.
 
 The feature is safe on web builds: the serial implementation is replaced by a
 no-op stub on non-`dart:io` platforms.

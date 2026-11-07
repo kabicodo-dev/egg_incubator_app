@@ -11,7 +11,6 @@ dependencies:
   flutter:
     sdk: flutter
   supabase_flutter: ^2.8.3
-  flutter_dotenv: ^5.2.1
   cupertino_icons: ^1.0.8
   google_fonts: ^6.2.1
   flutter_libserialport: ^0.6.0
@@ -25,7 +24,8 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  # No .env (or any configuration file) is packaged as an asset: public
+  # settings arrive through --dart-define at build/run time.
   assets:
-    - .env
     - assets/logo.png
     - assets/species/
