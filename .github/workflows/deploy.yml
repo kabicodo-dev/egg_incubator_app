@@ -1,9 +1,7 @@
 name: Deploy Flutter Web to GitHub Pages
 
+# Publication is manual; merging review material must not publish the app.
 on:
-  push:
-    branches:
-      - development
   workflow_dispatch:
 
 permissions:
@@ -32,10 +30,10 @@ jobs:
         run: flutter pub get
 
       - name: Quality gate - flutter analyze
-        run: flutter analyze
+        run: flutter analyze --no-pub lib test
 
       - name: Quality gate - flutter test
-        run: flutter test
+        run: flutter test --no-pub
 
       - name: Create environment file
         env:
