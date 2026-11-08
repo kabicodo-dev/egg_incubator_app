@@ -17,6 +17,12 @@ class _FakeAuthenticator implements AccountAuthenticator {
   AccountAuthStatus get status => AccountAuthStatus.signedOut;
 
   @override
+  Stream<AccountAuthStatus> get statusChanges => const Stream.empty();
+
+  @override
+  Future<void> signOut() async {}
+
+  @override
   Future<AccountAuthStatus> signIn({
     required String email,
     required String password,
