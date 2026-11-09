@@ -39,6 +39,9 @@ class AccountAuthException implements Exception {
 abstract interface class AccountAuthenticator {
   AccountAuthStatus get status;
 
+  /// Emits whenever the local session changes, including sign-out.
+  Stream<AccountAuthStatus> get statusChanges;
+
   Future<AccountAuthStatus> signUp({
     required String email,
     required String password,
@@ -48,6 +51,9 @@ abstract interface class AccountAuthenticator {
     required String email,
     required String password,
   });
+
+  /// Ends the local session. This is not a hardware or batch action.
+  Future<void> signOut();
 }
 
 /// UI-independent implementation of the approved email/password account flow.
@@ -63,6 +69,14 @@ class AccountAuthService implements AccountAuthenticator {
 
   final GoTrueClient _auth;
   bool _requestPending = false;
+
+  /// Local session changes only; never a server authorization signal.
+  @override
+  Stream<AccountAuthStatus> get statusChanges =>
+      _auth.onAuthStateChange.map((_) => status).distinct();
+
+  @override
+  Future<void> signOut() => _auth.signOut();
 
   /// Local session evidence only, not a server authorization or hardware gate.
   @override
